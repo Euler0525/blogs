@@ -1,0 +1,488 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>科海拾零</title><meta name="author" content="Euler0525"><meta name="copyright" content="Euler0525"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="科海拾零">
+<meta property="og:url" content="https://euler0525.github.io/blogs/index.html">
+<meta property="og:site_name" content="科海拾零">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://euler0525.github.io/blogs/img/avatar.jpg">
+<meta property="article:author" content="Euler0525">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://euler0525.github.io/blogs/img/avatar.jpg"><link rel="shortcut icon" href="/blogs/img/favicon.png"><link rel="canonical" href="https://euler0525.github.io/blogs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/blogs/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/blogs/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '科海拾零',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-08-03 22:32:57'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/blogs/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/blogs/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/blogs/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/blogs/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blogs/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/blogs/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/blogs/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/blogs/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blogs/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/blogs/img/background.png')"><nav id="nav"><span id="blog-info"><a href="/blogs/" title="科海拾零"><span class="site-name">科海拾零</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blogs/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/blogs/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/blogs/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/blogs/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blogs/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">科海拾零</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/f173e9aa/" title="超外差结构的干扰"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="超外差结构的干扰"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/f173e9aa/" title="超外差结构的干扰">超外差结构的干扰</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-08-03T02:42:11.000Z" title="发表于 2024-08-03 10:42:11">2024-08-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E5%B0%84%E9%A2%91/">射频</a></span></div><div class="content">超外差结构的干扰
+
+
+图1 超外差发射机模型图
+
+镜频干扰
+首先只考虑发送路的情况，  其中为本振频率，为中频，信号频率，在频谱仪上观察射频信号的频谱图，会发现关于对称的两个频率分量，如下图所示
+
+
+图2 镜频干扰与交调干扰的现象
+
+交调干扰
+上图中除了和分量外，还有其它的频率分量，这是由于交调干扰导致的。
+忽略更高阶的非线性，仅将射频的非线性特性用三阶幂级数简单表示为 
+IQ失衡（IQ imbalance）
+
+IQ调制
+
+在只发路信号时，镜像分量的频谱图关于对称，当两路同时发单音信号时，现象为
+
+
+图3 IQ失衡的现象
+
+如图1所示，按照数字信号处理的理论，IQ调制的结果为，但实际上，正交调制与解调通过模拟电路实现，IQ两路的信号很难做到幅度相等、完全正交，因此会造成幅度和相位的失衡，将载波表达式修正为  则IQ调制的结果变为  经过混频后，忽略PA的非线性因素，其输出为  在频谱仪上能观察到的频率分量为  关于本振频率对称的两个分量的幅度不相等。
+参考资料
+接收机IQ不平衡：估计和纠正 (Rx IQ imbalance: Estimation and Correction)
+</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/bd1f7a33/" title="IQ调制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="IQ调制"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/bd1f7a33/" title="IQ调制">IQ调制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-08-02T11:06:43.000Z" title="发表于 2024-08-02 19:06:43">2024-08-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content">IQ调制
+假设要发送的基带码元为，其中是同相分量，是正交分量。首先对码元做上变频  取其实部得到调制后的信号为 
+
+接收端收到的信号为  进行下变频  再通过积分器或者低通滤波器  得到原始码元.
+</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/c8c59f13/" title="DDS Compiler"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="DDS Compiler"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/c8c59f13/" title="DDS Compiler">DDS Compiler</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-22T12:08:28.000Z" title="发表于 2024-07-22 20:08:28">2024-07-22</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">DDS Compiler
+设计原理
+一个正弦波的幅度不是随时间线性变化的，但是相位是时间的线性函数。因此可以考虑用一个线性递增的变量存储相位，再将相位转换成相应的正弦波幅度。
+
+首先存储一个周期的正弦波，然后将相位用比特量化，即平均分成份，以的频率每始终周期转动，则可以得到输出频率为的信号， 
+可以看出，输出频率是参考时钟频率、相位量化位宽、和相位增量（频率控制字）的函数。增加频率控制字，将得到更高频率的信号。
+
+根据奈奎斯特采样定律，为了使波形不失真，需要满足，则有 
+始终小于，不妨将其看成是一个分频器，通过修改频率控制字分频参考时钟，获得所需要的频率。
+
+组成结构
+
+如图，直接式数字频率合成器（Direct Digital Synthesizer，DDS）主要由相位累加器、波形查找表、数模转换器和低通滤波器等部分组成。
+其中的核心部分是相位累加器，由一个位累加器和位寄存器构成，在每个参考时钟上升沿，累加器将频率控制字与累加寄存器的输出相加，结果作为寄存器新的输入。如此反复， 当累加器累加满时， 就会发生溢出，完成一个周期， 即DDS合成信号的一个频率周期。
+波形查找表（Lookup ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/8ce3ee8f/" title="侵入式链表"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="侵入式链表"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/8ce3ee8f/" title="侵入式链表">侵入式链表</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-21T13:22:23.000Z" title="发表于 2024-07-21 21:22:23">2024-07-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">侵入式链表(Intrusive Linked List)
+设计思想
+常用的链表是非侵入式链表，它的每个节点包含数据和指向下一个节点的指针（和一个指向前一个节点的指针）
+
+12345struct ListNode {    int data;    struct ListNode *next;    struct ListNode *prev;}ListNode;
+在这种链表结构中，data是固定的，即一个链表中，每个节点存储的数据类型必须相同，这样的链表泛化能力比较差。
+
+注：C++语言可以使用模板实现通用：
+12345template &lt;typename T&gt;struct ListNode {        struct ListNode *next; // link区域        T data; // data区域};
+但这只不过是将重写代码的工作交给编译器完成，本质上数据和链表仍然是耦合的。
+
+
+侵入式链表是在其内部直接包含链表节点：
+
+12345678struct ListLink {    struct ListLink *next, *prev;}ListL ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/b29ce584/" title="二进制相移键控"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="二进制相移键控"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/b29ce584/" title="二进制相移键控">二进制相移键控</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-20T11:15:33.000Z" title="发表于 2024-07-20 19:15:33">2024-07-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content">二进制相移键控(BPSK)
+基础
+BPSK的时域表达式是 
+
+：待发送的二进制信息
+：符号周期
+：成型滤波器的冲激响应
+：载波中心频率
+
+
+：未必整数倍
+
+MATLAB仿真
+
+按照上图流程进行MATLAB仿真
+调制与解调
+
+设定参数：系统时钟频率为，根升余弦滤波器滚降系数，其它参数可修改
+1234567sys_clk = 160e6;Rb = 5e6;                  % //FIXMERs = Rb; Ts = 1 / Rs;usmp_rate = sys_clk / Rs;  % //FIXMEfc = 20e6;                 % //FIXMEhrc = 'rrc';               % //FIXME
+
+
+随机生成num个二进制数，并对极化处理：
+
+1234num = round(100000 * 10 ^ (EbNo / 10));b = randi([0 1], 1, num);b_sign = 1 - 2 * b;% b_sign = exp(1j * pi * b)  % 1: cos(-\pi)=-1 / 0: cos ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/7f38126d/" title="锁相环"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="锁相环"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/7f38126d/" title="锁相环">锁相环</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T08:19:28.000Z" title="发表于 2024-07-13 16:19:28">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a></span></div><div class="content">锁相环(PLL)
+时钟生成
+晶振可以产生稳定的时钟周期，但频率只能是在兆赫兹的量级。PLL利用晶振作为参考时钟，可以输出一个更高频率的时钟信号，提供给时序电路使用。
+
+如图所示，锁相环（Phase-Locked Loop，PLL）由鉴相器（PD）、环路滤波器（LF）和压控振荡器（VCO）三部分组成。实现的是输出与输入相等，最终得到稳定的输出频率.
+
+PLL的原理是其中的VCO的振荡频率随着输入电压变化而变化，它的输出就是整个PLL的输出，也就是我们最终拿到的时钟信号。VCO的输出会反馈回PLL，由PD比较他们两者的相位。如果晶振相位稍快，就把VCO输入电压调低，如果晶振相位稍慢，就把VCO输入电压调高，从而得到稳定的高频时钟信号。
+数据重定时
+PLL还可以用来做时钟恢复和数据重定时。
+
+如图所示，经过传输线后的信号波形变得不稳定。可以考虑将数据作为参考，输入到PLL中，恢复一个与数据同步的时钟，用该时钟信号和D触发器重新对数据采样，得到新的重定时数据。
+</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/5bffeb59/" title="时序分析"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="时序分析"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/5bffeb59/" title="时序分析">时序分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T01:58:22.000Z" title="发表于 2024-07-13 09:58:22">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">时序分析
+时序约束
+
+
+建立时间：在时钟上升沿的时间前数据必须是稳定的；
+保持时间：时钟上升沿之后的时间内数据必须是稳定的；
+传播延迟：时钟上升沿到输出端信号稳定所需要的时间；
+污染延迟：时钟上升沿到输出端信号开始变化所需要的时间；
+
+建立时间与保持时间
+
+如左图所示，对的输入要在之前稳定，因此要满足关系：  如右图所示，在接收数据后要保持时间，这段时间内不能被干扰，因此组合逻辑的输入必须在之后，因此要满足关系： 
+时钟偏移与抖动
+时钟偏移（Clock Skew）
+时钟信号到达各寄存器的时间不同，将定义为两个时钟边沿的间隔。
+
+如左图，由于CLK2比CLK1早了，因此输入到来要更提前，需满足关系  如右图，CLK2比CLK1晚了，因此前面组合逻辑的输出要再晚一段时间到达，才能保证不干扰本来的数据，需满足关系  注：相反的时钟信号关系不会影响上述的时序约束。
+时钟抖动（Clock Jitter）
+Skew会改变时钟边沿的顺序，不会改变时钟信号的占空比；时钟抖动会改变时钟信号的占空比。
+考虑时钟抖动时，要考虑“最差的情况”。分析过程与时钟偏移（Clock Skew）相似。
+参考资料
+Seq ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/ddbc63cd/" title="结构体成员变量的字节对齐"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="结构体成员变量的字节对齐"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/ddbc63cd/" title="结构体成员变量的字节对齐">结构体成员变量的字节对齐</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-15T14:48:14.000Z" title="发表于 2024-06-15 22:48:14">2024-06-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">结构体成员变量的字节对齐
+
+
+编译器版本（MinGW及其衍生品，比如TDM-GCC可能不支持#pragma pack(n), n&gt;1，参见mingw-and-packed-struct-alignment-using-c11）
+
+12345❯ gcc --versiongcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0Copyright (C) 2021 Free Software Foundation, Inc.This is free software; see the source for copying conditions.  There is NOwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+本文讨论的对齐属性
+
+123#pragma pack(n)__attribute__((packed));__attribute__((aligned(8)));
+
+完整验证代码参见：Euler0525@Wiki/programming/c/ ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/38c3c2d9/" title="垃圾回收机制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="垃圾回收机制"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/38c3c2d9/" title="垃圾回收机制">垃圾回收机制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-09T04:19:25.000Z" title="发表于 2024-06-09 12:19:25">2024-06-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">垃圾回收机制（以Java为例）
+垃圾回收(GC)
+垃圾回收(Garbage Collection)，指的是对内存堆中长时间未使用的对象进行回收。
+
+在Java中，垃圾回收通常是由JVM的GC线程自动完成的，开发者不需要手动实现。
+
+如何定义垃圾
+引用计数算法
+引用计数算法(Reachability Counting)是通过在对象头中分配一个空间来存储该对象被引用的次数。如果该对象被其它对象引用，则它的引用计数加，如果删除对该对象的引用，那么它的引用计数就减1，当该对象的引用计数为0时，那么该对象就会被回收。
+引用计数算法是将垃圾回收分摊到整个应用程序的运行当中，而不是在进行垃圾收集时挂起整个应用的运行，直到对堆中所有对象的处理都结束。因此，采用引用计数的垃圾收集不属于严格意义上的Stop-The-World的垃圾收集机制。
+但是，现在JVM的垃圾回收机制是Stop-The-World的，考虑这个例子
+123456789101112131415161718public class ReferenceCountingGC {    public Object instance;    pu ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/d018a047/" title="支持向量机"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="支持向量机"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/d018a047/" title="支持向量机">支持向量机</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-21T13:57:39.000Z" title="发表于 2024-05-21 21:57:39">2024-05-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">支持向量机(SVM)
+支持向量机是一种用于分类的算法。如果数据是线性可分的，只需要将直线放置在让点距离平面距离最大的位置，寻找这个最大间隔的过程叫做最优化；如果数据不是线性可分的，需要用核函数改变维度，用超平面做分类……
+线性SVM
+
+如图，数据显然是线性可分的，这些将它们分类的直线称为决策面，每个决策面对应一个线性分类器。但是将它们分开的直线显然不止一条。目前和的分类效果相同，但如果再增加一个点（在和​之间），就会出现分类错误。
+
+图中虚线的位置由决策面的方向和距离决策面最近的几个样本位置决定，虚线穿过的样本点称为支持向量，中间的部分是分类间隔。具有最大间隔的决策面就是SVM要找的最优解。
+数学建模
+
+目标函数：希望使得什么指标最好，即分类间隔
+优化对象：可以改变的影响因素，即决策面
+
+优化对象（决策面）
+在二维空间中，一条直线可以表示为  设其中，，是这条直线的法向量，是截距。把二维平面的直线推广到维空间，就得到了超平面方程  此时的，​。
+目标函数（分类间隔）
+
+分类间隔的大小是支持向量的样本点到决策面距离的二倍，二维平面中，点到直线的距离公式是  推广到多维  分类间隔​越大， ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/blogs/page/2/#content-inner">2</a><a class="page-number" href="/blogs/page/3/#content-inner">3</a><a class="extend next" rel="next" href="/blogs/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/blogs/img/avatar.jpg" onerror="this.onerror=null;this.src='/blogs/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Euler0525</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/blogs/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/blogs/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/blogs/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Euler0525/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">原博客地址:cnblogs.com/euler0525/</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/blogs/posts/f173e9aa/" title="超外差结构的干扰"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="超外差结构的干扰"/></a><div class="content"><a class="title" href="/blogs/posts/f173e9aa/" title="超外差结构的干扰">超外差结构的干扰</a><time datetime="2024-08-03T02:42:11.000Z" title="发表于 2024-08-03 10:42:11">2024-08-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blogs/posts/bd1f7a33/" title="IQ调制"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="IQ调制"/></a><div class="content"><a class="title" href="/blogs/posts/bd1f7a33/" title="IQ调制">IQ调制</a><time datetime="2024-08-02T11:06:43.000Z" title="发表于 2024-08-02 19:06:43">2024-08-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blogs/posts/c8c59f13/" title="DDS Compiler"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="DDS Compiler"/></a><div class="content"><a class="title" href="/blogs/posts/c8c59f13/" title="DDS Compiler">DDS Compiler</a><time datetime="2024-07-22T12:08:28.000Z" title="发表于 2024-07-22 20:08:28">2024-07-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blogs/posts/8ce3ee8f/" title="侵入式链表"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="侵入式链表"/></a><div class="content"><a class="title" href="/blogs/posts/8ce3ee8f/" title="侵入式链表">侵入式链表</a><time datetime="2024-07-21T13:22:23.000Z" title="发表于 2024-07-21 21:22:23">2024-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blogs/posts/b29ce584/" title="二进制相移键控"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="二进制相移键控"/></a><div class="content"><a class="title" href="/blogs/posts/b29ce584/" title="二进制相移键控">二进制相移键控</a><time datetime="2024-07-20T11:15:33.000Z" title="发表于 2024-07-20 19:15:33">2024-07-20</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/blogs/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"><span class="card-category-list-name">人工智能</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E5%B0%84%E9%A2%91/"><span class="card-category-list-name">射频</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E6%95%B0%E5%AD%A6/"><span class="card-category-list-name">数学</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/"><span class="card-category-list-name">电子电路</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E7%BC%96%E7%A8%8B/"><span class="card-category-list-name">编程</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">网络</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/"><span class="card-category-list-name">计算机系统</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/blogs/tags/%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">泛型编程</a> <a href="/blogs/tags/%E5%A4%A9%E7%BA%BF/" style="font-size: 1.1em; color: #999">天线</a> <a href="/blogs/tags/SVM/" style="font-size: 1.1em; color: #999">SVM</a> <a href="/blogs/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 1.1em; color: #999">结构体</a> <a href="/blogs/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">拥塞控制</a> <a href="/blogs/tags/%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E9%93%BE/" style="font-size: 1.1em; color: #999">马尔科夫链</a> <a href="/blogs/tags/Kullback-Leibler-Divergence/" style="font-size: 1.1em; color: #999">Kullback-Leibler Divergence</a> <a href="/blogs/tags/%E7%9F%A9%E9%98%B5%E7%9A%84%E7%A7%A9/" style="font-size: 1.1em; color: #999">矩阵的秩</a> <a href="/blogs/tags/%E7%94%B5%E7%A3%81%E6%B3%A2/" style="font-size: 1.5em; color: #99a9bf">电磁波</a> <a href="/blogs/tags/%E8%B4%B9%E8%AF%BA%E4%B8%8D%E7%AD%89%E5%BC%8F/" style="font-size: 1.1em; color: #999">费诺不等式</a> <a href="/blogs/tags/%E4%BF%9D%E6%8C%81%E6%97%B6%E9%97%B4/" style="font-size: 1.1em; color: #999">保持时间</a> <a href="/blogs/tags/%E8%8C%83%E6%95%B0/" style="font-size: 1.1em; color: #999">范数</a> <a href="/blogs/tags/%E9%94%81%E7%9B%B8%E7%8E%AF/" style="font-size: 1.1em; color: #999">锁相环</a> <a href="/blogs/tags/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0/" style="font-size: 1.1em; color: #999">傅里叶级数</a> <a href="/blogs/tags/BPSK/" style="font-size: 1.1em; color: #999">BPSK</a> <a href="/blogs/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%B8%8D%E7%AD%89%E5%BC%8F/" style="font-size: 1.1em; color: #999">数据处理不等式</a> <a href="/blogs/tags/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" style="font-size: 1.1em; color: #999">线性回归</a> <a href="/blogs/tags/%E6%97%B6%E9%92%9F/" style="font-size: 1.1em; color: #999">时钟</a> <a href="/blogs/tags/%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98/" style="font-size: 1.1em; color: #999">高速缓存</a> <a href="/blogs/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 1.1em; color: #999">神经网络</a> <a href="/blogs/tags/%E6%B8%90%E8%BF%9B%E5%9D%87%E5%88%86%E6%80%A7/" style="font-size: 1.1em; color: #999">渐进均分性</a> <a href="/blogs/tags/%E9%87%87%E6%A0%B7%E5%AE%9A%E7%90%86/" style="font-size: 1.1em; color: #999">采样定理</a> <a href="/blogs/tags/%E7%9B%B8%E5%AF%B9%E7%86%B5/" style="font-size: 1.1em; color: #999">相对熵</a> <a href="/blogs/tags/%E5%BB%BA%E7%AB%8B%E6%97%B6%E9%97%B4/" style="font-size: 1.1em; color: #999">建立时间</a> <a href="/blogs/tags/MESI%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MESI协议</a> <a href="/blogs/tags/%E8%B6%85%E5%A4%96%E5%B7%AE/" style="font-size: 1.1em; color: #999">超外差</a> <a href="/blogs/tags/CSMA/" style="font-size: 1.1em; color: #999">CSMA</a> <a href="/blogs/tags/volatile/" style="font-size: 1.1em; color: #999">volatile</a> <a href="/blogs/tags/%E6%9C%80%E4%BC%98%E5%8C%96/" style="font-size: 1.1em; color: #999">最优化</a> <a href="/blogs/tags/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95/" style="font-size: 1.1em; color: #999">反向传播算法</a> <a href="/blogs/tags/MIMO/" style="font-size: 1.1em; color: #999">MIMO</a> <a href="/blogs/tags/%E4%BF%A1%E9%81%93/" style="font-size: 1.1em; color: #999">信道</a> <a href="/blogs/tags/%E4%BF%A1%E6%BA%90%E7%BC%96%E7%A0%81/" style="font-size: 1.1em; color: #999">信源编码</a> <a href="/blogs/tags/TCP-IP/" style="font-size: 1.1em; color: #999">TCP/IP</a> <a href="/blogs/tags/PLL/" style="font-size: 1.1em; color: #999">PLL</a> <a href="/blogs/tags/%E6%B3%A2%E6%9D%9F%E8%B5%8B%E5%BD%A2/" style="font-size: 1.1em; color: #999">波束赋形</a> <a href="/blogs/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91/" style="font-size: 1.1em; color: #999">嵌入式开发</a> <a href="/blogs/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.1em; color: #999">垃圾回收</a> <a href="/blogs/tags/Cache/" style="font-size: 1.1em; color: #999">Cache</a> <a href="/blogs/tags/%E4%BA%8C%E9%A1%B9%E5%88%86%E5%B8%83/" style="font-size: 1.1em; color: #999">二项分布</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/blogs/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/08/"><span class="card-archive-list-date">八月 2024</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/07/"><span class="card-archive-list-date">七月 2024</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/06/"><span class="card-archive-list-date">六月 2024</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/05/"><span class="card-archive-list-date">五月 2024</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/04/"><span class="card-archive-list-date">四月 2024</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/03/"><span class="card-archive-list-date">三月 2024</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2024/01/"><span class="card-archive-list-date">一月 2024</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blogs/archives/2023/12/"><span class="card-archive-list-date">十二月 2023</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">25</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">26.3k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2024-08-03T14:32:56.398Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Euler0525</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/blogs/js/utils.js"></script><script src="/blogs/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: (str) => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, ))
+  },
+  run: (subtitleType) => {
+    if (false) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+</script><script>function subtitleType () {
+  if (false) {
+    typedJSFn.init(["为往圣继绝学 为万世开太平"])
+  } else {
+    document.getElementById("subtitle").textContent = "为往圣继绝学 为万世开太平"
+  }
+}
+typedJSFn.run(subtitleType)</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>
