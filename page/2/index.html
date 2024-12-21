@@ -1,0 +1,498 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>科海拾零</title><meta name="author" content="Euler0525"><meta name="copyright" content="Euler0525"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="科海拾零">
+<meta property="og:url" content="https://euler0525.github.io/blogs/page/2/index.html">
+<meta property="og:site_name" content="科海拾零">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://euler0525.github.io/blogs/img/avatar.jpg">
+<meta property="article:author" content="Euler0525">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://euler0525.github.io/blogs/img/avatar.jpg"><link rel="shortcut icon" href="/blogs/img/favicon.png"><link rel="canonical" href="https://euler0525.github.io/blogs/page/2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/blogs/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/blogs/',
+  algolia: undefined,
+  localSearch: {"path":"/blogs/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '科海拾零',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-12-21 09:45:13'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/blogs/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/blogs/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/blogs/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/blogs/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blogs/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/blogs/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/blogs/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/blogs/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blogs/links/"><i class="fa-fw fas fa-heart"></i><span> 友链</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/blogs/img/background.png')"><nav id="nav"><span id="blog-info"><a href="/blogs/" title="科海拾零"><span class="site-name">科海拾零</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blogs/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/blogs/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/blogs/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/blogs/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blogs/links/"><i class="fa-fw fas fa-heart"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">科海拾零</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/b29ce584/" title="二进制相移键控"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="二进制相移键控"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/b29ce584/" title="二进制相移键控">二进制相移键控</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-20T11:15:33.000Z" title="发表于 2024-07-20 19:15:33">2024-07-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content">二进制相移键控(BPSK)·
+基础·
+BPSK的时域表达式是
+eBPSK(t)=∑n=−∞+∞anh(t−nTS)cos⁡(ωct+φ)e_{BPSK}(t) = \sum_{n = -\infty}^{+\infty} a_nh(t-nT_S)\cos(\omega_ct+\varphi)
+eBPSK​(t)=n=−∞∑+∞​an​h(t−nTS​)cos(ωc​t+φ)
+
+ana_nan​：待发送的二进制信息
+TST_STS​：符号周期
+h(t)h(t)h(t)：成型滤波器的冲激响应
+ωc\omega_cωc​：载波中心频率
+
+
+TS∼N2πωcT_S\sim N\dfrac{2\pi}{\omega_c}TS​∼Nωc​2π​：未必整数倍
+
+MATLAB仿真·
+
+按照上图流程进行MATLAB仿真
+调制与解调·
+
+设定参数：系统时钟频率为160MHz160MHz160MHz，根升余弦滤波器滚降系数α=0.35\alpha=0.35α=0.35，其它参数可修改
+1234567sys_clk = 160e6;Rb = 5e6;                  % //FIXMERs  ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/7f38126d/" title="锁相环"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="锁相环"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/7f38126d/" title="锁相环">锁相环</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T08:19:28.000Z" title="发表于 2024-07-13 16:19:28">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">锁相环(PLL)·
+时钟生成·
+晶振可以产生稳定的时钟周期，但频率只能是在兆赫兹的量级。PLL利用晶振作为参考时钟，可以输出一个更高频率的时钟信号，提供给时序电路使用。
+
+如图所示，锁相环（Phase-Locked Loop，PLL）由鉴相器（PD）、环路滤波器（LF）和压控振荡器（VCO）三部分组成。实现的是输出foutN\dfrac{f_{out}}{N}Nfout​​与输入finM\dfrac{f_{in}}{M}Mfin​​相等，最终得到稳定的输出频率fout=NMfinf_{out} = \dfrac{N}{M}f_{in}fout​=MN​fin​.
+
+PLL的原理是其中的VCO的振荡频率随着输入电压变化而变化，它的输出就是整个PLL的输出，也就是我们最终拿到的时钟信号。VCO的输出会反馈回PLL，由PD比较他们两	者的相位。如果晶振相位稍快，就把VCO输入电压调低，如果晶振相位稍慢，就把VCO输入电压调高，从而得到稳定的高频时钟信号。
+数据重定时·
+PLL还可以用来做时钟恢复和数据重定时。
+
+如图所示，经过传输线后的信号波形变得不稳定。可以考虑将数据作为参考，输入到PLL ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/5bffeb59/" title="时序分析"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="时序分析"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/5bffeb59/" title="时序分析">时序分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T01:58:22.000Z" title="发表于 2024-07-13 09:58:22">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">时序分析·
+时序约束·
+
+
+建立时间tsetupt_{setup}tsetup​：在时钟上升沿的tsetupt_{setup}tsetup​时间前数据必须是稳定的；
+保持时间tholdt_{hold}thold​：时钟上升沿之后的tholdt_{hold}thold​时间内数据必须是稳定的；
+传播延迟tpcqt_{pcq}tpcq​：时钟上升沿到输出端信号稳定所需要的时间；
+污染延迟tccqt_{ccq}tccq​：时钟上升沿到输出端信号开始变化所需要的时间；
+
+建立时间与保持时间·
+
+如左图所示，对R2R2R2的输入要在tsetupt_{setup}tsetup​之前稳定，因此要满足关系：
+tpcq+tpd+tsetup≤Tct_{pcq} + t_{pd} + t_{setup} \leq T_c
+tpcq​+tpd​+tsetup​≤Tc​
+如右图所示，在R2R2R2接收数据后要保持tholdt_{hold}thold​时间，这段时间内不能被干扰，因此组合逻辑的输入必须在tholdt_{hold}thold​之后，因此要满足关系：
+tccq+tcd&gt;tholdt_{ccq} ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/ddbc63cd/" title="结构体成员变量的字节对齐"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="结构体成员变量的字节对齐"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/ddbc63cd/" title="结构体成员变量的字节对齐">结构体成员变量的字节对齐</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-15T14:48:14.000Z" title="发表于 2024-06-15 22:48:14">2024-06-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">结构体成员变量的字节对齐·
+
+
+编译器版本（MinGW及其衍生品，比如TDM-GCC可能不支持#pragma pack(n), n&gt;1，参见mingw-and-packed-struct-alignment-using-c11）
+
+12345❯ gcc --versiongcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0Copyright (C) 2021 Free Software Foundation, Inc.This is free software; see the source for copying conditions.  There is NOwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+本文讨论的对齐属性
+
+123#pragma pack(n)__attribute__((packed));__attribute__((aligned(8)));
+
+完整验证代码见文末
+在Linux环境下char占111字节，int占444 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/38c3c2d9/" title="垃圾回收机制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="垃圾回收机制"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/38c3c2d9/" title="垃圾回收机制">垃圾回收机制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-09T04:19:25.000Z" title="发表于 2024-06-09 12:19:25">2024-06-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">垃圾回收机制（以Java为例）·
+垃圾回收(GC)·
+垃圾回收(Garbage Collection)，指的是对内存堆中长时间未使用的对象进行回收。
+
+在Java中，垃圾回收通常是由JVM的GC线程自动完成的，开发者不需要手动实现。
+
+如何定义垃圾·
+引用计数算法·
+引用计数算法(Reachability Counting)是通过在对象头中分配一个空间来存储该对象被引用的次数。如果该对象被其它对象引用，则它的引用计数加111，如果删除对该对象的引用，那么它的引用计数就减1，当该对象的引用计数为0时，那么该对象就会被回收。
+引用计数算法是将垃圾回收分摊到整个应用程序的运行当中，而不是在进行垃圾收集时挂起整个应用的运行，直到对堆中所有对象的处理都结束。因此，采用引用计数的垃圾收集不属于严格意义上的Stop-The-World的垃圾收集机制。
+但是，现在JVM的垃圾回收机制是Stop-The-World的，考虑这个例子
+123456789101112131415161718public class ReferenceCountingGC {    public Object instance ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/d018a047/" title="支持向量机"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="支持向量机"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/d018a047/" title="支持向量机">支持向量机</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-21T13:57:39.000Z" title="发表于 2024-05-21 21:57:39">2024-05-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">支持向量机(SVM)·
+支持向量机是一种用于分类的算法。如果数据是线性可分的，只需要将直线放置在让点距离平面距离最大的位置，寻找这个最大间隔的过程叫做最优化；如果数据不是线性可分的，需要用核函数改变维度，用超平面做分类……
+线性SVM·
+
+如图，数据显然是线性可分的，这些将它们分类的直线称为决策面，每个决策面对应一个线性分类器。但是将它们分开的直线显然不止一条。目前H2H_2H2​和H3H_3H3​的分类效果相同，但如果再增加一个点（在H2和H_2和H2​和H3H_3H3​​之间），就会出现分类错误。
+
+图中虚线的位置由决策面的方向和距离决策面最近的几个样本位置决定，虚线穿过的样本点称为支持向量，中间的部分是分类间隔。具有最大间隔的决策面就是SVM要找的最优解。
+数学建模·
+
+目标函数：希望使得什么指标最好，即分类间隔
+优化对象：可以改变的影响因素，即决策面
+
+优化对象（决策面）·
+在二维空间中，一条直线可以表示为
+ωTx+γ=0\boldsymbol{\omega}^T \boldsymbol{x}+\gamma = 0
+ωTx+γ=0
+设其中ω=[ω1,ω2]T\boldsymbo ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/437097cd/" title="反向传播算法"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="反向传播算法"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/437097cd/" title="反向传播算法">反向传播算法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-20T05:56:05.000Z" title="发表于 2024-05-20 13:56:05">2024-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">反向传播算法·
+当网络给出预测之后，需要根据预测值与实际标签的差异调整网络中的权重和偏置，以便模型在将来能够更好地预测。这个调整过程称为反向传播（误差计算→梯度计算→参数更新）。
+神经网络的结构·
+
+假设一共有LLL层网络，激活函数为σ\sigmaσ，zjlz_j^lzjl​表示未激活的状态，ajla_j^lajl​表示激活后的状态。
+zj(l)=∑k=1Kωjk(l)ak(l−1)+bj(l)aj(l)=σ(zj(l))\begin{aligned}
+z_j^{(l)} &amp;= \sum_{k=1}^K{\omega_{jk}^{(l)}a_k^{(l-1)}+b_j^{(l)}}\\
+a_j^{(l)} &amp;= \sigma(z_j^{(l)})
+\end{aligned}
+zj(l)​aj(l)​​=k=1∑K​ωjk(l)​ak(l−1)​+bj(l)​=σ(zj(l)​)​
+损失函数为
+C=12∣∣y−a(L)∣∣2=12∑k=1K(yk−ak(L))2C = \frac{1}{2}||y-a^{(L)}||^2 = \frac{1}{2}\sum_{k=1}^{ ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/b37d7559/" title="信息论基础"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="信息论基础"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/b37d7559/" title="信息论基础">信息论基础</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-23T06:13:40.000Z" title="发表于 2024-04-23 14:13:40">2024-04-23</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a></span></div><div class="content">信息论基础·
+相对熵(KL距离)·
+相对熵衡量的是同一事件空间中两个概率分布的差异，不是距离。
+
+在同一事件空间中，概率分布P(X)P(X)P(X)对应的每个事件如果用Q(x)Q(x)Q(x)编码，平均每个基本事件编码长度增加了多少比特。
+
+用D(p∣∣q)D(p||q)D(p∣∣q)表示KLKLKL距离，计算公式为
+D(p∣∣q)=∑x∈XP(x)log⁡2P(x)Q(x)D(p||q) = \sum_{x\in X}P(x)\log_2{\dfrac{P(x)}{Q(x)}}
+D(p∣∣q)=x∈X∑​P(x)log2​Q(x)P(x)​
+两分布相似度越高，相对熵越小。
+
+非负性（由吉布斯不等式可证）
+
+
+若∑i=1npi=∑i=1nqi=1\displaystyle\sum_{i=1}^{n}p_i=\displaystyle\sum_{i=1}^{n}q_i=1i=1∑n​pi​=i=1∑n​qi​=1，则−∑i=1npilog⁡pi≤−∑i=1npilog⁡qi-\displaystyle\sum_{i=1}^np_i\log{p_i}\leq -\displaystyle\ ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/blogs/posts/6e65f3c1/" title="TCP的流量控制与拥塞控制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="TCP的流量控制与拥塞控制"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/6e65f3c1/" title="TCP的流量控制与拥塞控制">TCP的流量控制与拥塞控制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-12T14:02:01.000Z" title="发表于 2024-04-12 22:02:01">2024-04-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BD%91%E7%BB%9C/">网络</a></span></div><div class="content">TCP的流量控制与拥塞控制·
+流量控制（滑动窗口）·
+TCP通过**滑动窗口机制**防止接收方处理数据的速度跟不上发送方，避免随着时间推移，数据自然溢出接收方的缓冲区。
+发送端·
+发送方会建立自己的滑动窗口，按三个标准划分：是否发送、是否收到ACK、是否在接收方通告处理范围内。
+
+
+已经发送并且收到ACK的部分，已经成功发送，不需要在缓冲区保留；
+已经发送但未收到ACK；
+可用窗口：还没有发送，但是还在接收方窗口处理范围内（第二、三部分为整个发送窗口）；
+
+
+可用窗口大小=SND.WND+SND.UNA-SND.NXT
+
+
+SND.WND：发送窗口，32-51
+
+
+SND.UNA：指针，指向已发送未确认的字节，如上图SND.UNA=32
+
+
+SND.NXT：可用窗口的第一个字节，如上图SND.NXT=46
+
+
+
+
+需要发送，但是超过接收方窗口范围的部分。在没有收到新的ACK之前，发送方不会发送这些数据，通过这个限制，发送的数据就不会超过接收方缓冲区；
+
+
+如果ACK在网络传输中丢包，发送端就不会感知到接收端窗口的变化，发送方一直没有收到ACK，随着数据不断发送，可用窗口会被占满，发送方 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/blogs/posts/a7204ce4/" title="介质访问协议"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/blogs/img/404.jpg'" alt="介质访问协议"></a></div><div class="recent-post-info"><a class="article-title" href="/blogs/posts/a7204ce4/" title="介质访问协议">介质访问协议</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-08T15:03:58.000Z" title="发表于 2024-04-08 23:03:58">2024-04-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/blogs/categories/%E7%BD%91%E7%BB%9C/">网络</a></span></div><div class="content">介质访问协议·
+Aloha·
+
+
+Pure Aloha：如果某个主体想发送一个帧，直接发送；如果产生冲突，冲突帧无效，之后重传；
+
+
+Slotted Aloha：将发送时间分槽，按时间槽发送帧，降低冲突；
+
+
+随机介质访问方式·
+
+MA((Multiple Access)：多路访问
+CSMA(Carrier Sense Multiple Access)：载波监听多路访问
+CSMA/CD(…Collision Detection)：……冲突检测
+
+载波监听多路访问(CSMA)·
+CSMA协议是在ALOHA协议基础上，多了一个载波监听装置的改进协议。
+为了降低冲突，每个站点在发送前先侦听共用信道，发现信道空闲后再发送。根据侦听方式和侦听到信道忙后的处理方式不同，CSMA分为三种
+1-坚持CSMA·
+一个结点要发送数据时，首先侦听信道；如果信道空闲，那么立即发送数据；如果信道忙，那么等待，同时继续侦听直至信道空闲；如果发生冲突，随机等待一段时间后，再重新开始侦听信道。
+
+产生冲突情况：
+
+传播延迟：结点 A 开始发送数据时，结点 B 也正好有数据要发送，但这时结点 A 发出数据的信号还未到达 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/blogs/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/blogs/">1</a><span class="page-number current">2</span><a class="page-number" href="/blogs/page/3/#content-inner">3</a><a class="page-number" href="/blogs/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/blogs/page/3/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/blogs/img/avatar.jpg" onerror="this.onerror=null;this.src='/blogs/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Euler0525</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/blogs/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/blogs/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/blogs/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Euler0525/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/blogs/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"><span class="card-category-list-name">人工智能</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/"><span class="card-category-list-name">信号处理</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E5%B0%84%E9%A2%91/"><span class="card-category-list-name">射频</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E6%95%B0%E5%AD%A6/"><span class="card-category-list-name">数学</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/"><span class="card-category-list-name">电子电路</span><span class="card-category-list-count">5</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/blogs/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 1.1em; color: #999">神经网络</a> <a href="/blogs/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">拥塞控制</a> <a href="/blogs/tags/%E9%BA%A6%E5%85%8B%E6%96%AF%E9%9F%A6%E6%96%B9%E7%A8%8B%E7%BB%84/" style="font-size: 1.1em; color: #999">麦克斯韦方程组</a> <a href="/blogs/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/" style="font-size: 1.1em; color: #999">快速傅里叶变换</a> <a href="/blogs/tags/SVM/" style="font-size: 1.1em; color: #999">SVM</a> <a href="/blogs/tags/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0/" style="font-size: 1.1em; color: #999">傅里叶级数</a> <a href="/blogs/tags/PLL/" style="font-size: 1.1em; color: #999">PLL</a> <a href="/blogs/tags/%E6%9C%80%E4%BD%B3%E6%8E%A5%E6%94%B6%E6%9C%BA/" style="font-size: 1.1em; color: #999">最佳接收机</a> <a href="/blogs/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" style="font-size: 1.1em; color: #999">线性代数</a> <a href="/blogs/tags/%E6%B5%81%E6%B0%B4%E7%BA%BF/" style="font-size: 1.1em; color: #999">流水线</a> <a href="/blogs/tags/%E9%87%87%E6%A0%B7%E5%AE%9A%E7%90%86/" style="font-size: 1.1em; color: #999">采样定理</a> <a href="/blogs/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/" style="font-size: 1.1em; color: #999">状态机</a> <a href="/blogs/tags/%E4%BF%A1%E6%BA%90%E7%BC%96%E7%A0%81/" style="font-size: 1.1em; color: #999">信源编码</a> <a href="/blogs/tags/%E9%95%9C%E9%A2%91%E5%B9%B2%E6%89%B0/" style="font-size: 1.1em; color: #999">镜频干扰</a> <a href="/blogs/tags/%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" style="font-size: 1.1em; color: #999">分支预测</a> <a href="/blogs/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">流量控制</a> <a href="/blogs/tags/OFDM/" style="font-size: 1.1em; color: #999">OFDM</a> <a href="/blogs/tags/QPSK/" style="font-size: 1.1em; color: #999">QPSK</a></div></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">31</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">53.5k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2024-12-21T01:45:12.765Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Euler0525</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/blogs/js/utils.js"></script><script src="/blogs/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: (str) => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, ))
+  },
+  run: (subtitleType) => {
+    if (false) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+</script><script>function subtitleType () {
+  if (false) {
+    typedJSFn.init(["为往圣继绝学 为万世开太平"])
+  } else {
+    document.getElementById("subtitle").textContent = "为往圣继绝学 为万世开太平"
+  }
+}
+typedJSFn.run(subtitleType)</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/blogs/js/search/local-search.js"></script></div></div></body></html>
