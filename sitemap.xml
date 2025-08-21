@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://euler0525.github.io/blogs/posts/e7dffed9/</loc>
+    
+    <lastmod>2025-08-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://euler0525.github.io/blogs/posts/4b67a096/</loc>
     
     <lastmod>2025-07-29</lastmod>
@@ -1031,6 +1040,13 @@
   
   <url>
     <loc>https://euler0525.github.io/blogs/tags/%E5%88%86%E6%B2%BB/</loc>
+    <lastmod>2025-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://euler0525.github.io/blogs/tags/%E6%B5%AE%E7%82%B9%E6%95%B0/</loc>
     <lastmod>2025-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
