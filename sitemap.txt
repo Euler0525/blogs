@@ -1,7 +1,8 @@
+https://euler0525.github.io/blogs/posts/93fb702f/
+https://euler0525.github.io/blogs/posts/fe25307b/
 https://euler0525.github.io/blogs/posts/e7dffed9/
 https://euler0525.github.io/blogs/posts/4b67a096/
 https://euler0525.github.io/blogs/posts/b37d7559/
-https://euler0525.github.io/blogs/posts/fe25307b/
 https://euler0525.github.io/blogs/posts/b29ce584/
 https://euler0525.github.io/blogs/posts/f86252e2/
 https://euler0525.github.io/blogs/posts/17b77acf/
@@ -135,6 +136,8 @@ https://euler0525.github.io/blogs/tags/volatile/
 https://euler0525.github.io/blogs/tags/MESI%E5%8D%8F%E8%AE%AE/
 https://euler0525.github.io/blogs/tags/LRU/
 https://euler0525.github.io/blogs/tags/%E9%BA%A6%E5%85%8B%E6%96%AF%E9%9F%A6%E6%96%B9%E7%A8%8B%E7%BB%84/
+https://euler0525.github.io/blogs/tags/%E7%8B%AD%E4%B9%89%E7%9B%B8%E5%AF%B9%E8%AE%BA/
+https://euler0525.github.io/blogs/tags/%E5%A4%9A%E6%99%AE%E5%8B%92%E6%95%88%E5%BA%94/
 https://euler0525.github.io/blogs/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/
 https://euler0525.github.io/blogs/categories/%E7%BC%96%E7%A8%8B/
 https://euler0525.github.io/blogs/categories/%E7%BD%91%E7%BB%9C/
