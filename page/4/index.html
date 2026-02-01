@@ -6,7 +6,7 @@
 <meta property="og:image" content="https://blog.euler0525.cn/img/avatar.jpg">
 <meta property="article:author" content="Euler0525">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://blog.euler0525.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.euler0525.cn/page/4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+<meta name="twitter:image" content="https://blog.euler0525.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.euler0525.cn/page/4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
@@ -22,7 +22,7 @@
     homepage: false,
     post: false
   },
-  runtime: '',
+  runtime: '天',
   dateSuffix: {
     just: '刚刚',
     min: '分钟前',
@@ -51,7 +51,7 @@
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2026-01-24 12:06:35'
+  postUpdate: '2026-02-01 11:21:47'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -148,7 +148,7 @@
         }
       }
       detectApple()
-    })(window)</script><meta name="generator" content="Hexo 7.0.0"><style>mjx-container[jax="SVG"] {
+    })(window)</script><script src="https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js"></script><meta name="generator" content="Hexo 7.0.0"><style>mjx-container[jax="SVG"] {
   direction: ltr;
 }
 
@@ -276,36 +276,51 @@ mjx-container[display="true"] + br {
 得到原始码元 .
 </div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/c8c59f13/" title="DDS Compiler"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DDS Compiler"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/c8c59f13/" title="DDS Compiler">DDS Compiler</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-22T12:08:28.000Z" title="发表于 2024-07-22 20:08:28">2024-07-22</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">DDS Compiler
 设计原理
-一个正弦波  的幅度不是随时间  线性变化的，但是相位  是时间  的线性函数。因此可以考虑用一个线性递增的变量存储相位，再将相位转换成相应的正弦波幅度。
+一个正弦波  的幅度不是随时间
+ 线性变化的，但是相位  是时间 
+的线性函数。因此可以考虑用一个线性递增的变量存储相位，再将相位转换成相应的正弦波幅度。
 
 首先存储一个周期的正弦波，然后将相位  用  比特量化，即平均分成  份，以  的频率每始终周期转动 ，则可以得到输出频率为  的信号，
 
-可以看出，输出频率  是参考时钟频率 、相位量化位宽 、和相位增量（频率控制字） 的函数。增加频率控制字，将得到更高频率的信号。
+可以看出，输出频率 
+是参考时钟频率 、相位量化位宽 、和相位增量（频率控制字）
+的函数。增加频率控制字，将得到更高频率的信号。
 
 根据奈奎斯特采样定律，为了使波形不失真，需要满足 ，则有
 
- 始终小于 ，不妨将其看成是一个分频器，通过修改频率控制字分频参考时钟 ，获得所需要的频率。
+ 始终小于 ，不妨将其看成是一个分频器，通过修改频率控制字分频参考时钟
+，获得所需要的频率。
 
 组成结构
 
-如图，直接式数字频率合成器（Direct Digital Synthesizer，DDS）主要由 相位累加器、波形查找表、数模转换器和低通滤波器 等部分组成。
-其中的核心部分是相位累加器，由一个  位累加器和  位寄存器构成，在每个参考时钟上升沿，累加器将频率控制字与累加寄存器的输出相加，结果作为寄存器新的输入。如此反复， 当累加器累 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/8ce3ee8f/" title="侵入式链表"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="侵入式链表"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/8ce3ee8f/" title="侵入式链表">侵入式链表</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-21T13:22:23.000Z" title="发表于 2024-07-21 21:22:23">2024-07-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">侵入式链表(Intrusive Linked List)
+如图，直接式数字频率合成器（Direct Digital Synthesizer，DDS）主要由
+相位累加器、波形查找表、数模转换器和低通滤波器
+等部分组成。
+其中的核心部分是相位累加器，由一个  位累加器和 
+位寄存器构成，在每个参考时钟上升沿，累加器将频率控制字与累加寄存器的输出相加，结果作为寄存器新的输入。如此反复，
+当累加器累加满时， 就会发生溢出，完成一 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/8ce3ee8f/" title="侵入式链表"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="侵入式链表"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/8ce3ee8f/" title="侵入式链表">侵入式链表</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-21T13:22:23.000Z" title="发表于 2024-07-21 21:22:23">2024-07-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">侵入式链表(Intrusive Linked
+List)
 设计思想
-常用的链表是非侵入式链表，它的 每个节点包含数据和指向下一个节点的指针（和一个指向前一个节点的指针）
+常用的链表是非侵入式链表，它的
+每个节点包含数据和指向下一个节点的指针（和一个指向前一个节点的指针）
 
 12345struct ListNode {    int data;    struct ListNode *next;    struct ListNode *prev;}ListNode;
-在这种链表结构中，data 是固定的，即一个链表中，每个节点存储的数据类型必须相同，这样的链表泛化能力比较差。
+在这种链表结构中，data
+是固定的，即一个链表中，每个节点存储的数据类型必须相同，这样的链表泛化能力比较差。
 
 注：C++语言可以使用模板实现通用：
 12345template &lt;typename T&gt;struct ListNode {        struct ListNode *next; // link 区域        T data; // data 区域};
-但这只不过是将重写代码的工作交给编译器完成，本质上数据和链表仍然是 耦合 的。
+但这只不过是将重写代码的工作交给编译器完成，本质上数据和链表仍然是
+耦合 的。
 
 
 侵入式链表是在其内部直接包含链表节点：
 
-12345678struct ListLink {    struct ListLink ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/b29ce584/" title="二进制相移键控"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="二进制相移键控"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/b29ce584/" title="二进制相移键控">二进制相移键控</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-20T11:15:33.000Z" title="发表于 2024-07-20 19:15:33">2024-07-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content">二进制相移键控(BPSK)基础BPSK 的时域表达式是
+12345678struct ListLink {    struct ListLink *next, *prev; ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/b29ce584/" title="二进制相移键控"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="二进制相移键控"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/b29ce584/" title="二进制相移键控">二进制相移键控</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-20T11:15:33.000Z" title="发表于 2024-07-20 19:15:33">2024-07-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content">二进制相移键控(BPSK)
+基础
+BPSK 的时域表达式是
 
-e_{BPSK}(t) = \sum_{n = -\infty}^{+\infty} a_nh(t-nT_S)\cos(\omega_ct+\varphi)
+
 ：待发送的二进制信息
 ：符号周期
 ：成型滤波器的冲激响应
@@ -315,28 +330,44 @@ e_{BPSK}(t) = \sum_{n = -\infty}^{+\infty} a_nh(t-nT_S)\cos(\omega_ct+\varphi)
 ：未必整数倍
 
 MATLAB 仿真
+
 按照上图流程进行 MATLAB 仿真
 调制与解调
+
 设定参数：系统时钟频率为 ，根升余弦滤波器滚降系数 ，其它参数可修改
 1234567sys_clk = 160e6;Rb = 5e6;                  % //FIXMERs = Rb; Ts = 1 / Rs;usmp_rate = sys_clk / Rs;  % //FIXMEfc = 20e6;                 % //FIXMEhrc = 'rrc';               % //FIXME
 
 
 随机生成 num 个二进制数，并对极化处理：
 
-1234num = round(100000 * 10 ^ (EbNo / 10));b = randi([0 1],  ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/7f38126d/" title="锁相环"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="锁相环"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/7f38126d/" title="锁相环">锁相环</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T08:19:28.000Z" title="发表于 2024-07-13 16:19:28">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">锁相环(PLL)
+1234num = round(100000 * 10 ^ (EbNo / 10));b = randi([0 1], 1, num);b_sign = 1 - 2 * b;% b_sign = exp(1j * pi * b)  % 1: cos(-\pi)=-1  ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/7f38126d/" title="锁相环"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="锁相环"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/7f38126d/" title="锁相环">锁相环</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T08:19:28.000Z" title="发表于 2024-07-13 16:19:28">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">锁相环(PLL)
 时钟生成
-晶振可以产生稳定的时钟周期，但频率只能是在兆赫兹的量级。PLL 利用晶振作为参考时钟，可以输出一个更高频率的时钟信号，提供给时序电路使用。
+晶振可以产生稳定的时钟周期，但频率只能是在兆赫兹的量级。PLL
+利用晶振作为参考时钟，可以输出一个更高频率的时钟信号，提供给时序电路使用。
 
-如图所示，锁相环（Phase-Locked Loop，PLL）由鉴相器（PD）、环路滤波器（LF）和压控振荡器（VCO）三部分组成。实现的是输出  与输入  相等，最终得到稳定的输出频率 .
+如图所示，锁相环（Phase-Locked
+Loop，PLL）由鉴相器（PD）、环路滤波器（LF）和压控振荡器（VCO）三部分组成。实现的是输出
+ 与输入 
+相等，最终得到稳定的输出频率 .
 
-PLL 的原理是其中的 VCO 的振荡频率随着输入电压变化而变化，它的输出就是整个 PLL 的输出，也就是我们最终拿到的时钟信号。VCO 的输出会反馈回 PLL，由 PD 比较他们两 者的相位。如果晶振相位稍快，就把 VCO 输入电压调低，如果晶振相位稍慢，就把 VCO 输入电压调高，从而得到稳定的高频时钟信号。
+PLL 的原理是其中的 VCO
+的振荡频率随着输入电压变化而变化，它的输出就是整个 PLL
+的输出，也就是我们最终拿到的时钟信号。VCO
+的输出会反馈回 PLL，由 PD 比较他们两
+者的相位。如果晶振相位稍快，就把 VCO
+输入电压调低，如果晶振相位稍慢，就把 VCO
+输入电压调高，从而得到稳定的高频时钟信号。
 数据重定时
-PLL 还可以用来做时钟恢复和数据重定时。
+PLL
+还可以用来做时钟恢复和数据重定时。
 
-如图所示，经过传输线后的信号波形变得不稳定。可以考虑将数据作为参考，输入到 PLL 中，恢复 一个与数据同步的时钟，用该时钟信号和 D 触发器重新对数据采样，得到新的 重定时数据。
+如图所示，经过传输线后的信号波形变得不稳定。可以考虑将数据作为参考，输入到
+PLL 中，恢复
+一个与数据同步的时钟，用该时钟信号和 D 触发器重新对数据采样，得到新的
+重定时数据。
 参考资料
 
-张肃文.高频电子线路.第 5 版 [M]. ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/5bffeb59/" title="时序分析"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="时序分析"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/5bffeb59/" title="时序分析">时序分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T01:58:22.000Z" title="发表于 2024-07-13 09:58:22">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">时序分析
+张肃文.高频电子线路.第 5 版 [M].高等教育出版社,2009. ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/5bffeb59/" title="时序分析"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="时序分析"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/5bffeb59/" title="时序分析">时序分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-07-13T01:58:22.000Z" title="发表于 2024-07-13 09:58:22">2024-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/">电子电路</a></span></div><div class="content">时序分析
 时序约束
 
 
@@ -347,24 +378,33 @@ PLL 还可以用来做时钟恢复和数据重定时。
 
 建立时间与保持时间
 
-如左图所示，对  的输入要在  之前稳定，因此要满足关系：
+如左图所示，对  的输入要在
 
-如右图所示，在  接收数据后要保持  时间，这段时间内不能被干扰，因此组合逻辑的输入必须在  之后，因此要满足关系：
+之前稳定，因此要满足关系：
+
+如右图所示，在 
+接收数据后要保持 
+时间，这段时间内不能被干扰，因此组合逻辑的输入必须在  之后，因此要满足关系：
 
 时钟偏移与抖动
- 时钟偏移（Clock Skew）
+ 时钟偏移（Clock
+Skew）
 时钟信号到达各寄存器的时间不同，将  定义为两个时钟边沿的间隔。
 
 如左图，由于 CLK2 比 CLK1 早了 ，因此输入到来要更提前，需满足关系
 
-如右图，CLK2 比 CLK1 晚了 ，因此前面组合逻辑的输出要再晚一段时间到达 ，才能保证不干扰  本来的数据，需满足关系
+如右图，CLK2 比 CLK1 晚了 ，因此前面组合逻辑的输出要再晚一段时间到达
+，才能保证不干扰  本来的数据，需满足关系
 
 注：相反的时钟信号关系不会影响上述的时序约束。
 时钟抖动（Clock Jitter）
-Skew 会改变时钟边沿的顺序，不会改变时钟信号的占空比；时钟抖动会改变时钟信 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/ddbc63cd/" title="结构体成员变量的字节对齐"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="结构体成员变量的字节对齐"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/ddbc63cd/" title="结构体成员变量的字节对齐">结构体成员变量的字节对齐</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-15T14:48:14.000Z" title="发表于 2024-06-15 22:48:14">2024-06-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">结构体成员变量的字节对齐
+Skew
+会改变时钟边沿的顺序，不会改变时钟信号的占空比；时钟抖动会改变时钟信号的占空比。
+考虑时钟抖动时，要考虑 “最差的情况 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/ddbc63cd/" title="结构体成员变量的字节对齐"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="结构体成员变量的字节对齐"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/ddbc63cd/" title="结构体成员变量的字节对齐">结构体成员变量的字节对齐</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-15T14:48:14.000Z" title="发表于 2024-06-15 22:48:14">2024-06-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">结构体成员变量的字节对齐
 
 
-编译器版本（MinGW 及其衍生品，比如 TDM-GCC 可能不支持 #pragma pack(n), n&gt;1，参见 mingw-and-packed-struct-alignment-using-c11）
+编译器版本（MinGW 及其衍生品，比如 TDM-GCC
+可能不支持 #pragma pack(n), n&gt;1，参见 mingw-and-packed-struct-alignment-using-c11）
 
 12345❯ gcc --versiongcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0Copyright (C) 2021 Free Software Foundation, Inc.This is free software; see the source for copying conditions.  There is NOwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -373,24 +413,31 @@ Skew 会改变时钟边沿的顺序，不会改变时钟信号的占空比；时
 123#pragma pack(n)__attribute__((packed));__attribute__((aligned(8)));
 
 完整验证代码见文末
-在 Linux 环境下 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/38c3c2d9/" title="垃圾回收机制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="垃圾回收机制"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/38c3c2d9/" title="垃圾回收机制">垃圾回收机制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-09T04:19:25.000Z" title="发表于 2024-06-09 12:19:25">2024-06-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">垃圾回收机制（以Java为例）
+在 Linux 环境下 char 占  字节， ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/38c3c2d9/" title="垃圾回收机制"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="垃圾回收机制"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/38c3c2d9/" title="垃圾回收机制">垃圾回收机制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-09T04:19:25.000Z" title="发表于 2024-06-09 12:19:25">2024-06-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="content">垃圾回收机制（以Java为例）
 垃圾回收(GC)
-垃圾回收(Garbage Collection)，指的是对内存堆中长时间未使用的对象进行回收。
+垃圾回收(Garbage
+Collection)，指的是对内存堆中长时间未使用的对象进行回收。
 
 在Java中，垃圾回收通常是由JVM的GC线程自动完成的，开发者不需要手动实现。
 
 如何定义垃圾
 引用计数算法
-引用计数算法(Reachability Counting)是通过在对象头中分配一个空间来存储该对象被引用的次数。如果该对象被其它对象引用，则它的引用计数加，如果删除对该对象的引用，那么它的引用计数就减1，当该对象的引用计数为0时，那么该对象就会被回收。
+引用计数算法(Reachability
+Counting)是通过在对象头中分配一个空间来存储该对象被引用的次数。如果该对象被其它对象引用，则它的引用计数加，如果删除对该对象的引用，那么它的引用计数就减1，当该对象的引用计数为0时，那么该对象就会被回收。
 引用计数算法是将垃圾回收分摊到整个应用程序的运行当中，而不是在进行垃圾收集时挂起整个应用的运行，直到对堆中所有对象的处理都结束。因此，采用引用计数的垃圾收集不属于严格意义上的Stop-The-World的垃圾收集机制。
 但是，现在JVM的垃圾回收机制是Stop-The-World的，考虑这个例子
-123456789101112131415161718public class ReferenceCountingGC {    public Object inst ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/d018a047/" title="支持向量机"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="支持向量机"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/d018a047/" title="支持向量机">支持向量机</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-21T13:57:39.000Z" title="发表于 2024-05-21 21:57:39">2024-05-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">支持向量机(SVM)
+123456789101112131415161718public class ReferenceCountingGC {    public Object instance;    pu ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/d018a047/" title="支持向量机"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="支持向量机"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/d018a047/" title="支持向量机">支持向量机</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-21T13:57:39.000Z" title="发表于 2024-05-21 21:57:39">2024-05-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">支持向量机(SVM)
 支持向量机是一种用于分类的算法。如果数据是线性可分的，只需要将直线放置在让点距离平面距离最大的位置，寻找这个最大间隔的过程叫做最优化；如果数据不是线性可分的，需要用核函数改变维度，用超平面做分类……
 线性 SVM
 
-如图，数据显然是线性可分的，这些将它们分类的直线称为 决策面，每个决策面对应一个线性分类器。但是将它们分开的直线显然不止一条。目前  和  的分类效果相同，但如果再增加一个点（在 和 ​之间），就会出现分类错误。
+如图，数据显然是线性可分的，这些将它们分类的直线称为
+决策面，每个决策面对应一个线性分类器。但是将它们分开的直线显然不止一条。目前
+ 和 
+的分类效果相同，但如果再增加一个点（在 和 ​之间），就会出现分类错误。
 
-图中虚线的位置由决策面的方向和距离决策面最近的几个样本位置决定，虚线穿过的样本点称为 支持向量，中间的部分是分类间隔。具有最大间隔的决策面就是 SVM 要找的最优解。
+图中虚线的位置由决策面的方向和距离决策面最近的几个样本位置决定，虚线穿过的样本点称为
+支持向量，中间的部分是分类间隔。具有最大间隔的决策面就是
+SVM 要找的最优解。
 数学建模
 
 目标函数：希望使得什么指标最好，即分类间隔
@@ -399,25 +446,32 @@ Skew 会改变时钟边沿的顺序，不会改变时钟信号的占空比；时
 优化对象（决策面）
 在二维空间中，一条直线可以表示为
 
-设其中 ，， 是这条直线的法向量， 是截距。把二维平面的直线推广到  维空间，就得到了超平面方程
+设其中 ，，
+是这条直线的法向量，
+是截距。把二维平面的直线推广到 
+维空间，就得到了超平面方程
 
 此时的 ，​。
 目标函数（分类间隔）
 
-分类间隔的大小是支持向量的样本点到决策面距离 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/437097cd/" title="反向传播算法"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="反向传播算法"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/437097cd/" title="反向传播算法">反向传播算法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-20T05:56:05.000Z" title="发表于 2024-05-20 13:56:05">2024-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">反向传播算法
-当网络给出预测之后，需要根据预测值与实际标签的差异调整网络中的权重和偏置，以便模型在将来能够更好地预测。这个调整过程称为反向传播（误差计算 → 梯度计算 → 参数更新）。
+分类间隔的大小是支持向量的样本点到决策面距离的二倍，二维平面中，点到直线的距离公式是 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/437097cd/" title="反向传播算法"><img class="post-bg" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="反向传播算法"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/437097cd/" title="反向传播算法">反向传播算法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-20T05:56:05.000Z" title="发表于 2024-05-20 13:56:05">2024-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="content">反向传播算法
+当网络给出预测之后，需要根据预测值与实际标签的差异调整网络中的权重和偏置，以便模型在将来能够更好地预测。这个调整过程称为反向传播（误差计算
+→ 梯度计算 → 参数更新）。
 神经网络的结构
 
-假设一共有  层网络，激活函数为 ， 表示未激活的状态， 表示激活后的状态。
+假设一共有  层网络，激活函数为
+， 表示未激活的状态， 表示激活后的状态。
 
 损失函数为
 
-损失函数对  的偏导数为
+损失函数对 
+的偏导数为
 
 基本方程
 为了实现参数更新，我们需要计算  和 ，
 
-其中涉及到激活函数即 ，为了简化计算，先定义一个中间变量 ：
+其中涉及到激活函数即 ，为了简化计算，先定义一个中间变量
+：
 
 输出层的 
 
@@ -452,7 +506,7 @@ Skew 会改变时钟边沿的顺序，不会改变时钟信号的占空比；时
 
 
 代码实现
-1234567891011121314151617181920212223242526272829303132333435def backprop(self, x, y):    """Return a tup ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="page-number" href="/page/6/#content-inner">6</a><a class="extend next" rel="next" href="/page/5/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Euler0525</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">109</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Euler0525/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Euler0525" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/1119602532?spm_id_from=333.1007.0.0" target="_blank" title="Bilibili"><i class="fa-brands fa-bilibili" style="color: #4a7dbe;"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss" style="color: #f26522;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-categories"><div class="item-headline">
+1234567891011121314151617181920212223242526272829303132333435def backprop(self, x, y):    """Return a tuple ``(nabla_b, nabla_w)`` representing the    na ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="page-number" href="/page/6/#content-inner">6</a><a class="extend next" rel="next" href="/page/5/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Euler0525</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">109</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Euler0525/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Euler0525" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/1119602532?spm_id_from=333.1007.0.0" target="_blank" title="Bilibili"><i class="fa-brands fa-bilibili" style="color: #4a7dbe;"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss" style="color: #f26522;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
             <span>分类</span>
             <a class="card-more-btn" href="/categories/" title="查看更多">
@@ -460,7 +514,7 @@ Skew 会改变时钟边沿的顺序，不会改变时钟信号的占空比；时
             </div>
             <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"><span class="card-category-list-name">人工智能</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/"><span class="card-category-list-name">信号处理</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B0%84%E9%A2%91/"><span class="card-category-list-name">射频</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/"><span class="card-category-list-name">工具</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E5%AD%A6/"><span class="card-category-list-name">数学</span><span class="card-category-list-count">2</span></a></li>
-            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E6%B8%90%E8%BF%9B%E5%9D%87%E5%88%86%E6%80%A7/" style="font-size: 1.1em; color: #999">渐进均分性</a> <a href="/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">流量控制</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E7%9A%84%E7%A7%A9/" style="font-size: 1.1em; color: #999">矩阵的秩</a> <a href="/tags/%E5%A4%9A%E6%99%AE%E5%8B%92%E6%95%88%E5%BA%94/" style="font-size: 1.3em; color: #99a1ac">多普勒效应</a> <a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.1em; color: #999">垃圾回收</a> <a href="/tags/%E7%9B%B8%E5%AF%B9%E7%86%B5/" style="font-size: 1.1em; color: #999">相对熵</a> <a href="/tags/%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" style="font-size: 1.1em; color: #999">分支预测</a> <a href="/tags/IQ%E5%A4%B1%E8%A1%A1/" style="font-size: 1.1em; color: #999">IQ失衡</a> <a href="/tags/FPGA/" style="font-size: 1.1em; color: #999">FPGA</a> <a href="/tags/STM32/" style="font-size: 1.1em; color: #999">STM32</a> <a href="/tags/%E9%87%87%E6%A0%B7%E5%AE%9A%E7%90%86/" style="font-size: 1.1em; color: #999">采样定理</a> <a href="/tags/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" style="font-size: 1.5em; color: #99a9bf">线性回归</a> <a href="/tags/CSMA/" style="font-size: 1.1em; color: #999">CSMA</a> <a href="/tags/%E9%95%9C%E9%A2%91%E5%B9%B2%E6%89%B0/" style="font-size: 1.1em; color: #999">镜频干扰</a> <a href="/tags/%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86/" style="font-size: 1.1em; color: #999">局部性原理</a> <a href="/tags/%E5%86%92%E9%99%A9/" style="font-size: 1.1em; color: #999">冒险</a> <a href="/tags/OFDM/" style="font-size: 1.1em; color: #999">OFDM</a> <a href="/tags/%E6%8E%A5%E6%94%B6%E6%9C%BA/" style="font-size: 1.1em; color: #999">接收机</a></div></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">54</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">54.2k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-01-24T04:06:34.086Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Euler0525</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Lagrange%E4%B9%98%E6%95%B0%E6%B3%95/" style="font-size: 1.1em; color: #999">Lagrange乘数法</a> <a href="/tags/Jupyter/" style="font-size: 1.1em; color: #999">Jupyter</a> <a href="/tags/%E7%A6%BB%E6%95%A3%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/" style="font-size: 1.1em; color: #999">离散傅里叶变换</a> <a href="/tags/FPGA/" style="font-size: 1.1em; color: #999">FPGA</a> <a href="/tags/%E7%9B%B8%E5%AF%B9%E7%86%B5/" style="font-size: 1.1em; color: #999">相对熵</a> <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 1.1em; color: #999">神经网络</a> <a href="/tags/%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0/" style="font-size: 1.1em; color: #999">伪随机数</a> <a href="/tags/CSMA/" style="font-size: 1.1em; color: #999">CSMA</a> <a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.1em; color: #999">垃圾回收</a> <a href="/tags/%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E9%93%BE/" style="font-size: 1.1em; color: #999">马尔科夫链</a> <a href="/tags/%E5%8C%B9%E9%85%8D%E6%BB%A4%E6%B3%A2%E5%99%A8/" style="font-size: 1.5em; color: #99a9bf">匹配滤波器</a> <a href="/tags/%E5%9C%86%E9%94%A5%E6%9B%B2%E7%BA%BF/" style="font-size: 1.1em; color: #999">圆锥曲线</a> <a href="/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">拥塞控制</a> <a href="/tags/OFDM/" style="font-size: 1.1em; color: #999">OFDM</a> <a href="/tags/%E7%94%B5%E7%A3%81%E6%B3%A2/" style="font-size: 1.5em; color: #99a9bf">电磁波</a> <a href="/tags/SSH/" style="font-size: 1.1em; color: #999">SSH</a> <a href="/tags/Kullback-Leibler-Divergence/" style="font-size: 1.1em; color: #999">Kullback-Leibler Divergence</a> <a href="/tags/AD/" style="font-size: 1.1em; color: #999">AD</a></div></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">54</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2021-08-24T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">54k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-01T03:21:45.817Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2026 By Euler0525</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
   init: (str) => {
     window.typed = new Typed('#subtitle', Object.assign({
       strings: str,
@@ -525,4 +579,4 @@ typedJSFn.run(subtitleType)</script><script>(() => {
   btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
 
   window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
-})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
