@@ -1,0 +1,424 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CUDA性能优化 | 科海拾零</title><meta name="author" content="Euler0525"><meta name="copyright" content="Euler0525"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="以 LeetGPU-Matrix Multiplication 为例 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950#include &lt;cuda_runtime.h&gt;__global__ void matrix_multiplication_kern">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CUDA性能优化">
+<meta property="og:url" content="https://blog.euler0525.cn/posts/e94de802/index.html">
+<meta property="og:site_name" content="科海拾零">
+<meta property="og:description" content="以 LeetGPU-Matrix Multiplication 为例 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950#include &lt;cuda_runtime.h&gt;__global__ void matrix_multiplication_kern">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://api.xsot.cn/bing?jump=true">
+<meta property="article:published_time" content="2026-02-27T03:15:56.000Z">
+<meta property="article:modified_time" content="2026-02-27T03:17:12.283Z">
+<meta property="article:author" content="Euler0525">
+<meta property="article:tag" content="局部性原理">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="共享内存">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://api.xsot.cn/bing?jump=true"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.euler0525.cn/posts/e94de802/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CUDA性能优化',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-02-27 11:17:12'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><script src="https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js"></script><meta name="generator" content="Hexo 7.0.0"><link rel="alternate" href="/atom.xml" title="科海拾零" type="application/atom+xml">
+<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 页面</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-heart"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://api.xsot.cn/bing?jump=true')"><nav id="nav"><span id="blog-info"><a href="/" title="科海拾零"><span class="site-name">科海拾零</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 页面</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-heart"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CUDA性能优化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-02-27T03:15:56.000Z" title="发表于 2026-02-27 11:15:56">2026-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-02-27T03:17:12.283Z" title="更新于 2026-02-27 11:17:12">2026-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CUDA性能优化"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/e94de802/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>以 <a
+target="_blank" rel="noopener" href="https://leetgpu.com/challenges/matrix-multiplication">LeetGPU-Matrix
+Multiplication</a> 为例</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cuda_runtime.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">matrix_multiplication_kernel</span><span class="params">(<span class="type">const</span> <span class="type">float</span>* A, <span class="type">const</span> <span class="type">float</span>* B, <span class="type">float</span>* C, <span class="type">int</span> M, <span class="type">int</span> N, <span class="type">int</span> K)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// A, B, C are device pointers (i.e. pointers to memory on the GPU)</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">(<span class="type">const</span> <span class="type">float</span>* A, <span class="type">const</span> <span class="type">float</span>* B, <span class="type">float</span>* C, <span class="type">int</span> M, <span class="type">int</span> N, <span class="type">int</span> K)</span> </span>&#123;</span><br><span class="line"> <span class="function">dim3 <span class="title">threadsPerBlock</span><span class="params">(<span class="number">16</span>, <span class="number">16</span>)</span></span>;</span><br><span class="line"> <span class="function">dim3 <span class="title">blocksPerGrid</span><span class="params">((K + threadsPerBlock.x - <span class="number">1</span>) / threadsPerBlock.x,</span></span></span><br><span class="line"><span class="params"><span class="function">                    (M + threadsPerBlock.y - <span class="number">1</span>) / threadsPerBlock.y)</span></span>;</span><br><span class="line"></span><br><span class="line"> matrix_multiplication_kernel&lt;&lt;&lt;blocksPerGrid, threadsPerBlock&gt;&gt;&gt;(A, B, C, M, N, K);</span><br><span class="line"> <span class="built_in">cudaDeviceSynchronize</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">性能演进如下图所示</span><br><span class="line"></span><br><span class="line">``` shell</span><br><span class="line">性能 (GFLOPS, V100 FP32)</span><br><span class="line">   ↑</span><br><span class="line"><span class="number">7000</span>|                              ████████████ cuBLAS/Cutlass</span><br><span class="line">   |                              ████████████ (Tensor Core + 汇编)</span><br><span class="line">   |</span><br><span class="line"><span class="number">1000</span>|                    ████████ async/wmma</span><br><span class="line">   |                    ████████ (异步拷贝 + 矩阵指令)</span><br><span class="line">   |</span><br><span class="line"><span class="number">650</span>|          ████████ 寄存器/occupancy 调优</span><br><span class="line">   |          ████████ (指令调度 + 延迟隐藏)</span><br><span class="line">   |</span><br><span class="line"><span class="number">500</span>|     ████ 向量化加载</span><br><span class="line">   |     ████ (float4, <span class="number">128</span>-bit 事务)</span><br><span class="line">   |</span><br><span class="line"><span class="number">300</span>|  ████ Bank Conflict 优化</span><br><span class="line">   |  ████ (padding, 避免共享内存冲突)</span><br><span class="line">   |</span><br><span class="line"> <span class="number">50</span>|██ 基础共享内存 Tiling</span><br><span class="line">   |██ (减少全局内存访问)</span><br><span class="line">   |</span><br><span class="line">  <span class="number">5</span>|█ 基础全局内存 Kernel</span><br><span class="line">   +--------------------------------→ 优化层级</span><br><span class="line">     <span class="number">1</span>   <span class="number">2</span>    <span class="number">3</span>      <span class="number">4</span>        <span class="number">5</span>         <span class="number">6</span>           <span class="number">7</span></span><br><span class="line">     </span><br><span class="line">Level <span class="number">1</span>: 如何让 GPU 并行计算？  → 线程映射</span><br><span class="line">Level <span class="number">2</span>: 如何减少慢速内存访问？  → 共享内存复用</span><br><span class="line">Level <span class="number">3</span>: 如何避免共享内存冲突？  → Bank 对齐</span><br><span class="line">Level <span class="number">4</span>: 如何提升内存事务效率？  → 向量化加载</span><br><span class="line">Level <span class="number">5</span>: 如何隐藏计算/内存延迟？ → Occupancy 调优</span><br><span class="line">Level <span class="number">6</span>: 如何利用专用硬件加速？  → Tensor Core + Async</span><br><span class="line">Level <span class="number">7</span>: 如何工程化交付高性能？  → 库函数 + Autotune</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr />
+<h2 id="基础全局内存-kernel">基础全局内存 Kernel</h2>
+<blockquote>
+<p>线程映射、内存索引、并行执行。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">matmul_base</span><span class="params">(<span class="type">const</span> <span class="type">float</span> * A, <span class="type">const</span> <span class="type">float</span>* B, <span class="type">float</span>* C, <span class="type">int</span> M, <span class="type">int</span> N, <span class="type">int</span> K)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> row = blockIdx.y * blockDim.y + threadIdx.y;</span><br><span class="line">    <span class="type">int</span> col = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line">    <span class="keyword">if</span> (row &gt;= M || col &gt;= K) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> acc = <span class="number">0.0f</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        acc += A[row * N + i] * B[i * K + col];  <span class="comment">// 每次都访问全局内存</span></span><br><span class="line">    &#125;</span><br><span class="line">    C[row * K + col] = acc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这种访问内存的方法，</p>
+<ul>
+<li><p>对于单个线程内部，<code>x,y</code> 固定，<code>i</code> 变化，则
+<code>A</code> 的访问缓存友好；</p></li>
+<li><p>在 CUDA 硬件中，<code>threadIdx.x</code>
+是变化最快的维度，因此同一个 Warp 内的线程，其 <code>x</code>
+坐标必然是连续（或分段连续）的，而 <code>y</code>
+坐标相对稳定。分析合并访问时，对于 Warp
+级别，同一循环迭代（<code>i</code> 相同），<code>A</code>
+访问的地址相同（广播），<code>B</code>
+访问的地址连续（合并访问）</p></li>
+</ul>
+<p><code>A</code> 的内存访问方式，依赖 L1 缓存广播，如果 N
+过大，<code>A</code> 的一行可能超出 L1
+缓存，导致缓存抖动，修改为下面这种共享内存的访问方式，</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 24%" />
+<col style="width: 39%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">访问模式</th>
+<th style="text-align: center;">代码</th>
+<th style="text-align: center;">硬件行为</th>
+<th style="text-align: center;">问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>A 访问</strong></td>
+<td style="text-align: center;"><code>A[row * N + i]</code></td>
+<td style="text-align: center;">同 warp 内线程读
+<strong>相同地址</strong></td>
+<td style="text-align: center;">广播依赖 L1 缓存</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>B 访问</strong></td>
+<td style="text-align: center;"><code>B[i * K + col]</code></td>
+<td style="text-align: center;">同 warp 内线程读
+<strong>连续地址</strong></td>
+<td style="text-align: center;">合并访问</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>C 写入</strong></td>
+<td style="text-align: center;"><code>C[row * K + col]</code></td>
+<td style="text-align: center;">同 warp 内线程写
+<strong>连续地址</strong></td>
+<td style="text-align: center;">合并写入</td>
+</tr>
+</tbody>
+</table>
+<p>性能瓶颈在于全局内存访问次数</p>
+<ul>
+<li><p><code>A</code>：<span class="math inline">\(M\times K\times
+N\)</span> 次读取，实际数据量 <span class="math inline">\(M\times
+N\rightarrow K\)</span> 倍冗余；</p></li>
+<li><p><code>B</code>：<span class="math inline">\(M\times N\times
+K\)</span> 次读取，实际数据量 <span class="math inline">\(N\times
+K\rightarrow M\)</span> 倍冗余；</p></li>
+</ul>
+<h2 id="共享内存-tiling">共享内存 Tiling</h2>
+<blockquote>
+<p>通过共享内存复用数据，减少全局内存访问。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> TILE_SIZE 16</span></span><br><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">matmul_tiled</span><span class="params">(<span class="type">const</span> <span class="type">float</span> * A, <span class="type">const</span> <span class="type">float</span>* B, <span class="type">float</span>* C, <span class="type">int</span> M, <span class="type">int</span> N, <span class="type">int</span> K)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> row = blockDim.y * blockIdx.y + threadIdx.y;  <span class="comment">// [0, M)</span></span><br><span class="line">    <span class="type">int</span> col = blockDim.x * blockIdx.x + threadIdx.x;  <span class="comment">// [0, K)</span></span><br><span class="line">    <span class="keyword">if</span> (row &gt;= M || col &gt;= K) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    __shared__ <span class="type">float</span> As [TILE_SIZE][TILE_SIZE];</span><br><span class="line">    __shared__ <span class="type">float</span> Bs [TILE_SIZE][TILE_SIZE];</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> acc = <span class="number">0.0f</span>;</span><br><span class="line">    <span class="type">int</span> num_tiles = (N + TILE_SIZE - <span class="number">1</span>) / TILE_SIZE;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; num_tiles; ++i) &#123;</span><br><span class="line">        <span class="comment">// 每个线程加载 1 个元素到 shared memory</span></span><br><span class="line">        <span class="type">int</span> a_col = i * TILE_SIZE + threadIdx.x;</span><br><span class="line">        <span class="type">int</span> b_row = i * TILE_SIZE + threadIdx.y;</span><br><span class="line"></span><br><span class="line">        As [threadIdx.y][threadIdx.x] = (a_col &lt; N) ? A[row * N + a_col] : <span class="number">0.0f</span>;  <span class="comment">// Boundary Filling</span></span><br><span class="line">        Bs [threadIdx.y][threadIdx.x] = (b_row &lt; N) ? B[b_row * K + col] : <span class="number">0.0f</span>;</span><br><span class="line"></span><br><span class="line">        __syncthreads();</span><br><span class="line"></span><br><span class="line">        <span class="meta">#<span class="keyword">pragma</span> unroll</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">0</span>; k &lt; TILE_SIZE; ++k) &#123;</span><br><span class="line">            acc += As [threadIdx.y][k] * Bs [k][threadIdx.x];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        __syncthreads();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (row &lt; M &amp;&amp; col &lt; K) &#123;</span><br><span class="line">        C[row * K + col] = acc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以 <code>TILE_SIZE=16</code> 为例，将 <span
+class="math inline">\(N\)</span> 维度分成 <span
+class="math inline">\(N/TILE\_SIZE\)</span> 个块，然后每个 block 的
+<code>16×16</code> 线程协作</p>
+<ol type="1">
+<li>加载 <code>A</code> 的 <code>16×16</code> 子块 和 <code>B</code> 的
+<code>16×16</code> 子块 到 Shared Memory</li>
+<li><code>16×16</code> 线程并行计算 <code>16×16</code> 次乘加</li>
+<li>重复 <span class="math inline">\(N/TILE\_SIZE\)</span> 次</li>
+</ol>
+<p>最终的数据复用效果是全局内存访问减少 16 倍</p>
+<ul>
+<li><p><code>A</code> 的每个元素被 block 内 16
+个线程复用（同一行的不同列）</p></li>
+<li><p><code>B</code> 的每个元素被 block 内 16
+个线程复用（同一列的不同行）</p></li>
+</ul>
+<h2 id="bank-conflict-优化">Bank Conflict 优化</h2>
+<blockquote>
+<p>避免多个线程同时访问同一 Memory Bank，导致串行化。</p>
+<p><strong>Shared Memory Bank</strong></p>
+<p>GPU 共享内存物理结构分为 32 个 bank，每个 bank 每周期可服务 1 个 4B
+访问，32 个连续 float 地址分布到 32 个 bank：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">addr:  0   1   2  ...  31  32  33  ...</span><br><span class="line">bank: [0] [1] [2] ... [31] [0] [1] ...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>无冲突访问：warp 内 32 线程访问 32 个不同 bank， 1 周期完成</li>
+<li>有冲突访问：warp 内多个线程访问同一 bank ， 串行执行，周期数 =
+冲突线程数</li>
+</ul>
+</blockquote>
+<p>Tiling kernel 中的共享内存访问为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> unroll</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">0</span>; k &lt; TILE_SIZE; ++k) &#123;</span><br><span class="line">    acc += As [threadIdx.y][k] * Bs [k][threadIdx.x];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在访问时，同 warp 内：<code>threadIdx.x</code>
+变化快，<code>threadIdx.y</code> 相对固定；</p>
+<p>在计算时：固定 k，不同 <code>threadIdx.y</code> 访问
+<code>As [0][k], As [1][k], As [2][k]...</code>，对应的地址计算为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;As [threadIdx.y][k] = base + threadIdx.y * (TILE_SIZE) * <span class="number">4</span> + k * <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>若 <span class="math inline">\(TILE\_SIZE =
+16\)</span>，地址间隔为<span class="math inline">\(64B=2\times
+32B\)</span>，Memory Bank索引为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(base / <span class="number">4</span> + threadIdx.y * <span class="number">16</span> + k) % <span class="number">32</span></span><br></pre></td></tr></table></figure>
+<p>结果导致<code>threadIdx.y = 0</code> 和 <code>threadIdx.y = 2</code>
+索引相同，访问同一 Memory Bank，发生冲突！</p>
+<p>可以采用添加Padding的方案，使列间距不是32的倍数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__shared__ <span class="type">float</span> As [TILE_SIZE][TILE_SIZE + PADDING];  <span class="comment">// PADDING = 8</span></span><br></pre></td></tr></table></figure>
+<p>这种方案可以消除Bank Conflict，但是会增加共享内存占用，降低占用率</p>
+<h2 id="向量化内存访问">向量化内存访问</h2>
+<blockquote>
+<p>让每次内存请求携带更多有效数据，提升带宽利用率。</p>
+<p><strong>GPU 内存事务</strong></p>
+<p>GPU 全局内存访问特性为</p>
+<ul>
+<li>最小事务粒度：32 字节 (L1 cache line) 或 128 字节 (L2)</li>
+<li>warp 内 32 线程访问连续 128 字节 → 1 个 128B 事务（高效访问）</li>
+<li>warp 内 32 线程访问分散地址 → 多个事务（低效访问）</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 标量加载, 每次 4B</span></span><br><span class="line">As [threadIdx.y][threadIdx.x] = A[row * N + base_col + threadIdx.x];</span><br><span class="line"></span><br><span class="line"><span class="comment">// float4 向量化加载, 每次 16B</span></span><br><span class="line"><span class="type">int</span> base_idx = row * N + tile_idx * TILE_SIZE + threadIdx.x * VEC_WIDTH;</span><br><span class="line"><span class="keyword">if</span> (base_idx + VEC_WIDTH &lt;= N) &#123;</span><br><span class="line">    <span class="type">const</span> float4* a_vec = <span class="keyword">reinterpret_cast</span> &lt;<span class="type">const</span> float4*&gt;(&amp;A [base_idx]);</span><br><span class="line">    float4 val = *a_vec;  <span class="comment">// 读取 16B</span></span><br><span class="line"></span><br><span class="line">    As [threadIdx.y][threadIdx.x + <span class="number">0</span>] = val.x;</span><br><span class="line">    As [threadIdx.y][threadIdx.x + <span class="number">1</span>] = val.y;</span><br><span class="line">    As [threadIdx.y][threadIdx.x + <span class="number">2</span>] = val.z;</span><br><span class="line">    As [threadIdx.y][threadIdx.x + <span class="number">3</span>] = val.w;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于 warp 加载 32 个 float，共 128B</p>
+<p>标量方式：</p>
+<ul>
+<li>32 条 <code>ld.global.f32</code> 指令</li>
+<li>硬件合并：128B 连续地址 → 1 个 128B 事务</li>
+<li>指令解码/调度开销：32 条指令</li>
+</ul>
+<p>向量化方式：</p>
+<ul>
+<li>8 条 <code>ld.global.v4.f32</code> 指令</li>
+<li>硬件合并：8×16B = 128B → 1 个 128B 事务</li>
+<li>指令开销：8 条指令</li>
+</ul>
+<h2 id="寄存器与-occupancy-调优">寄存器与 Occupancy 调优</h2>
+<blockquote>
+<p><strong>延迟隐藏与资源平衡</strong>：</p>
+<p>Occupancy = 活跃 warp 数 / 理论最大 warp 数；通过增加并发 warp
+数，隐藏内存/计算延迟。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.euler0525.cn">Euler0525</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.euler0525.cn/posts/e94de802/">https://blog.euler0525.cn/posts/e94de802/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.euler0525.cn" target="_blank">科海拾零</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86/">局部性原理</a><a class="post-meta__tags" href="/tags/CUDA/">CUDA</a><a class="post-meta__tags" href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/">共享内存</a></div><div class="post_share"><div class="social-share" data-image="https://api.xsot.cn/bing?jump=true" data-sites="wechat, qq, weibo"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/31ef8db8/" title="FreeRTOS堆内存管理"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FreeRTOS堆内存管理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/cbe93db0/" title="高速缓存"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://api.xsot.cn/bing?jump=true" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-25</div><div class="title">高速缓存</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E5%85%A8%E5%B1%80%E5%86%85%E5%AD%98-kernel"><span class="toc-number">1.</span> <span class="toc-text">基础全局内存 Kernel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98-tiling"><span class="toc-number">2.</span> <span class="toc-text">共享内存 Tiling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bank-conflict-%E4%BC%98%E5%8C%96"><span class="toc-number">3.</span> <span class="toc-text">Bank Conflict 优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%8C%96%E5%86%85%E5%AD%98%E8%AE%BF%E9%97%AE"><span class="toc-number">4.</span> <span class="toc-text">向量化内存访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E4%B8%8E-occupancy-%E8%B0%83%E4%BC%98"><span class="toc-number">5.</span> <span class="toc-text">寄存器与 Occupancy 调优</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2026 By Euler0525</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: 'Ov23lioMo7LF5urlkKZI',
+      clientSecret: 'dceac52a81d3a5702ab3eeeb3763babe336d27ae',
+      repo: 'blogs',
+      owner: 'Euler0525',
+      admin: ['Euler0525'],
+      id: 'a2db996e2fe0480362fd63642bdeea78',
+      updateCountCallback: commentCount
+    },))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
