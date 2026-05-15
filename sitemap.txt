@@ -1,3 +1,4 @@
+https://blog.euler0525.cn/posts/6fabfccd/
 https://blog.euler0525.cn/posts/ba0d09df/
 https://blog.euler0525.cn/posts/e8e8088c/
 https://blog.euler0525.cn/posts/ec19dc81/
@@ -189,6 +190,8 @@ https://blog.euler0525.cn/tags/MESI%E5%8D%8F%E8%AE%AE/
 https://blog.euler0525.cn/tags/%E9%BA%A6%E5%85%8B%E6%96%AF%E9%9F%A6%E6%96%B9%E7%A8%8B%E7%BB%84/
 https://blog.euler0525.cn/tags/ARM-Coresight/
 https://blog.euler0525.cn/tags/UART/
+https://blog.euler0525.cn/tags/%E6%95%B0%E7%BB%84/
+https://blog.euler0525.cn/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/
 https://blog.euler0525.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/
 https://blog.euler0525.cn/categories/%E5%B7%A5%E5%85%B7/
 https://blog.euler0525.cn/categories/%E7%BC%96%E7%A8%8B/
@@ -203,3 +206,4 @@ https://blog.euler0525.cn/categories/%E5%B0%84%E9%A2%91/
 https://blog.euler0525.cn/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/
 https://blog.euler0525.cn/categories/%E7%AE%97%E6%B3%95/
 https://blog.euler0525.cn/categories/%E6%95%B0%E5%AD%A6/
+https://blog.euler0525.cn/categories/%E7%AE%97%E6%B3%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/

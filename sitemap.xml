@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.euler0525.cn/posts/6fabfccd/</loc>
+    
+    <lastmod>2026-05-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.euler0525.cn/posts/ba0d09df/</loc>
     
     <lastmod>2026-05-15</lastmod>
@@ -1474,6 +1483,20 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://blog.euler0525.cn/tags/%E6%95%B0%E7%BB%84/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.euler0525.cn/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -1569,6 +1592,13 @@
   
   <url>
     <loc>https://blog.euler0525.cn/categories/%E6%95%B0%E5%AD%A6/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.euler0525.cn/categories/%E7%AE%97%E6%B3%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
