@@ -1,5 +1,6 @@
 ---
 title: CUDA性能优化
+description: '以矩阵乘法为例记录 CUDA 性能优化路径，从基础全局内存 kernel 到共享内存 tiling、bank conflict、向量化访问和 occupancy 调优。'
 tags:
   - CUDA
   - 共享内存

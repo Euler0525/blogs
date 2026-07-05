@@ -1,5 +1,6 @@
 ---
 title: SSH隧道端口转发访问服务器Jupyter
+description: '记录通过 SSH 隧道端口转发访问服务器 Jupyter 的配置流程，涵盖 token 获取、端口映射和 systemd 服务化。'
 tags:
   - 服务器
   - SSH

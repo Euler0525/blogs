@@ -1,5 +1,6 @@
 ---
 title: JESD204B学习笔记
+description: '整理 JESD204B 高速串行接口的协议层次、子类特性、时序同步和 Xilinx 方案调试流程，便于排查 ADC/DAC 链路问题。'
 tags:
   - 串行接口
   - 接口协议

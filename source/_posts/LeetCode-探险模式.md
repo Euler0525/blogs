@@ -1,5 +1,6 @@
 ---
 title: LeetCode 探险模式
+description: '整理 LeetCode 探险模式中的数据结构、算法、数据库、系统设计和数学题目，作为刷题路线与知识点索引。'
 tags:
   - 数组
   - 哈希表

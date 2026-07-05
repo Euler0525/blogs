@@ -1,5 +1,6 @@
 ---
 title: DDS Compiler
+description: '介绍 DDS 的相位累加与查表生成原理，整理频率控制字、量化误差、MATLAB 仿真以及 Xilinx DDS Compiler IP 配置。'
 tags:
   - DDS
   - IP Catalog

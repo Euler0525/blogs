@@ -1,5 +1,6 @@
 ---
 title: Cramér–Rao界的推导
+description: '针对阵列信号处理场景推导 Cramer-Rao 界，涵盖复高斯概率密度、对数似然函数、Fisher 信息矩阵和 ULA/UPA 下的 CRLB。'
 tags:
   - 阵列信号处理
   - 统计信号处理

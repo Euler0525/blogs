@@ -1,5 +1,6 @@
 ---
 title: FreeRTOS堆内存管理
+description: '梳理 FreeRTOS 几种 heap 内存管理方案，比较 heap_1 到 heap_5 的分配释放策略、适用场景和实现差异。'
 tags:
   - 内存
   - 堆栈

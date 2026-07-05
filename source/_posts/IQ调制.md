@@ -1,5 +1,6 @@
 ---
 title: IQ调制
+description: '从正交载波分解的角度说明 IQ 调制的基本模型，整理 I/Q 两路信号合成、频谱搬移和复基带表示。'
 tags:
   - QPSK
 categories: 通信

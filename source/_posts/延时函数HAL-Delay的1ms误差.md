@@ -1,5 +1,6 @@
 ---
 title: 延时函数HAL_Delay的1ms误差
+description: '分析 STM32 HAL_Delay 可能出现 1ms 误差的原因，结合 SysTick 计数机制说明延时函数的边界行为。'
 tags:
   - STM32
 categories: 编程

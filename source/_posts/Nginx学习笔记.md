@@ -1,5 +1,6 @@
 ---
 title: Nginx学习笔记
+description: '整理 Nginx 的安装、调试构建、基本指令与常见配置，覆盖静态服务、代理服务以及后续源码学习入口。'
 tags:
   - 前端
 categories: 网络

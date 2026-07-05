@@ -1,5 +1,6 @@
 ---
 title: m序列
+description: '介绍 m 序列的线性反馈移位寄存器生成原理，并通过 MATLAB 仿真观察伪随机序列的周期性和相关特性。'
 tags:
   - 伪随机数
 categories: 基础知识

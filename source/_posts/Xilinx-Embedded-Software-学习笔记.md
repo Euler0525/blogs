@@ -1,5 +1,6 @@
 ---
 title: Xilinx Embedded Software 学习笔记
+description: '整理 Xilinx Embedded Software 学习笔记，重点记录内存测试、Zynq DRAM 测试、眼图测试和相关调试资料。'
 tags:
   - Xilinx
 categories: 嵌入式

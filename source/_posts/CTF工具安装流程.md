@@ -1,5 +1,6 @@
 ---
 title: CTF工具安装流程
+description: '汇总 CTF 常用工具的安装与配置过程，覆盖 Pwn、Web、Reverse、Misc 等方向的环境准备和插件配置。'
 tags:
   - Pwn
   - Web

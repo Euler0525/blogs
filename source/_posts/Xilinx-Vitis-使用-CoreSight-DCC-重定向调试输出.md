@@ -1,5 +1,6 @@
 ---
 title: Xilinx Vitis 使用 CoreSight DCC 重定向调试输出
+description: '记录在 Xilinx Vitis 中使用 CoreSight DCC 重定向调试输出的方法，说明原理、BSP 配置差异和适用场景。'
 tags:
   - Xilinx
   - ARM Coresight

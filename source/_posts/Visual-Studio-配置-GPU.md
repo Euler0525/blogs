@@ -1,5 +1,6 @@
 ---
 title: Visual Studio 配置 GPU
+description: '记录在 Visual Studio 中配置 GPU 开发环境的过程，覆盖 CUDA、OpenCL、NVIDIA 与 AMD GPU 相关依赖。'
 tags:
   - OpenCL
   - GPU

@@ -1,5 +1,6 @@
 ---
 title: TCP的流量控制与拥塞控制
+description: '梳理 TCP 流量控制与拥塞控制机制，记录滑动窗口、发送端/接收端行为以及拥塞窗口调整的核心逻辑。'
 categories: 网络
 mathjax: true
 tags:

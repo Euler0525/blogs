@@ -1,5 +1,6 @@
 ---
 title: FPGA虚拟双口RAM
+description: '记录 FPGA 中使用存储资源构造虚拟双口 RAM 的实现思路，并补充相关代码、仿真结果和使用注意事项。'
 tags:
   - FPGA
   - 资源优化

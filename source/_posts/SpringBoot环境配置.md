@@ -1,5 +1,6 @@
 ---
 title: SpringBoot环境配置
+description: '记录 Windows 下搭建 Spring Boot 开发环境的步骤，包括 JDK、Maven 本地仓库和 IntelliJ IDEA 配置。'
 tags:
   - 环境配置
 categories: 编程

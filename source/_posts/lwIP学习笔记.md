@@ -1,5 +1,6 @@
 ---
 title: lwIP 学习笔记
+description: '记录 lwIP 协议栈学习过程，重点整理动态堆内存、内存池等内存管理机制以及相关参考资料。'
 tags:
   - 内存管理
 categories: 嵌入式

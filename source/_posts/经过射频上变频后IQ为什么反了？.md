@@ -1,5 +1,6 @@
 ---
 title: 经过射频上变频后IQ为什么反了？
+description: '分析射频上变频后 IQ 分量符号或顺序看起来反转的原因，通过数学推导和 MATLAB 仿真解释频谱镜像关系。'
 tags:
   - 射频
 categories: 射频

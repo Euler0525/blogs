@@ -1,5 +1,6 @@
 ---
 title: Codex 客户端免手机号验证
+description: '记录在 Codex 客户端中复用 ChatGPT 登录会话的配置流程，包括会话信息导出、格式转换和本地认证文件处理。'
 tags:
   - Codex
 categories: 工具
