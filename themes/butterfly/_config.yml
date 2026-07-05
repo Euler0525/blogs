@@ -871,7 +871,7 @@ inject:
     - <link rel="stylesheet" href="/css/custom.css">
     - <script src="https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js"></script>
   bottom:
-    # - <script src="xxxx"></script>
+    - <script src="/js/bing-random-cover.js"></script>
 
 # CDN
 # Don't modify the following settings unless you know how they work
