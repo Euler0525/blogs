@@ -1,6 +1,6 @@
 ---
 title: 嵌入式 Linux 开发学习笔记
-description: '记录嵌入式 Linux 开发学习流程，涵盖网络与调试环境、内核下载配置编译、文件系统和驱动开发基础。'
+description: '记录嵌入式 Linux 的网络、交叉编译与远程调试环境配置，以及内核源码下载、配置、编译、文件系统和驱动开发流程。'
 categories: 嵌入式
 mathjax: true
 abbrlink: 8c71bd19

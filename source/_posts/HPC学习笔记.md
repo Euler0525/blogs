@@ -1,6 +1,6 @@
 ---
 title: HPC 学习笔记
-description: '记录高性能计算相关学习内容，包括灵晟平台、网络架构、鲲鹏与灵衢生态，以及 Windows MPI 环境配置。'
+description: '整理 HPC 学习中的 C/C++ 编译器生态、Fat-Tree 与双平面多轨网络，以及鲲鹏、灵衢平台和 Windows MPI 环境配置。'
 tags:
   - HPC
   - Arm
@@ -415,4 +415,3 @@ MSMPI_LIB64=C:\Software\Microsoft_SDKs\MPI\Lib\x64\
 # Path
 C:\Software\Microsoft_MPI\Bin\
 ```
-

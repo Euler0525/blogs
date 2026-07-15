@@ -1,6 +1,6 @@
 ---
 title: CTF工具安装流程
-description: '汇总 CTF 常用工具的安装与配置过程，覆盖 Pwn、Web、Reverse、Misc 等方向的环境准备和插件配置。'
+description: '整理 CTF 环境中 IDA Pro、Burp Suite 等常用工具的安装入口与配置方法，按 Pwn、Web、Reverse 和 Misc 方向持续补充。'
 tags:
   - Pwn
   - Web

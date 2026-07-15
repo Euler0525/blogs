@@ -1,6 +1,6 @@
 ---
 title: FPGA虚拟双口RAM
-description: '记录 FPGA 中使用存储资源构造虚拟双口 RAM 的实现思路，并补充相关代码、仿真结果和使用注意事项。'
+description: '针对间歇有效信号的延时缓存需求，介绍 FPGA 虚拟双口 RAM 的读写地址控制方法，以减少直接使用 BRAM 存储无效采样造成的资源浪费。'
 tags:
   - FPGA
   - 资源优化

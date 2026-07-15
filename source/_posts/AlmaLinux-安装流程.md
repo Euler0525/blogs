@@ -1,6 +1,6 @@
 ---
 title: AlmaLinux 安装流程
-description: '记录 AlmaLinux 安装后的常用配置流程，包括双系统启动项、磁盘挂载、软件源切换以及开发工具环境搭建。'
+description: '记录 AlmaLinux 双系统安装后的配置过程，包括修复 Windows 启动项、挂载 NTFS 硬盘、切换软件源，以及安装 Xilinx、MATLAB、CUDA 等开发工具。'
 tags:
   - Linux
 categories: 工具

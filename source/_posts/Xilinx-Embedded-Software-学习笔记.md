@@ -1,6 +1,6 @@
 ---
 title: Xilinx Embedded Software 学习笔记
-description: '整理 Xilinx Embedded Software 学习笔记，重点记录内存测试、Zynq DRAM 测试、眼图测试和相关调试资料。'
+description: '整理 Xilinx SoC 裸机与 RTOS 软件示例，重点分析内存测试流程、Zynq DRAM 读写测试及眼图测试方法。'
 tags:
   - Xilinx
 categories: 嵌入式
@@ -268,4 +268,3 @@ DCacheInvalidate()   组合调用：先 flush L1 + L2，确保 DRAM 中数据一
 [GitHub | Xilinx/embeddedsw](https://github.com/Xilinx/embeddedsw/tree/master/lib/sw_apps)
 
 [DeepWiki | Xilinx/embeddedsw](https://deepwiki.com/Xilinx/embeddedsw)
-

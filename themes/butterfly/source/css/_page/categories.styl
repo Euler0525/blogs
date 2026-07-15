@@ -5,18 +5,104 @@
     +maxWidth768()
       font-size: 2em
 
-  .category-list
-    margin-bottom: 0
+  > .category-list
+    display: grid
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+    gap: 16px
+    margin: 0
+    padding: 0
+    list-style: none
 
-    a
-      color: var(--font-color)
+    +maxWidth768()
+      grid-template-columns: 1fr
+
+    > .category-list-item
+      position: relative
+      display: grid
+      overflow: hidden
+      padding: 18px 20px
+      border: 1px solid rgba(128, 128, 128, .16)
+      border-radius: 12px
+      background: var(--card-bg)
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .06)
+      grid-template-columns: minmax(0, 1fr) auto
+      align-items: center
+      gap: 8px
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease
+
+      &:before
+        position: absolute
+        top: 18%
+        left: 0
+        width: 4px
+        height: 64%
+        border-radius: 0 4px 4px 0
+        background: $light-blue
+        content: ''
 
       &:hover
+        border-color: alpha($light-blue, .5)
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .1)
+        transform: translateY(-3px)
+
+      > .category-list-link
+        overflow: hidden
+        color: var(--font-color)
+        font-weight: 600
+        font-size: 1.08em
+        text-overflow: ellipsis
+        white-space: nowrap
+
+        &:hover
+          color: $text-hover
+
+      > .category-list-count
+        min-width: 28px
+        padding: 2px 8px
+        border-radius: 10px
+        background: alpha($light-blue, .12)
+        color: $light-blue
+        text-align: center
+        font-size: .85em
+
+        &:before,
+        &:after
+          content: none
+
+  .category-list-child
+    display: flex
+    margin: 8px 0 0
+    padding: 14px 0 0
+    border-top: 1px dashed rgba(128, 128, 128, .22)
+    list-style: none
+    grid-column: 1 / -1
+    flex-wrap: wrap
+    gap: 8px
+
+    .category-list-item
+      margin: 0
+      padding: 0
+
+      &:before
+        content: none
+
+    .category-list-link
+      display: inline-block
+      padding: 4px 10px
+      border-radius: 8px
+      background: rgba(128, 128, 128, .1)
+      color: var(--font-color)
+      font-size: .9em
+      transition: color .2s ease, background .2s ease
+
+      &:hover
+        background: alpha($light-blue, .14)
         color: $text-hover
 
     .category-list-count
-      margin-left: 8px
+      margin-left: 3px
       color: $theme-meta-color
+      font-size: .8em
 
       &:before
         content: '('
@@ -24,14 +110,3 @@
       &:after
         content: ')'
 
-  ul
-    padding: 0 0 0 20px
-    @extend .list-beauty
-
-    ul
-      padding-left: 4px
-
-    li
-      position: relative
-      margin: 6px 0
-      padding: .12em .4em .12em 1.4em
