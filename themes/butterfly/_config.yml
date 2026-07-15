@@ -36,27 +36,27 @@ social:
 
 
 # 网站图标
-favicon: /img/favicon.png
+favicon: /img/favicon.webp
 
 # 头像
 avatar:
-  img: /img/avatar.jpg
+  img: /img/avatar.webp
   effect: false
 
 # Disable all banner image
 disable_top_img: false
 
 # 封面图
-index_img: /img/background.png
+index_img: /img/background.webp
 # 文章顶部图片
-default_top_img: /img/top.png
+default_top_img: /img/top.webp
 # 归档页顶部图片
-archive_img: /img/top.png
+archive_img: /img/top.webp
 # 标签页图片
-tag_img: /img/top.png
-tag_per_img: /img/top.png
+tag_img: /img/top.webp
+tag_per_img: /img/top.webp
 # 分类页图片
-category_img: /img/top.png
+category_img: /img/top.webp
 category_per_img:
 
 
@@ -71,13 +71,13 @@ cover:
 # 错误图片
 error_img:
   flink: /img/friend_404.gif
-  post_page: /img/404.jpg
+  post_page: /img/404.webp
 
 # 错误页面
 error_404:
   enable: false
   subtitle: 'Page Not Found'
-  background: https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png
+  background: /img/404.webp
 
 post_meta:
   page: # Home Page

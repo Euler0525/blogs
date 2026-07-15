@@ -3,6 +3,7 @@ title: CUDA性能优化
 description: '以矩阵乘法为例记录 CUDA 性能优化路径，从基础全局内存 kernel 到共享内存 tiling、bank conflict、向量化访问和 occupancy 调优。'
 tags:
   - CUDA
+  - 并行编程
   - 共享内存
   - 局部性原理
 categories: 编程
@@ -10,7 +11,454 @@ abbrlink: e94de802
 date: 2026-02-27 11:15:56
 ---
 
-> 以 [LeetGPU-Matrix Multiplication](https://leetgpu.com/challenges/matrix-multiplication) 为例
+## 并行编程
+
+> 以 [LeetGPU | Reduction](https://leetgpu.com/challenges/reduction) 为例
+
+### 单线程串行求和
+
+只有一个 GPU 线程工作
+
+```c++
+#include <cuda_runtime.h>
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    float ans = 0.0;
+    for (int i = 0; i < N; ++i) {
+        ans += input[i];
+    }
+
+    output[0] = ans;
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    if (N <= 0) {
+        cudaMemset(output, 0, sizeof(float));
+        return;
+    }
+
+    reduceKernel<<<1, 1>>>(input, output, N);
+}
+```
+
+### 多线程并行读取
+
+最直接的并行化方式是每个线程处理若干个元素，每个线程计算一个局部和，然后使用 `atomicAdd` 加到最终结果。
+
+相比单线程版本，它能够并行读取输入，但是每个线程都会进行一次原子操作，竞争严重。
+
+```c++
+#include <cuda_runtime.h>
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = blockDim.x * blockIdx.x + threadIdx.x;
+    float sum = 0.0f;
+    sum += input[idx];
+    atomicAdd(output, sum);
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int ThreadsPerBlock = 256;
+    int BlocksPerGrid = (N + ThreadsPerBlock - 1) / ThreadsPerBlock;
+
+    reduceKernel<<<BlocksPerGrid, ThreadsPerBlock>>>(input, output, N);
+}
+```
+
+### 块内规约
+
+每个线程将局部计算的结果写入共享内存，每个 Block 内先完成树形规约，这样就可以将原子加操作数量从线程数下降到块数。不过规约的每一层都需要执行 `__syncthreads()`
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = blockDim.x * blockIdx.x + threadIdx.x;
+    __shared__ float shared[BLOCK_SIZE];
+    float sum = 0.0f;
+    sum += input[idx];
+    shared[threadIdx.x] = sum;
+    __syncthreads();
+
+    // All values are reduced to shared [0] per block
+    for (int offset = BLOCK_SIZE / 2; offset > 0; offset >>= 1) {
+        if (offset > threadIdx.x) {
+            shared[threadIdx.x] += shared[threadIdx.x + offset];
+        }
+        __syncthreads();
+    }
+
+    if (threadIdx.x == 0) {
+        atomicAdd(output, shared[0]);
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int ThreadsPerBlock = BLOCK_SIZE;
+    int BlocksPerGrid = (N + ThreadsPerBlock - 1) / ThreadsPerBlock;
+
+    reduceKernel<<<BlocksPerGrid, ThreadsPerBlock>>>(input, output, N);
+}
+```
+
+也可以让一个线程读取两个元素，这样可以减少块数
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = 2 * blockDim.x * blockIdx.x + threadIdx.x;
+    __shared__ float shared[BLOCK_SIZE];
+    float sum = 0.0f;
+
+    if (idx < N) {
+        sum += input[idx];
+    }
+    if (idx + BLOCK_SIZE < N) {
+        sum += input[idx + BLOCK_SIZE];
+    }
+
+    shared[threadIdx.x] = sum;
+    __syncthreads();
+
+    // All values are reduced to shared [0] per block
+    for (int offset = BLOCK_SIZE / 2; offset > 0; offset >>= 1) {
+        if (offset > threadIdx.x) {
+            shared[threadIdx.x] += shared[threadIdx.x + offset];
+        }
+        __syncthreads();
+    }
+
+    if (threadIdx.x == 0) {
+        atomicAdd(output, shared[0]);
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int elementsPerBlock = BLOCK_SIZE * 2;
+    int BlocksPerGrid = (N + elementsPerBlock - 1) / elementsPerBlock;
+
+    reduceKernel<<<BlocksPerGrid, BLOCK_SIZE>>>(input, output, N);
+}
+```
+
+
+
+### 网格步长循环
+
+每个线程不再只读取一两个元素，而是按整个网格的跨度连续处理多个元素。这样可以使用固定数量的块处理任意长度的输入，每个线程循环处理多个元素。
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = 2 * blockDim.x * blockIdx.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x * 2;
+    __shared__ float shared[BLOCK_SIZE];
+    float sum = 0.0f;
+
+    // Grid-Stride Loop
+    for (int i = idx; i < N; i += stride) {
+        sum += input[i];
+
+        if (i + BLOCK_SIZE < N) {
+            sum += input[i + BLOCK_SIZE];
+        }
+    }
+
+    shared[threadIdx.x] = sum;
+    __syncthreads();
+
+    // All values are reduced to shared [0] per block
+    for (int offset = BLOCK_SIZE / 2; offset > 0; offset >>= 1) {
+        if (offset > threadIdx.x) {
+            shared[threadIdx.x] += shared[threadIdx.x + offset];
+        }
+        __syncthreads();
+    }
+
+    if (threadIdx.x == 0) {
+        atomicAdd(output, shared[0]);
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int elementsPerBlock = BLOCK_SIZE * 2;
+    int BlocksPerGrid = (N + elementsPerBlock - 1) / elementsPerBlock;
+    BlocksPerGrid = BlocksPerGrid > 1024 ? 1024 : BlocksPerGrid;
+
+    reduceKernel<<<BlocksPerGrid, BLOCK_SIZE>>>(input, output, N);
+}
+```
+
+### 规约
+
+同一个 warp 内的线程同步执行，可以使用 `__shfl_down_sync` 在线程寄存器之间交换数据，不需要共享内存和 `__syncthreads`.
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+
+__device__ __forceinline__ float warpReduceSum(float value) {
+    value += __shfl_down_sync(0xffffffff, value, 16);
+    value += __shfl_down_sync(0xffffffff, value, 8);
+    value += __shfl_down_sync(0xffffffff, value, 4);
+    value += __shfl_down_sync(0xffffffff, value, 2);
+    value += __shfl_down_sync(0xffffffff, value, 1);
+
+    return value;
+}
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = 2 * blockDim.x * blockIdx.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x * 2;
+    __shared__ float shared[BLOCK_SIZE];
+    float sum = 0.0f;
+
+    for (int i = idx; i < N; i += stride) {
+        sum += input[i];
+
+        if (i + BLOCK_SIZE < N) {
+            sum += input[i + BLOCK_SIZE];
+        }
+    }
+
+    shared[threadIdx.x] = sum;
+    __syncthreads();
+
+    for (int offset = BLOCK_SIZE / 2; offset >= 32; offset >>= 1) {
+        if (offset > threadIdx.x) {
+            shared[threadIdx.x] += shared[threadIdx.x + offset];
+        }
+        __syncthreads();
+    }
+
+    if (threadIdx.x < 32) {
+        float value = shared[threadIdx.x];
+        value = warpReduceSum(value);
+        if (threadIdx.x == 0) {
+            atomicAdd(output, value);
+        }
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int elementsPerBlock = BLOCK_SIZE * 2;
+    int BlocksPerGrid = (N + elementsPerBlock - 1) / elementsPerBlock;
+    BlocksPerGrid = BlocksPerGrid > 1024 ? 1024 : BlocksPerGrid;
+
+    reduceKernel<<<BlocksPerGrid, BLOCK_SIZE>>>(input, output, N);
+}
+```
+
+每个 warp 独立规约，可以去掉 `BLOCK_SIZE` 大小的共享内存数组，每个块只需要一次 `__syncthreads` 和 `atomicAdd`.
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+
+__device__ __forceinline__ float warpReduceSum(float value) {
+    value += __shfl_down_sync(0xffffffff, value, 16);
+    value += __shfl_down_sync(0xffffffff, value, 8);
+    value += __shfl_down_sync(0xffffffff, value, 4);
+    value += __shfl_down_sync(0xffffffff, value, 2);
+    value += __shfl_down_sync(0xffffffff, value, 1);
+
+    return value;
+}
+
+__global__ void reduceKernel(const float *input, float *output, int N) {
+    int idx = 2 * blockDim.x * blockIdx.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x * 2;
+    __shared__ float warpSum[BLOCK_SIZE / 32];
+    float sum = 0.0f;
+
+    for (int i = idx; i < N; i += stride) {
+        sum += input[i];
+
+        if (i + BLOCK_SIZE < N) {
+            sum += input[i + BLOCK_SIZE];
+        }
+    }
+    sum = warpReduceSum(sum);
+
+    int lane = threadIdx.x & 31;
+    int warpId = threadIdx.x >> 5;
+    if (lane == 0) {
+        warpSum[warpId] = sum;
+    }
+    __syncthreads();
+
+    if (warpId == 0) {
+        float blockSum = lane < BLOCK_SIZE / 32 ? warpSum[lane] : 0.0f;
+        blockSum = warpReduceSum(blockSum);
+
+        if (lane == 0) {
+            atomicAdd(output, blockSum);
+        }
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    cudaMemset(output, 0, sizeof(float));
+    if (N <= 0) {
+        return;
+    }
+
+    int elementsPerBlock = BLOCK_SIZE * 2;
+    int BlocksPerGrid = (N + elementsPerBlock - 1) / elementsPerBlock;
+    BlocksPerGrid = BlocksPerGrid > 1024 ? 1024 : BlocksPerGrid;
+
+    reduceKernel<<<BlocksPerGrid, BLOCK_SIZE>>>(input, output, N);
+}
+```
+
+### 两阶段规约
+
+虽然每个块只执行一次 `atomicAdd`，但是当块数较多时，所有块仍然竞争同一个地址。可以将规约拆成两步
+
+```c++
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
+#define ELEMENTS_PER_THREAD 8
+
+__device__ __forceinline__ float warpReduceSum(float val) {
+    val += __shfl_down_sync(0xFFFFFFFF, val, 16);
+    val += __shfl_down_sync(0xFFFFFFFF, val, 8);
+    val += __shfl_down_sync(0xFFFFFFFF, val, 4);
+    val += __shfl_down_sync(0xFFFFFFFF, val, 2);
+    val += __shfl_down_sync(0xFFFFFFFF, val, 1);
+
+    return val; // lane 0
+}
+
+__global__ __launch_bounds__(BLOCK_SIZE) void reduceKernel(
+    const float *__restrict__ input, float *__restrict__ output, int N) {
+    __shared__ float warpSums[BLOCK_SIZE / 32]; // 8 float
+
+    float sum = 0.0f;
+    int base = blockIdx.x * (BLOCK_SIZE * ELEMENTS_PER_THREAD) + threadIdx.x;
+#pragma unroll
+    for (int i = 0; i < ELEMENTS_PER_THREAD; ++i) {
+        int idx = base + i * BLOCK_SIZE;
+        if (idx < N) {
+            sum += input[idx];
+        }
+    }
+    sum = warpReduceSum(sum);
+    int lane = threadIdx.x & 31;
+    int wid = threadIdx.x >> 5;
+    if (lane == 0) {
+        warpSums[wid] = sum;
+    }
+    __syncthreads();
+
+    if (wid == 0) {
+        sum = (threadIdx.x < (BLOCK_SIZE / 32)) ? warpSums[lane] : 0.0f;
+        sum = warpReduceSum(sum);
+
+        if (threadIdx.x == 0) {
+            output[blockIdx.x] = sum;
+        }
+    }
+}
+
+__global__ __launch_bounds__(BLOCK_SIZE) void reduceFinalKernel(
+    const float *__restrict__ input, float *__restrict__ output, int N) {
+    __shared__ float warpSums[BLOCK_SIZE / 32];
+
+    float sum = 0.0f;
+    for (int i = blockIdx.x * BLOCK_SIZE + threadIdx.x; i < N;
+         i += blockDim.x * gridDim.x) {
+        sum += input[i];
+    }
+
+    sum = warpReduceSum(sum);
+
+    int lane = threadIdx.x & 31;
+    int wid = threadIdx.x >> 5;
+    if (lane == 0) {
+        warpSums[wid] = sum;
+    }
+    __syncthreads();
+
+    if (wid == 0) {
+        sum = (threadIdx.x < (BLOCK_SIZE / 32)) ? warpSums[lane] : 0.0f;
+        sum = warpReduceSum(sum);
+
+        if (threadIdx.x == 0) {
+            atomicAdd(output, sum);
+        }
+    }
+}
+
+extern "C" void solve(const float *input, float *output, int N) {
+    if (N <= 0) {
+        cudaMemset(output, 0, sizeof(float));
+        return;
+    }
+
+    int elemsPerBlock = BLOCK_SIZE * ELEMENTS_PER_THREAD;    // 256 * 8 = 2048
+    int numBlocks = (N + elemsPerBlock - 1) / elemsPerBlock; // Round up
+
+    if (numBlocks == 1) {
+        reduceKernel<<<1, BLOCK_SIZE>>>(input, output, N);
+    } else {
+        float *partial = nullptr;
+        cudaMalloc(&partial, numBlocks * sizeof(float));
+
+        reduceKernel<<<numBlocks, BLOCK_SIZE>>>(input, partial, N);
+        int finalBlocks = (numBlocks + elemsPerBlock - 1) / elemsPerBlock;
+        if (finalBlocks <= 1) {
+            reduceKernel<<<1, BLOCK_SIZE>>>(partial, output, numBlocks);
+        } else {
+            cudaMemset(output, 0, sizeof(float));
+            reduceFinalKernel<<<finalBlocks, BLOCK_SIZE>>>(partial, output,
+                                                           numBlocks);
+        }
+
+        cudaFree(partial);
+    }
+}
+```
+
+## 性能演进
+
+> 以 [LeetGPU | Matrix Multiplication](https://leetgpu.com/challenges/matrix-multiplication) 为例
 
 性能演进如下图所示
 
@@ -50,7 +498,7 @@ Level 7: 如何工程化交付高性能？  → 库函数 + Autotune
 
 ---
 
-## 基础全局内存 Kernel
+### 基础全局内存 Kernel
 
 > 线程映射、内存索引、并行执行。
 
@@ -90,7 +538,7 @@ __global__ void matmul_base(const float * A, const float* B, float* C, int M, in
 
 - `B`：$M\times N\times K$ 次读取，实际数据量 $N\times K\rightarrow M$ 倍冗余；
 
-## 共享内存 Tiling
+### 共享内存 Tiling
 
 > 通过共享内存复用数据，减少全局内存访问。
 
@@ -144,7 +592,7 @@ __global__ void matmul_tiled(const float * A, const float* B, float* C, int M, i
 
 - `B` 的每个元素被 block 内 16 个线程复用（同一列的不同行）
 
-## Bank Conflict 优化
+### Bank Conflict 优化
 
 > 避免多个线程同时访问同一 Memory Bank，导致串行化。
 >
@@ -177,23 +625,23 @@ for (int k = 0; k < TILE_SIZE; ++k) {
 &As [threadIdx.y][k] = base + threadIdx.y * (TILE_SIZE) * 4 + k * 4
 ```
 
-若 $TILE\_SIZE = 16$，地址间隔为$64B=2\times 32B$，Memory Bank索引为
+若 $TILE\_SIZE = 16$，地址间隔为 $64B=2\times 32B$，Memory Bank 索引为
 
 ``` c++
 (base / 4 + threadIdx.y * 16 + k) % 32
 ```
 
-结果导致`threadIdx.y = 0` 和 `threadIdx.y = 2` 索引相同，访问同一 Memory Bank，发生冲突！
+结果导致 `threadIdx.y = 0` 和 `threadIdx.y = 2` 索引相同，访问同一 Memory Bank，发生冲突！
 
-可以采用添加Padding的方案，使列间距不是32的倍数
+可以采用添加 Padding 的方案，使列间距不是 32 的倍数
 
 ``` c++
 __shared__ float As [TILE_SIZE][TILE_SIZE + PADDING];  // PADDING = 8
 ```
 
-这种方案可以消除Bank Conflict，但是会增加共享内存占用，降低占用率
+这种方案可以消除 Bank Conflict，但是会增加共享内存占用，降低占用率
 
-## 向量化内存访问
+### 向量化内存访问
 
 > 让每次内存请求携带更多有效数据，提升带宽利用率。
 >
@@ -237,7 +685,7 @@ if (base_idx + VEC_WIDTH <= N) {
 - 硬件合并：8×16B = 128B → 1 个 128B 事务
 - 指令开销：8 条指令
 
-## 寄存器与 Occupancy 调优
+### 寄存器与 Occupancy 调优
 
 > **延迟隐藏与资源平衡**：
 >
