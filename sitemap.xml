@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.euler0525.cn/posts/e94de802/</loc>
+    
+    <lastmod>2026-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.euler0525.cn/posts/c618e484/</loc>
     
     <lastmod>2026-07-13</lastmod>
@@ -488,7 +497,7 @@
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/posts/e8e8088c/</loc>
+    <loc>https://blog.euler0525.cn/posts/7622f45b/</loc>
     
     <lastmod>2026-07-05</lastmod>
     
@@ -497,7 +506,7 @@
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/posts/7622f45b/</loc>
+    <loc>https://blog.euler0525.cn/posts/e8e8088c/</loc>
     
     <lastmod>2026-07-05</lastmod>
     
@@ -578,7 +587,7 @@
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/posts/17b77acf/</loc>
+    <loc>https://blog.euler0525.cn/posts/c8c59f13/</loc>
     
     <lastmod>2026-07-05</lastmod>
     
@@ -587,7 +596,7 @@
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/posts/c8c59f13/</loc>
+    <loc>https://blog.euler0525.cn/posts/17b77acf/</loc>
     
     <lastmod>2026-07-05</lastmod>
     
@@ -615,15 +624,6 @@
   
   <url>
     <loc>https://blog.euler0525.cn/posts/b3b69404/</loc>
-    
-    <lastmod>2026-07-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.euler0525.cn/posts/e94de802/</loc>
     
     <lastmod>2026-07-05</lastmod>
     
@@ -749,6 +749,13 @@
   </url>
   
   <url>
+    <loc>https://blog.euler0525.cn/tags/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.euler0525.cn/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -784,6 +791,27 @@
   </url>
   
   <url>
+    <loc>https://blog.euler0525.cn/tags/DDS/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.euler0525.cn/tags/IP-Catalog/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.euler0525.cn/tags/Xilinx/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.euler0525.cn/tags/FPGA/</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -813,27 +841,6 @@
   
   <url>
     <loc>https://blog.euler0525.cn/tags/FreeRTOS/</loc>
-    <lastmod>2026-07-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.euler0525.cn/tags/DDS/</loc>
-    <lastmod>2026-07-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.euler0525.cn/tags/IP-Catalog/</loc>
-    <lastmod>2026-07-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.euler0525.cn/tags/Xilinx/</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1647,14 +1654,14 @@
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
+    <loc>https://blog.euler0525.cn/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.euler0525.cn/categories/%E7%94%B5%E5%AD%90%E7%94%B5%E8%B7%AF/</loc>
+    <loc>https://blog.euler0525.cn/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
