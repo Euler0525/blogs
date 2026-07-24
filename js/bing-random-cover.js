@@ -1,16 +1,16 @@
 /**
- * Randomize article covers with Microsoft Bing wallpapers.
+ * Randomize article covers with Lorem Picsum photos.
  */
 (function () {
   'use strict'
 
-  const RANDOM_IMAGE_API = 'https://bing.img.run/rand_uhd.php'
-  const FALLBACK_COVER = '/img/404.jpg'
-  const FALLBACK_TOP_IMG = '/img/top.png'
+  const RANDOM_IMAGE_API = 'https://picsum.photos'
+  const FALLBACK_COVER = '/img/404.webp'
+  const FALLBACK_TOP_IMG = '/img/top.webp'
 
   const randomImageUrl = index => {
     const nonce = `${Date.now()}-${index}-${Math.random().toString(36).slice(2)}`
-    return `${RANDOM_IMAGE_API}?cover=${encodeURIComponent(nonce)}`
+    return `${RANDOM_IMAGE_API}/seed/${encodeURIComponent(nonce)}/960/540`
   }
 
   const getTargets = () => {
