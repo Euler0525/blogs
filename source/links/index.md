@@ -5,11 +5,3 @@ type: "links"
 ---
 
 # 友链
-
-- [Gatsby's Notes](https://gatsby.icu/)
-
-- [ZoroGH's Blog](https://blog.zorogh.top/)
-
-- [zzy 的个人博客](https://blog.zzy-blog.top)
-
-- [Xzk233233](https://www.zhihu.com/people/xu-zhe-kai-74/posts)

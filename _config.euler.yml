@@ -1,0 +1,130 @@
+# “科海拾零”主题配置
+
+favicon: /img/favicon.webp
+avatar: /img/avatar.webp
+og_image: /img/og.webp
+
+menu:
+  - name: 主页
+    icon: home
+    url: /
+  - name: 分类
+    icon: archive
+    url: /categories/
+  - name: 标签
+    icon: tags
+    url: /tags/
+  - name: 归档
+    icon: folder-open
+    url: /archives/
+  - name: 友链
+    icon: heart
+    url: /links/
+
+profile:
+  name: Euler0525
+  since: "2021-08-25"
+  quotes:
+    - 致虚极 守静笃
+    - 功名半纸 风雪千山
+    - 我与我周旋良久 宁作我
+    - 为往圣继绝学 为万世开太平
+    - 抬眸四顾乾坤阔 日月星辰任我攀
+    - 心中若有桃花源 何处不是水云间
+    - 明日之我 胸中有丘壑 立马振山河
+    - 我欲穿花寻路 直入白云深处 浩气展虹霓
+    - 登峰造极 险路途中敢昂首 闯关越隘 顽石面前岂回心
+    - 悟已往之不谏 知来者之可追 实迷途其未远 觉今是而昨非
+    - 看懂海底 才能不被浪花迷惑 理解洋流 才能在浪花中找到方向
+  social:
+    - name: GitHub
+      icon: github
+      color: "#24292e"
+      url: https://github.com/Euler0525
+    - name: Bilibili
+      icon: bilibili
+      color: "#4a7dbe"
+      url: https://space.bilibili.com/1119602532
+    - name: RSS
+      icon: rss
+      color: "#f26522"
+      url: /atom.xml
+
+home:
+  hero_image: /img/background.webp
+  random_cover_source: https://picsum.photos
+  random_cover_fallback: /img/404.webp
+  latest_count: 10
+  topics:
+    - name: 通信
+      url: /categories/通信/
+      symbol: ∿
+      tone: signal
+    - name: 信号处理
+      url: /categories/信号处理/
+      symbol: ∑
+      tone: spectrum
+    - name: 计算机系统
+      url: /categories/计算机系统/
+      symbol: ⌘
+      tone: system
+    - name: 嵌入式
+      url: /categories/嵌入式/
+      symbol: ◫
+      tone: circuit
+    - name: 编程
+      url: /categories/编程/
+      symbol: ⟨⟩
+      tone: code
+    - name: 人工智能
+      url: /categories/人工智能/
+      symbol: ⌬
+      tone: neural
+
+post:
+  toc:
+    enable: true
+    number: true
+  copyright: CC BY-NC-SA 4.0
+  copyright_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+  related_count: 3
+
+comments:
+  giscus:
+    enable: true
+    repo: Euler0525/blogs
+    repo_id: R_kgDOK3YGNA
+    category: Announcements
+    category_id: DIC_kwDOK3YGNM4C1D14
+    mapping: pathname
+    strict: 0
+    reactions_enabled: 1
+    emit_metadata: 0
+    input_position: top
+    lang: zh-CN
+
+stats:
+  busuanzi: true
+
+archive_chart:
+  enable: true
+  start: "2023-07"
+  echarts: https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js
+
+images:
+  fancybox:
+    enable: true
+    css: /vendor/fancybox/fancybox.css
+    js: /vendor/fancybox/fancybox.umd.js
+
+mathjax:
+  enable: true
+  per_page: true
+  cdn: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+mermaid:
+  cdn: https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs
+
+search:
+  path: /search.xml
+  limit: 12

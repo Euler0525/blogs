@@ -1,0 +1,31 @@
+- const archivePosts = page.posts ? page.posts.toArray() : []
+- const archiveTitle = is_category() ? page.category : is_tag() ? page.tag : '文章归档'
+- const archiveLabel = is_category() ? '分类' : is_tag() ? '标签' : '归档'
+- let archiveYear = null
+
+section.archive-shell
+  header.page-heading
+    p.eyebrow= archiveLabel
+    h1= archiveTitle
+    p 共 #{page.total || archivePosts.length} 篇文章
+  .archive-list
+    each post in archivePosts
+      - const category = euler_primary_category(post)
+      - const postYear = date(post.date, 'YYYY')
+      if postYear !== archiveYear
+        - archiveYear = postYear
+        h2.archive-year= postYear
+      article.archive-item
+        time(datetime=date_xml(post.date))
+          strong= date(post.date, 'MM-DD')
+          span= date(post.date, 'YYYY')
+        .archive-item__body
+          if category
+            a.category-pill(href=url_for(category.path))= category.name
+          h2
+            a(href=url_for(post.path))= post.title
+          if post.description
+            p= post.description
+  if page.total > 1
+    nav.pagination(aria-label='分页')
+      != paginator({ prev_text: '← 上一页', next_text: '下一页 →' })

@@ -1,0 +1,19 @@
+mixin techCover(post, compact)
+  - const explicitCover = post.cover && post.cover !== 'auto' && post.cover !== false ? url_for(post.cover) : null
+  - const useRandomCover = Boolean(!explicitCover && theme.home.random_cover_source)
+  - const tone = euler_tone(post)
+  - const seed = euler_seed(post)
+  .tech-cover(
+    class=[`tech-cover--${tone}`, seed, compact ? 'tech-cover--compact' : '', explicitCover ? 'tech-cover--image' : '', useRandomCover ? 'tech-cover--random' : '']
+    style=explicitCover ? `--cover-image: url('${explicitCover}')` : null
+    data-random-cover=useRandomCover ? 'true' : null
+    data-cover-source=useRandomCover ? theme.home.random_cover_source : null
+    data-cover-fallback=useRandomCover ? url_for(theme.home.random_cover_fallback) : null
+  )
+    if !explicitCover
+      .tech-cover__grid(aria-hidden='true')
+      .tech-cover__trace(aria-hidden='true')
+        span
+        span
+        span
+        span

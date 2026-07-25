@@ -5,9 +5,8 @@ tags:
   - 数组
   - 哈希表
 categories:
-  - 编程
-  - 算法
-  - 数据结构
+  - [编程, 算法]
+  - [编程, 数据结构]
 mathjax: true
 abbrlink: 6fabfccd
 date: 2026-05-15 17:03:42
@@ -409,4 +408,3 @@ class Solution {
 ## 系统与软件设计
 
 ## 数学
-

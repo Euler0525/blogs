@@ -1,0 +1,14 @@
+.search-layer#search-layer(hidden)
+  button.search-layer__backdrop#search-close-backdrop(type='button' aria-label='关闭搜索')
+  section.search-dialog(role='dialog' aria-modal='true' aria-labelledby='search-title')
+    header.search-dialog__header
+      div
+        p.eyebrow 全站检索
+        h2#search-title 搜索文章
+      button.icon-button#search-close(type='button' aria-label='关闭搜索') ×
+    label.search-input-wrap
+      span.sr-only 搜索关键词
+      input#search-input(type='search' autocomplete='off' placeholder='')
+      kbd /
+    p.search-status#search-status 输入关键词开始搜索
+    ol.search-results#search-results

@@ -1,0 +1,28 @@
+header.site-header
+  .site-header__inner
+    a.site-logo(href=url_for('/') aria-label=`返回${config.title}首页`)= config.title
+    nav.site-nav#site-nav(aria-label='主导航')
+      each item in theme.menu
+        a.site-nav__link(href=url_for(item.url))
+          if item.icon
+            span.site-nav__icon(aria-hidden='true')
+              svg(viewBox='0 0 24 24' focusable='false')
+                case item.icon
+                  when 'home'
+                    path(d='M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z')
+                  when 'archive'
+                    path(d='M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z')
+                  when 'tags'
+                    path(d='M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z')
+                  when 'folder-open'
+                    path(d='M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z')
+                  when 'heart'
+                    path(d='M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z')
+          span= item.name
+    .site-tools
+      button.icon-button#search-open(type='button' aria-label='搜索文章' title='搜索')= '⌕'
+      button.icon-button#theme-toggle(type='button' aria-label='切换明暗模式' title='切换明暗模式')
+        span.theme-icon.theme-icon--light(aria-hidden='true') ☼
+        span.theme-icon.theme-icon--dark(aria-hidden='true') ◐
+      button.icon-button.profile-toggle#profile-toggle(type='button' aria-label='打开个人信息' aria-controls='personal-drawer' aria-expanded='false') ◎
+      button.icon-button#nav-toggle.site-nav-toggle(type='button' aria-label='展开导航' aria-controls='site-nav' aria-expanded='false') ☰

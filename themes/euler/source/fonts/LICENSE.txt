@@ -1,0 +1,6 @@
+Maple Mono NF
+Copyright 2022 The Maple Mono Project Authors
+https://github.com/subframe7536/maple-font
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+https://openfontlicense.org

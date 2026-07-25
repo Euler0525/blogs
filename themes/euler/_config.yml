@@ -1,0 +1,66 @@
+favicon: /img/favicon.webp
+avatar: /img/avatar.webp
+og_image: /img/og.webp
+
+menu: []
+
+profile:
+  name:
+  since: "2023-01-01"
+  quotes: []
+  social: []
+
+home:
+  hero_image:
+  random_cover_source: https://picsum.photos
+  random_cover_fallback: /img/404.webp
+  latest_count: 10
+  topics: []
+
+post:
+  toc:
+    enable: true
+    number: true
+  copyright: CC BY-NC-SA 4.0
+  copyright_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+  related_count: 3
+
+comments:
+  giscus:
+    enable: false
+    repo:
+    repo_id:
+    category: Announcements
+    category_id:
+    mapping: pathname
+    strict: 0
+    reactions_enabled: 1
+    emit_metadata: 0
+    input_position: top
+    lang: zh-CN
+
+stats:
+  busuanzi: true
+
+archive_chart:
+  enable: true
+  start: "2023-07"
+  echarts: https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js
+
+images:
+  fancybox:
+    enable: true
+    css: /vendor/fancybox/fancybox.css
+    js: /vendor/fancybox/fancybox.umd.js
+
+mathjax:
+  enable: true
+  per_page: true
+  cdn: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+mermaid:
+  cdn: https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs
+
+search:
+  path: /search.xml
+  limit: 12

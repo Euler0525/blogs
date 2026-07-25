@@ -1,0 +1,15 @@
+.page-shell
+  .page-main
+    include _partial/archive-content.pug
+    if theme.archive_chart && theme.archive_chart.enable && !page.year && !page.month && (!page.current || page.current === 1)
+      - const archiveChart = euler_monthly_posts(theme.archive_chart.start)
+      section.archive-chart-section(aria-labelledby='archive-chart-title')
+        h2#archive-chart-title.sr-only 文章发布统计图
+        #posts-chart.archive-posts-chart(
+          data-months=JSON.stringify(archiveChart.months)
+          data-values=JSON.stringify(archiveChart.values)
+          role='img'
+          aria-label='按月份统计的文章发布数量折线图'
+        )
+  .page-aside
+    include _partial/personal-panel.pug

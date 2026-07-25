@@ -1,0 +1,34 @@
+if page.type === '404'
+  section.not-found
+    p.not-found__code 404
+    h1 页面没有找到
+    p 可能是地址写错了，或者文章已经移动。
+    a.primary-link(href=url_for('/')) 返回首页 →
+else
+  .page-shell
+    .page-main
+      header.page-heading
+        p.eyebrow= page.type === 'categories' ? '分类' : page.type === 'tags' ? '标签' : page.type === 'links' ? '朋友们' : '页面'
+        h1= page.title
+
+      if page.type === 'categories'
+        nav.category-tree(aria-label='分类层级')!= list_categories({ show_count: true })
+      else if page.type === 'tags'
+        - const cloudTags = site.tags.toArray().sort((left, right) => left.name.localeCompare(right.name, 'zh-CN'))
+        - const tagCounts = cloudTags.map(tag => tag.length)
+        - const minTagCount = tagCounts.length ? Math.min(...tagCounts) : 0
+        - const maxTagCount = tagCounts.length ? Math.max(...tagCounts) : 0
+        .tag-cloud
+          each tag, index in cloudTags
+            - const weight = maxTagCount === minTagCount ? 0.5 : (tag.length - minTagCount) / (maxTagCount - minTagCount)
+            a(
+              href=url_for(tag.path)
+              style=`--weight: ${weight.toFixed(3)}; --tag-hue: ${178 + ((index * 37) % 170)}`
+              title=`${tag.length} 篇文章`
+            )= tag.name
+      else if page.type === 'links'
+        article.page-content.links-content!= page.content
+      else
+        article.page-content!= page.content
+    .page-aside
+      include _partial/personal-panel.pug

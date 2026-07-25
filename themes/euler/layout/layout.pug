@@ -1,0 +1,113 @@
+- const pageDescription = strip_html(page.description || page.excerpt || config.description || config.title).replace(/\s+/g, ' ').trim()
+- const canonicalUrl = full_url_for(page.path || '')
+- const explicitCover = page.cover && page.cover !== 'auto' && page.cover !== false ? page.cover : null
+- const socialImage = full_url_for(explicitCover || theme.og_image)
+- const documentTitle = page.title && !is_home() ? `${page.title} | ${config.title}` : config.title
+- const renderedContent = String(page.content || '')
+- const useFancybox = theme.images && theme.images.fancybox && theme.images.fancybox.enable && renderedContent.includes('<img')
+- const useMathJax = theme.mathjax && theme.mathjax.enable && (theme.mathjax.per_page ? (is_post() || is_page()) : page.mathjax)
+
+doctype html
+html(lang=config.language || 'zh-CN' data-theme='light')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover')
+    meta(name='format-detection' content='telephone=no')
+    title= documentTitle
+    meta(name='description' content=pageDescription)
+    meta(name='author' content=config.author)
+    meta(name='theme-color' content='#f4f2ec')
+    link(rel='canonical' href=canonicalUrl)
+    link(rel='icon' href=url_for(theme.favicon))
+    link(rel='alternate' type='application/atom+xml' title=`${config.title} RSS` href=url_for('/atom.xml'))
+    meta(property='og:type' content=is_post() ? 'article' : 'website')
+    meta(property='og:title' content=page.title || config.title)
+    meta(property='og:site_name' content=config.title)
+    meta(property='og:url' content=canonicalUrl)
+    meta(property='og:description' content=pageDescription)
+    meta(property='og:image' content=socialImage)
+    meta(name='twitter:card' content='summary_large_image')
+    meta(name='twitter:title' content=page.title || config.title)
+    meta(name='twitter:image' content=socialImage)
+    script.
+      (() => {
+        const saved = localStorage.getItem('euler-color-mode')
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme = saved || (systemDark ? 'dark' : 'light')
+      })()
+    link(rel='stylesheet' href=url_for('/css/index.css'))
+    if is_post()
+      link#reading-font-stylesheet(
+        rel='stylesheet'
+        href=url_for('/css/lxgwwenkai-regular.css')
+        media='print'
+        onload="this.media='all'"
+      )
+      noscript
+        link(rel='stylesheet' href=url_for('/css/lxgwwenkai-regular.css'))
+    if useFancybox
+      link(rel='stylesheet' href=url_for(theme.images.fancybox.css))
+    if useMathJax
+      script.
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex: {
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              tags: 'ams'
+            },
+            chtml: {
+              scale: 1.1
+            },
+            options: {
+              renderActions: {
+                findScript: [10, doc => {
+                  for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                    const display = !!node.type.match(/; *mode=display/)
+                    const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                    const text = document.createTextNode('')
+                    node.parentNode.replaceChild(text, node)
+                    math.start = { node: text, delim: '', n: 0 }
+                    math.end = { node: text, delim: '', n: 0 }
+                    doc.math.push(math)
+                  }
+                }, '']
+              }
+            }
+          }
+          const script = document.createElement('script')
+          script.src = '!{url_for(theme.mathjax.cdn)}'
+          script.id = 'MathJax-script'
+          script.async = true
+          document.head.appendChild(script)
+        } else {
+          MathJax.startup.document.state(0)
+          MathJax.texReset()
+          MathJax.typesetPromise()
+        }
+  body(class=[is_post() ? 'is-post' : '', is_home() ? 'is-home' : ''])
+    .reading-progress(aria-hidden='true')
+      span#reading-progress-bar
+    include _partial/header.pug
+    main#main-content
+      != body
+    button.profile-backdrop#profile-backdrop(type='button' aria-label='关闭个人信息')
+    include _partial/search.pug
+    button#back-to-top.icon-button.back-to-top(type='button' aria-label='返回顶部' title='返回顶部') ↑
+    script(src=url_for('/js/main.js') defer)
+    script(src=url_for('/js/search.js') defer data-search-path=url_for(theme.search.path) data-search-limit=theme.search.limit)
+    if useFancybox
+      script(src=url_for(theme.images.fancybox.js) defer)
+      script(src=url_for('/js/images.js') defer)
+    if theme.archive_chart && theme.archive_chart.enable && is_archive() && !page.year && !page.month && (!page.current || page.current === 1)
+      script(src=theme.archive_chart.echarts defer)
+      script(src=url_for('/js/archive-chart.js') defer)
+    if theme.stats.busuanzi
+      script(async src='//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js')
+    if renderedContent.includes('class="mermaid') || renderedContent.includes("class='mermaid")
+      script(type='module').
+        import mermaid from '#{theme.mermaid.cdn}'
+        mermaid.initialize({
+          startOnLoad: true,
+          securityLevel: 'loose',
+          theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'neutral'
+        })

@@ -1,0 +1,114 @@
+include _partial/post-card.pug
+
+- const primaryCategory = euler_primary_category(page)
+- const tags = euler_collection(page.tags)
+- const relatedPosts = euler_related_posts(page)
+- const seriesPosts = euler_series_posts(page)
+- const tocHtml = theme.post.toc.enable ? toc(page.content, { list_number: theme.post.toc.number, min_depth: 2, max_depth: 4 }) : ''
+- const postUrl = full_url_for(page.path || '')
+
+article.post-page
+  header.post-hero
+    .post-hero__meta
+      if primaryCategory
+        a.category-pill(href=url_for(primaryCategory.path))= primaryCategory.name
+      time(datetime=date_xml(page.date))= date(page.date, 'YYYY-MM-DD')
+      if page.updated && date(page.updated, 'YYYY-MM-DD') !== date(page.date, 'YYYY-MM-DD')
+        span 更新于 #{date(page.updated, 'YYYY-MM-DD')}
+    h1= page.title
+    if page.description
+      p.post-hero__description= page.description
+    .post-hero__stats
+      span #{euler_reading_time(page)} 分钟阅读
+      if wordcount
+        span!= wordcount(page.content) + ' 字'
+      if theme.stats.busuanzi
+        span
+          i#busuanzi_value_page_pv —
+          |  次阅读
+
+  .post-layout
+    .post-main
+      if tocHtml
+        button.mobile-toc-button#mobile-toc-open(type='button' aria-controls='post-toc' aria-expanded='false') 目录
+      article.post-content#article-content!= page.content
+
+      if tags.length
+        nav.post-tags(aria-label='文章标签')
+          each tag in tags
+            a(href=url_for(tag.path)) # #{tag.name}
+
+      if seriesPosts.length > 1
+        section.series-box
+          p.eyebrow 系列
+          h2= page.series
+          ol
+            each item in seriesPosts
+              li(class=item.path === page.path ? 'is-current' : '')
+                if item.path === page.path
+                  span= item.title
+                else
+                  a(href=url_for(item.path))= item.title
+
+      section.post-copyright
+        strong= page.title
+        p
+          | 本文由 #{config.author} 创作，采用
+          a(href=theme.post.copyright_url target='_blank' rel='noopener')= theme.post.copyright
+          |  许可协议。
+
+      .post-actions
+        button.copy-link-button(type='button' data-copy-url=postUrl) 复制链接
+        a(href=`https://service.weibo.com/share/share.php?url=${encodeURIComponent(postUrl)}&title=${encodeURIComponent(page.title)}` target='_blank' rel='noopener') 分享到微博
+
+      nav.post-navigation(aria-label='相邻文章')
+        if page.prev
+          a.post-navigation__item(href=url_for(page.prev.path))
+            span ← 较新
+            strong= page.prev.title
+        else
+          span
+        if page.next
+          a.post-navigation__item.post-navigation__item--next(href=url_for(page.next.path))
+            span 较早 →
+            strong= page.next.title
+
+      if relatedPosts.length
+        section.related-section
+          .section-heading
+            div
+              p.eyebrow 延伸
+              h2 相关文章
+          .related-grid
+            each post in relatedPosts
+              +postCard(post, false, true)
+
+      if page.comments !== false && theme.comments.giscus.enable && theme.comments.giscus.repo_id && theme.comments.giscus.category_id
+        section.comments-section
+          .section-heading
+            div
+              p.eyebrow 讨论
+              h2 评论
+          script(
+            src='https://giscus.app/client.js'
+            data-repo=theme.comments.giscus.repo
+            data-repo-id=theme.comments.giscus.repo_id
+            data-category=theme.comments.giscus.category
+            data-category-id=theme.comments.giscus.category_id
+            data-mapping=theme.comments.giscus.mapping
+            data-strict=theme.comments.giscus.strict
+            data-reactions-enabled=theme.comments.giscus.reactions_enabled
+            data-emit-metadata=theme.comments.giscus.emit_metadata
+            data-input-position=theme.comments.giscus.input_position
+            data-theme='preferred_color_scheme'
+            data-lang=theme.comments.giscus.lang
+            crossorigin='anonymous'
+            async
+          )
+
+    if tocHtml
+      aside.post-toc#post-toc
+        .post-toc__inner
+          p.eyebrow 目录
+          != tocHtml
+          button.mobile-toc-close#mobile-toc-close(type='button') 关闭目录

@@ -1,0 +1,27 @@
+include cover.pug
+
+mixin postCard(post, featured, overlayTitle)
+  - const primaryCategory = euler_primary_category(post)
+  - const summary = post.description || truncate(strip_html(post.content), { length: featured ? 180 : 120 })
+  article.post-card(class=featured ? 'post-card--featured' : '')
+    a.post-card__visual(
+      href=url_for(post.path)
+      aria-hidden=overlayTitle ? null : 'true'
+      aria-label=overlayTitle ? `阅读${post.title}` : null
+      tabindex=overlayTitle ? null : '-1'
+    )
+      +techCover(post, !featured)
+      if overlayTitle
+        span.post-card__visual-title= post.title
+    .post-card__body
+      .post-card__meta
+        if primaryCategory
+          a.category-pill(href=url_for(primaryCategory.path))= primaryCategory.name
+        time(datetime=date_xml(post.date))= date(post.date, 'YYYY-MM-DD')
+      h2.post-card__title
+        a(href=url_for(post.path))= post.title
+      if summary
+        p.post-card__summary= summary
+      .post-card__footer
+        span #{euler_reading_time(post)} 分钟阅读
+        a.post-card__read(href=url_for(post.path) aria-label=`阅读${post.title}`) 阅读 →

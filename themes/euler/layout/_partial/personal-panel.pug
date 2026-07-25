@@ -1,0 +1,55 @@
+- const profileName = theme.profile.name || config.author
+- const latestUpdatedPost = site.posts.sort('-updated').first()
+aside.personal-panel#personal-drawer
+  .personal-panel__identity
+    img.personal-panel__avatar(src=url_for(theme.avatar) alt=`${profileName}的头像` width='88' height='88')
+    div
+      strong= profileName
+      span 博客
+  .personal-stats
+    a(href=url_for('/archives/'))
+      strong= site.posts.length
+      span 文章
+    a(href=url_for('/categories/'))
+      strong= site.categories.length
+      span 分类
+    a(href=url_for('/tags/'))
+      strong= site.tags.length
+      span 标签
+  if theme.profile.social && theme.profile.social.length
+    nav.personal-social(aria-label='个人链接')
+      each item in theme.profile.social
+        a(
+          class=`personal-social__${item.icon || 'link'}`
+          href=url_for(item.url)
+          target=item.url.startsWith('http') ? '_blank' : null
+          rel=item.url.startsWith('http') ? 'noopener' : null
+          title=item.name
+          aria-label=item.name
+          style=item.color ? `--social-color: ${item.color}` : null
+        )
+          svg(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+            case item.icon
+              when 'github'
+                path(d='M12 .8a11.3 11.3 0 0 0-3.57 22c.57.1.78-.25.78-.55v-2.16c-3.18.7-3.85-1.35-3.85-1.35-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.18 1.77 1.18 1.03 1.78 2.7 1.27 3.36.97.1-.76.4-1.27.73-1.56-2.54-.3-5.2-1.28-5.2-5.67 0-1.25.44-2.28 1.17-3.08-.12-.3-.51-1.46.11-3.04 0 0 .96-.31 3.12 1.18A10.8 10.8 0 0 1 12 6.01c.97 0 1.93.13 2.84.38 2.16-1.5 3.11-1.18 3.11-1.18.63 1.58.24 2.75.12 3.04.73.8 1.17 1.83 1.17 3.08 0 4.4-2.67 5.37-5.21 5.66.41.36.77 1.05.77 2.12v3.14c0 .3.21.66.79.55A11.3 11.3 0 0 0 12 .8Z')
+              when 'bilibili'
+                path(d='M7.2 2.5 10 5.3h4l2.8-2.8 1.1 1.1-1.7 1.7H18A3 3 0 0 1 21 8.2v9.3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8.2a3 3 0 0 1 3-2.9h1.8L6.1 3.6 7.2 2.5Zm-1.1 5a1 1 0 0 0-1 1v8.8a1 1 0 0 0 1 1h11.8a1 1 0 0 0 1-1V8.5a1 1 0 0 0-1-1H6.1Zm2.2 3.1a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Zm7.4 0a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z')
+              when 'rss'
+                path(d='M5.2 16.5a2.3 2.3 0 1 1 0 4.6 2.3 2.3 0 0 1 0-4.6ZM3 10.1a10.9 10.9 0 0 1 10.9 10.9h-3A7.9 7.9 0 0 0 3 13.1v-3Zm0-6.3A17.2 17.2 0 0 1 20.2 21h-3A14.2 14.2 0 0 0 3 6.8v-3Z')
+              default
+                path(d='M10.6 13.4a1 1 0 0 1 0-1.4l3.7-3.7a2.5 2.5 0 0 1 3.5 3.5l-2.2 2.2a1 1 0 1 0 1.4 1.4l2.2-2.2a4.5 4.5 0 0 0-6.4-6.4L9.2 10.6a1 1 0 0 0 1.4 2.8Zm2.8-2.8a1 1 0 0 1 0 1.4l-3.7 3.7a2.5 2.5 0 0 1-3.5-3.5L8.4 10A1 1 0 0 0 7 8.6l-2.2 2.2a4.5 4.5 0 0 0 6.4 6.4l3.7-3.7a1 1 0 0 0-1.5-2.9Z')
+          span.sr-only= item.name
+  .site-telemetry
+    h2 网站资讯
+    .site-telemetry__row
+      span 文章数目 :
+      strong= site.posts.length
+    .site-telemetry__row
+      span 已运行时间 :
+      strong#site-runtime(data-since=theme.profile.since) —
+    .site-telemetry__row
+      span 本站总字数 :
+      strong= totalcount(site)
+    .site-telemetry__row
+      span 最后更新时间 :
+      strong= latestUpdatedPost ? date(latestUpdatedPost.updated || latestUpdatedPost.date, 'YYYY-MM-DD') : '—'

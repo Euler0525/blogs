@@ -1,0 +1,48 @@
+include _partial/post-card.pug
+
+- const latestPosts = page.posts ? page.posts.toArray() : []
+- const homeQuotes = theme.profile.quotes || []
+- const heroImage = theme.home.hero_image ? url_for(theme.home.hero_image) : ''
+- const heroStyle = heroImage ? `--home-hero-image: url("${heroImage}")` : null
+
+section.home-hero(style=heroStyle)
+  .home-hero__shade(aria-hidden='true')
+  .home-hero__content
+    h1= config.title
+    if homeQuotes.length
+      p.home-hero__quote
+        span#home-quote(data-quotes=JSON.stringify(homeQuotes))= homeQuotes[0]
+        span.home-hero__cursor(aria-hidden='true')
+  a.home-hero__scroll(href='#home-content' aria-label='继续浏览首页') ↓
+
+.home-shell#home-content
+  .home-main
+    if theme.home.topics && theme.home.topics.length
+      section.home-section(aria-labelledby='topics-title')
+        .section-heading
+          div
+            p.eyebrow 分类
+            h2#topics-title 文章主题
+          a.section-heading__link(href=url_for('/categories/')) 全部分类 →
+        .topic-grid
+          each topic in theme.home.topics
+            - const category = site.categories.findOne({ name: topic.name })
+            a.topic-card(class=`topic-card--${topic.tone}` href=url_for(topic.url))
+              span.topic-card__symbol(aria-hidden='true')= topic.symbol
+              strong= topic.name
+              span #{category ? category.length : 0} 篇
+
+    section.home-section(aria-labelledby='latest-title')
+      .section-heading
+        div
+          p.eyebrow 最近
+          h2#latest-title 最新文章
+        a.section-heading__link(href=url_for('/archives/')) 浏览归档 →
+      .post-list
+        each post in latestPosts
+          +postCard(post, false)
+      if page.total > 1
+        nav.pagination(aria-label='分页')
+          != paginator({ prev_text: '← 上一页', next_text: '下一页 →' })
+  .home-aside
+    include _partial/personal-panel.pug

@@ -397,8 +397,8 @@ livere:
 # gitalk
 # https://github.com/gitalk/gitalk
 gitalk:
-  client_id: 'Ov23lioMo7LF5urlkKZI'
-  client_secret: 'dceac52a81d3a5702ab3eeeb3763babe336d27ae'
+  client_id:
+  client_secret:
   repo: 'blogs'
   owner: 'Euler0525'
   admin: ["Euler0525"]
