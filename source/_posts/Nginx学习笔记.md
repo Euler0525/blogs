@@ -1,5 +1,5 @@
 ---
-title: Nginx学习笔记
+title: Nginx 学习笔记
 description: '记录 Nginx 部署版与调试版的安装方法、常用命令、静态及代理服务配置，并从事件模型和事件循环入门分析源码架构。'
 tags:
   - 前端

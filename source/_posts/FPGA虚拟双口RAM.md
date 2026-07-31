@@ -1,5 +1,5 @@
 ---
-title: FPGA虚拟双口RAM
+title: FPGA 虚拟双口 RAM
 description: '针对间歇有效信号的延时缓存需求，介绍 FPGA 虚拟双口 RAM 的读写地址控制方法，以减少直接使用 BRAM 存储无效采样造成的资源浪费。'
 tags:
   - FPGA
