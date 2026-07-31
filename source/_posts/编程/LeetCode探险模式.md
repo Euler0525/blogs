@@ -4,9 +4,9 @@ description: '整理 LeetCode 探险模式中的数据结构、算法、数据�
 tags:
   - 数组
   - 哈希表
+  - 算法
 categories:
-  - [编程, 算法]
-  - [编程, 数据结构]
+  - 编程
 mathjax: true
 abbrlink: 6fabfccd
 date: 2026-05-15 17:03:42

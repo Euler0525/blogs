@@ -56,6 +56,34 @@ sudo dnf makecache
 sudo dnf upgrade -y
 ```
 
+### 输入法
+
+- 中文输入法
+
+```shell
+sudo dnf makecache
+sudo dnf install -y @input-methods langpacks-zh_CN       # 安装中文语言包
+sudo dnf install -y ibus ibus-libpinyin langpacks-zh_CN  # 仅安装中文输入法
+
+rpm -q ibus            # 检查是否安装成功
+rpm -q ibus-libpinyin
+ibus list-engine | grep -i pinyin
+locale -a | grep zh_CN
+
+sudo reboot
+```
+
+然后 [Settings] → [Keyboard] → [Input Sources]，添加 [Chinese (Intelligent Pinyin)]
+
+完成之后，桌面右上角的输入源会显示
+
+```shell
+English (US)
+Chinese (Intelligent Pinyin)
+```
+
+GNOME 切换输入源的默认快捷键是 `Super/Win + Space`
+
 ### AMD Xilinx
 
 ```shell
@@ -185,3 +213,7 @@ which nvcc
 nvcc --version
 echo "$CUDA_HOME"
 ```
+
+## 附录
+
+[Notebookcheck | Benchmarks/Tech | NVIDIA GeForce RTX 4060 Laptop GPU](https://www.notebookcheck.net/NVIDIA-GeForce-RTX-4060-Laptop-GPU-Benchmarks-and-Specs.675692.0.html)
