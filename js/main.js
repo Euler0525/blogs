@@ -1,878 +1,370 @@
-document.addEventListener('DOMContentLoaded', function () {
-  let headerContentWidth, $nav
-  let mobileSidebarOpen = false
+(() => {
+  'use strict'
 
-  const adjustMenu = init => {
-    const getAllWidth = ele => {
-      return Array.from(ele).reduce((width, i) => width + i.offsetWidth, 0)
-    }
+  const root = document.documentElement
+  const themeToggle = document.getElementById('theme-toggle')
+  const navToggle = document.getElementById('nav-toggle')
+  const siteNav = document.getElementById('site-nav')
+  const profileToggle = document.getElementById('profile-toggle')
+  const profileBackdrop = document.getElementById('profile-backdrop')
+  const personalPanel = document.getElementById('personal-drawer')
+  const backToTop = document.getElementById('back-to-top')
+  const progressBar = document.getElementById('reading-progress-bar')
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    if (init) {
-      const blogInfoWidth = getAllWidth(document.querySelector('#blog-info > a').children)
-      const menusWidth = getAllWidth(document.getElementById('menus').children)
-      headerContentWidth = blogInfoWidth + menusWidth
-      $nav = document.getElementById('nav')
-    }
+  const uniqueFontSample = (elements, limit = 12000) => {
+    const characters = new Set()
 
-    const hideMenuIndex = window.innerWidth <= 768 || headerContentWidth > $nav.offsetWidth - 120
-    $nav.classList.toggle('hide-menu', hideMenuIndex)
+    elements.forEach(element => {
+      for (const character of element.textContent || '') {
+        if (!/\s/.test(character)) characters.add(character)
+        if (characters.size >= limit) return
+      }
+    })
+
+    return [...characters].join('')
   }
 
-  // 初始化header
-  const initAdjust = () => {
-    adjustMenu(true)
-    $nav.classList.add('show')
-  }
+  const activateFontWhenReady = ({ family, className, elements, timeout }) => {
+    if (!document.fonts || !elements.length) return
 
-  // sidebar menus
-  const sidebarFn = {
-    open: () => {
-      btf.sidebarPaddingR()
-      document.body.style.overflow = 'hidden'
-      btf.animateIn(document.getElementById('menu-mask'), 'to_show 0.5s')
-      document.getElementById('sidebar-menus').classList.add('open')
-      mobileSidebarOpen = true
-    },
-    close: () => {
-      const $body = document.body
-      $body.style.overflow = ''
-      $body.style.paddingRight = ''
-      btf.animateOut(document.getElementById('menu-mask'), 'to_hide 0.5s')
-      document.getElementById('sidebar-menus').classList.remove('open')
-      mobileSidebarOpen = false
-    }
-  }
+    const sample = uniqueFontSample(elements)
+    if (!sample) return
 
-  /**
-   * 首頁top_img底下的箭頭
-   */
-  const scrollDownInIndex = () => {
-    const handleScrollToDest = () => {
-      btf.scrollToDest(document.getElementById('content-inner').offsetTop, 300)
-    }
+    let expired = false
+    const timer = window.setTimeout(() => {
+      expired = true
+    }, timeout)
 
-    const $scrollDownEle = document.getElementById('scroll-down')
-    $scrollDownEle && btf.addEventListenerPjax($scrollDownEle, 'click', handleScrollToDest)
-  }
-
-  /**
-   * 代碼
-   * 只適用於Hexo默認的代碼渲染
-   */
-  const addHighlightTool = () => {
-    const highLight = GLOBAL_CONFIG.highlight
-    if (!highLight) return
-
-    const { highlightCopy, highlightLang, highlightHeightLimit, plugin } = highLight
-    const isHighlightShrink = GLOBAL_CONFIG_SITE.isHighlightShrink
-    const isShowTool = highlightCopy || highlightLang || isHighlightShrink !== undefined
-    const $figureHighlight = plugin === 'highlight.js' ? document.querySelectorAll('figure.highlight') : document.querySelectorAll('pre[class*="language-"]')
-
-    if (!((isShowTool || highlightHeightLimit) && $figureHighlight.length)) return
-
-    const isPrismjs = plugin === 'prismjs'
-    const highlightShrinkClass = isHighlightShrink === true ? 'closed' : ''
-    const highlightShrinkEle = isHighlightShrink !== undefined ? '<i class="fas fa-angle-down expand"></i>' : ''
-    const highlightCopyEle = highlightCopy ? '<div class="copy-notice"></div><i class="fas fa-paste copy-button"></i>' : ''
-
-    const alertInfo = (ele, text) => {
-      if (GLOBAL_CONFIG.Snackbar !== undefined) {
-        btf.snackbarShow(text)
-      } else {
-        const prevEle = ele.previousElementSibling
-        prevEle.textContent = text
-        prevEle.style.opacity = 1
-        setTimeout(() => { prevEle.style.opacity = 0 }, 800)
-      }
-    }
-
-    const copy = ctx => {
-      if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-        document.execCommand('copy')
-        alertInfo(ctx, GLOBAL_CONFIG.copy.success)
-      } else {
-        alertInfo(ctx, GLOBAL_CONFIG.copy.noSupport)
-      }
-    }
-
-    // click events
-    const highlightCopyFn = ele => {
-      const $buttonParent = ele.parentNode
-      $buttonParent.classList.add('copy-true')
-      const selection = window.getSelection()
-      const range = document.createRange()
-      const preCodeSelector = isPrismjs ? 'pre code' : 'table .code pre'
-      range.selectNodeContents($buttonParent.querySelectorAll(`${preCodeSelector}`)[0])
-      selection.removeAllRanges()
-      selection.addRange(range)
-      copy(ele.lastChild)
-      selection.removeAllRanges()
-      $buttonParent.classList.remove('copy-true')
-    }
-
-    const highlightShrinkFn = ele => {
-      ele.classList.toggle('closed')
-    }
-
-    const highlightToolsFn = function (e) {
-      const $target = e.target.classList
-      if ($target.contains('expand')) highlightShrinkFn(this)
-      else if ($target.contains('copy-button')) highlightCopyFn(this)
-    }
-
-    const expandCode = function () {
-      this.classList.toggle('expand-done')
-    }
-
-    const createEle = (lang, item, service) => {
-      const fragment = document.createDocumentFragment()
-
-      if (isShowTool) {
-        const hlTools = document.createElement('div')
-        hlTools.className = `highlight-tools ${highlightShrinkClass}`
-        hlTools.innerHTML = highlightShrinkEle + lang + highlightCopyEle
-        btf.addEventListenerPjax(hlTools, 'click', highlightToolsFn)
-        fragment.appendChild(hlTools)
-      }
-
-      if (highlightHeightLimit && item.offsetHeight > highlightHeightLimit + 30) {
-        const ele = document.createElement('div')
-        ele.className = 'code-expand-btn'
-        ele.innerHTML = '<i class="fas fa-angle-double-down"></i>'
-        btf.addEventListenerPjax(ele, 'click', expandCode)
-        fragment.appendChild(ele)
-      }
-
-      if (service === 'hl') {
-        item.insertBefore(fragment, item.firstChild)
-      } else {
-        item.parentNode.insertBefore(fragment, item)
-      }
-    }
-
-    if (isPrismjs) {
-      $figureHighlight.forEach(item => {
-        if (highlightLang) {
-          const langName = item.getAttribute('data-language') || 'Code'
-          const highlightLangEle = `<div class="code-lang">${langName}</div>`
-          btf.wrap(item, 'figure', { class: 'highlight' })
-          createEle(highlightLangEle, item)
-        } else {
-          btf.wrap(item, 'figure', { class: 'highlight' })
-          createEle('', item)
-        }
+    document.fonts.load(`1em "${family}"`, sample)
+      .then(fonts => {
+        window.clearTimeout(timer)
+        if (!expired && fonts.length) root.classList.add(className)
       })
+      .catch(() => {
+        window.clearTimeout(timer)
+      })
+  }
+
+  const readingFontStylesheet = document.getElementById('reading-font-stylesheet')
+  const readingFontTargets = [
+    ...document.querySelectorAll('.post-hero h1, .post-content')
+  ]
+
+  if (readingFontStylesheet && readingFontTargets.length) {
+    let readingFontStarted = false
+    const startReadingFont = () => {
+      if (readingFontStarted) return
+      readingFontStarted = true
+      activateFontWhenReady({
+        family: 'LXGW WenKai',
+        className: 'font-reading-ready',
+        elements: readingFontTargets,
+        timeout: 3000
+      })
+    }
+
+    if (readingFontStylesheet.sheet && readingFontStylesheet.media === 'all') {
+      startReadingFont()
     } else {
-      $figureHighlight.forEach(item => {
-        if (highlightLang) {
-          let langName = item.getAttribute('class').split(' ')[1]
-          if (langName === 'plain' || langName === undefined) langName = 'Code'
-          const highlightLangEle = `<div class="code-lang">${langName}</div>`
-          createEle(highlightLangEle, item, 'hl')
-        } else {
-          createEle('', item, 'hl')
-        }
-      })
+      readingFontStylesheet.addEventListener('load', startReadingFont, { once: true })
     }
   }
 
-  /**
-   * PhotoFigcaption
-   */
-  const addPhotoFigcaption = () => {
-    document.querySelectorAll('#article-container img').forEach(item => {
-      const altValue = item.title || item.alt
-      if (!altValue) return
-      const ele = document.createElement('div')
-      ele.className = 'img-alt is-center'
-      ele.textContent = altValue
-      item.insertAdjacentElement('afterend', ele)
+  const codeFontTargets = [
+    ...document.querySelectorAll('.post-content pre, .post-content code, .page-content pre, .page-content code')
+  ]
+
+  if (codeFontTargets.length) {
+    activateFontWhenReady({
+      family: 'Maple Mono NF',
+      className: 'font-code-ready',
+      elements: codeFontTargets,
+      timeout: 2200
     })
   }
 
-  /**
-   * Lightbox
-   */
-  const runLightbox = () => {
-    btf.loadLightbox(document.querySelectorAll('#article-container img:not(.no-lightbox)'))
+  const setTheme = theme => {
+    root.dataset.theme = theme
+    localStorage.setItem('euler-color-mode', theme)
+    const themeColor = document.querySelector('meta[name="theme-color"]')
+    if (themeColor) themeColor.content = theme === 'dark' ? '#071017' : '#f4f2ec'
+
+    const giscus = document.querySelector('iframe.giscus-frame')
+    if (giscus) {
+      giscus.contentWindow.postMessage({
+        giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } }
+      }, 'https://giscus.app')
+    }
+
+    window.dispatchEvent(new CustomEvent('euler:themechange', {
+      detail: { theme }
+    }))
   }
 
-  /**
-   * justified-gallery 圖庫排版
-   */
+  themeToggle && themeToggle.addEventListener('click', () => {
+    setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark')
+  })
 
-  const fetchUrl = async (url) => {
-    const response = await fetch(url)
-    return await response.json()
+  const closeNavigation = () => {
+    if (!siteNav || !navToggle) return
+    siteNav.classList.remove('is-open')
+    navToggle.setAttribute('aria-expanded', 'false')
   }
 
-  const runJustifiedGallery = (item, data, isButton = false, tabs) => {
-    const dataLength = data.length
+  navToggle && navToggle.addEventListener('click', () => {
+    const isOpen = siteNav.classList.toggle('is-open')
+    navToggle.setAttribute('aria-expanded', String(isOpen))
+  })
 
-    const ig = new InfiniteGrid.JustifiedInfiniteGrid(item, {
-      gap: 5,
-      isConstantSize: true,
-      sizeRange: [150, 600],
-      useResizeObserver: true,
-      observeChildren: true,
-      useTransform: true
-      // useRecycle: false
+  document.addEventListener('click', event => {
+    if (!siteNav || !navToggle || !siteNav.classList.contains('is-open')) return
+    if (!siteNav.contains(event.target) && !navToggle.contains(event.target)) closeNavigation()
+  })
+
+  const closeProfile = () => {
+    document.body.classList.remove('profile-is-open')
+    profileToggle && profileToggle.setAttribute('aria-expanded', 'false')
+  }
+
+  if (personalPanel && profileToggle) {
+    document.body.classList.add('has-personal-panel')
+    profileToggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.toggle('profile-is-open')
+      profileToggle.setAttribute('aria-expanded', String(isOpen))
     })
-
-    if (tabs) {
-      btf.addGlobalFn('igOfTabs', () => { ig.destroy() }, false, tabs)
-    }
-
-    const replaceDq = str => str.replace(/"/g, '&quot;') // replace double quotes to &quot;
-
-    const getItems = (nextGroupKey, count) => {
-      const nextItems = []
-      const startCount = (nextGroupKey - 1) * count
-
-      for (let i = 0; i < count; ++i) {
-        const num = startCount + i
-        if (num >= dataLength) {
-          break
-        }
-
-        const item = data[num]
-        const alt = item.alt ? `alt="${replaceDq(item.alt)}"` : ''
-        const title = item.title ? `title="${replaceDq(item.title)}"` : ''
-
-        nextItems.push(`<div class="item ">
-            <img src="${item.url}" data-grid-maintained-target="true" ${alt + title} />
-          </div>`)
-      }
-      return nextItems
-    }
-
-    const buttonText = GLOBAL_CONFIG.infinitegrid.buttonText
-    const addButton = item => {
-      const button = document.createElement('button')
-      button.textContent = buttonText
-
-      const buttonFn = e => {
-        e.target.removeEventListener('click', buttonFn)
-        e.target.remove()
-        btf.setLoading.add(item)
-        appendItem(ig.getGroups().length + 1, 10)
-      }
-
-      button.addEventListener('click', buttonFn)
-      item.insertAdjacentElement('afterend', button)
-    }
-
-    const appendItem = (nextGroupKey, count) => {
-      ig.append(getItems(nextGroupKey, count), nextGroupKey)
-    }
-
-    const maxGroupKey = Math.ceil(dataLength / 10)
-
-    const completeFn = e => {
-      const { updated, isResize, mounted } = e
-      if (!updated.length || !mounted.length || isResize) {
-        return
-      }
-
-      btf.loadLightbox(item.querySelectorAll('img:not(.medium-zoom-image)'))
-
-      if (ig.getGroups().length === maxGroupKey) {
-        btf.setLoading.remove(item)
-        ig.off('renderComplete', completeFn)
-        return
-      }
-
-      if (isButton) {
-        btf.setLoading.remove(item)
-        addButton(item)
-      }
-    }
-
-    const requestAppendFn = btf.debounce(e => {
-      const nextGroupKey = (+e.groupKey || 0) + 1
-      appendItem(nextGroupKey, 10)
-
-      if (nextGroupKey === maxGroupKey) {
-        ig.off('requestAppend', requestAppendFn)
-      }
-    }, 300)
-
-    btf.setLoading.add(item)
-    ig.on('renderComplete', completeFn)
-
-    if (isButton) {
-      appendItem(1, 10)
-    } else {
-      ig.on('requestAppend', requestAppendFn)
-      ig.renderItems()
-    }
-
-    btf.addGlobalFn('justifiedGallery', () => { ig.destroy() })
+    profileBackdrop && profileBackdrop.addEventListener('click', closeProfile)
   }
 
-  const addJustifiedGallery = async (ele, tabs = false) => {
-    const init = async () => {
-      for (const item of ele) {
-        if (btf.isHidden(item)) continue
-        if (tabs && item.classList.contains('loaded')) {
-          item.querySelector('.gallery-items').innerHTML = ''
-          const button = item.querySelector(':scope > button')
-          const loadingContainer = item.querySelector(':scope > .loading-container')
-          button && button.remove()
-          loadingContainer && loadingContainer.remove()
-        }
-
-        const isButton = item.getAttribute('data-button') === 'true'
-        const text = item.firstElementChild.textContent
-        item.classList.add('loaded')
-        const content = item.getAttribute('data-type') === 'url' ? await fetchUrl(text) : JSON.parse(text)
-        runJustifiedGallery(item.lastElementChild, content, isButton, tabs)
-      }
-    }
-
-    if (typeof InfiniteGrid === 'function') {
-      init()
-    } else {
-      await getScript(`${GLOBAL_CONFIG.infinitegrid.js}`)
-      init()
-    }
+  const updateScrollState = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight
+    const ratio = scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0
+    if (progressBar) progressBar.style.width = `${ratio * 100}%`
+    if (backToTop) backToTop.classList.toggle('is-visible', window.scrollY > 520)
   }
 
-  /**
-   * rightside scroll percent
-   */
-  const rightsideScrollPercent = currentTop => {
-    const scrollPercent = btf.getScrollPercent(currentTop, document.body)
-    const goUpElement = document.getElementById('go-up')
+  document.addEventListener('scroll', updateScrollState, { passive: true })
+  updateScrollState()
 
-    if (scrollPercent < 95) {
-      goUpElement.classList.add('show-percent')
-      goUpElement.querySelector('.scroll-percent').textContent = scrollPercent
-    } else {
-      goUpElement.classList.remove('show-percent')
-    }
+  backToTop && backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+  })
+
+  const runtime = document.getElementById('site-runtime')
+  if (runtime && runtime.dataset.since) {
+    const sinceValue = runtime.dataset.since
+    const since = new Date(sinceValue.includes('T') ? sinceValue : `${sinceValue}T00:00:00+08:00`)
+    const days = Math.max(1, Math.floor((Date.now() - since.getTime()) / 86400000))
+    runtime.textContent = `${days} 天`
   }
 
-  /**
-   * 滾動處理
-   */
-  const scrollFn = () => {
-    const $rightside = document.getElementById('rightside')
-    const innerHeight = window.innerHeight + 56
-    let initTop = 0
-    const $header = document.getElementById('page-header')
-    const isChatBtn = typeof chatBtn !== 'undefined'
-    const isShowPercent = GLOBAL_CONFIG.percent.rightside
-
-    // 當滾動條小于 56 的時候
-    if (document.body.scrollHeight <= innerHeight) {
-      $rightside.classList.add('rightside-show')
-      return
+  const homeQuote = document.getElementById('home-quote')
+  if (homeQuote) {
+    let quotes = []
+    try {
+      quotes = JSON.parse(homeQuote.dataset.quotes || '[]')
+    } catch (_) {
+      quotes = []
     }
 
-    // find the scroll direction
-    const scrollDirection = currentTop => {
-      const result = currentTop > initTop // true is down & false is up
-      initTop = currentTop
-      return result
-    }
+    if (quotes.length && !reduceMotion) {
+      let quoteIndex = 0
+      let characterIndex = 0
+      let deleting = false
 
-    let flag = ''
-    const scrollTask = btf.throttle(() => {
-      const currentTop = window.scrollY || document.documentElement.scrollTop
-      const isDown = scrollDirection(currentTop)
-      if (currentTop > 56) {
-        if (flag === '') {
-          $header.classList.add('nav-fixed')
-          $rightside.classList.add('rightside-show')
-        }
+      const typeQuote = () => {
+        const content = quotes[quoteIndex]
+        characterIndex += deleting ? -1 : 1
+        homeQuote.textContent = content.slice(0, characterIndex)
 
-        if (isDown) {
-          if (flag !== 'down') {
-            $header.classList.remove('nav-visible')
-            isChatBtn && window.chatBtn.hide()
-            flag = 'down'
-          }
-        } else {
-          if (flag !== 'up') {
-            $header.classList.add('nav-visible')
-            isChatBtn && window.chatBtn.show()
-            flag = 'up'
-          }
-        }
-      } else {
-        flag = ''
-        if (currentTop === 0) {
-          $header.classList.remove('nav-fixed', 'nav-visible')
-        }
-        $rightside.classList.remove('rightside-show')
-      }
-
-      isShowPercent && rightsideScrollPercent(currentTop)
-
-      if (document.body.scrollHeight <= innerHeight) {
-        $rightside.classList.add('rightside-show')
-      }
-    }, 300)
-
-    btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
-  }
-
-  /**
-  * toc,anchor
-  */
-  const scrollFnToDo = () => {
-    const isToc = GLOBAL_CONFIG_SITE.isToc
-    const isAnchor = GLOBAL_CONFIG.isAnchor
-    const $article = document.getElementById('article-container')
-
-    if (!($article && (isToc || isAnchor))) return
-
-    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand
-
-    if (isToc) {
-      const $cardTocLayout = document.getElementById('card-toc')
-      $cardToc = $cardTocLayout.querySelector('.toc-content')
-      $tocLink = $cardToc.querySelectorAll('.toc-link')
-      $tocPercentage = $cardTocLayout.querySelector('.toc-percentage')
-      isExpand = $cardToc.classList.contains('is-expand')
-
-      // toc元素點擊
-      const tocItemClickFn = e => {
-        const target = e.target.closest('.toc-link')
-        if (!target) return
-
-        e.preventDefault()
-        btf.scrollToDest(btf.getEleTop(document.getElementById(decodeURI(target.getAttribute('href')).replace('#', ''))), 300)
-        if (window.innerWidth < 900) {
-          $cardTocLayout.classList.remove('open')
-        }
-      }
-
-      btf.addEventListenerPjax($cardToc, 'click', tocItemClickFn)
-
-      autoScrollToc = item => {
-        const activePosition = item.getBoundingClientRect().top
-        const sidebarScrollTop = $cardToc.scrollTop
-        if (activePosition > (document.documentElement.clientHeight - 100)) {
-          $cardToc.scrollTop = sidebarScrollTop + 150
-        }
-        if (activePosition < 100) {
-          $cardToc.scrollTop = sidebarScrollTop - 150
-        }
-      }
-    }
-
-    // find head position & add active class
-    const $articleList = $article.querySelectorAll('h1,h2,h3,h4,h5,h6')
-    let detectItem = ''
-    const findHeadPosition = top => {
-      if (top === 0) {
-        return false
-      }
-
-      let currentId = ''
-      let currentIndex = ''
-
-      $articleList.forEach((ele, index) => {
-        if (top > btf.getEleTop(ele) - 80) {
-          const id = ele.id
-          currentId = id ? '#' + encodeURI(id) : ''
-          currentIndex = index
-        }
-      })
-
-      if (detectItem === currentIndex) return
-
-      if (isAnchor) btf.updateAnchor(currentId)
-
-      detectItem = currentIndex
-
-      if (isToc) {
-        $cardToc.querySelectorAll('.active').forEach(i => { i.classList.remove('active') })
-
-        if (currentId === '') {
+        if (!deleting && characterIndex === content.length) {
+          deleting = true
+          window.setTimeout(typeQuote, 2400)
           return
         }
 
-        const currentActive = $tocLink[currentIndex]
-        currentActive.classList.add('active')
-
-        setTimeout(() => {
-          autoScrollToc(currentActive)
-        }, 0)
-
-        if (isExpand) return
-        let parent = currentActive.parentNode
-
-        for (; !parent.matches('.toc'); parent = parent.parentNode) {
-          if (parent.matches('li')) parent.classList.add('active')
+        if (deleting && characterIndex === 0) {
+          deleting = false
+          quoteIndex = (quoteIndex + 1) % quotes.length
+          window.setTimeout(typeQuote, 420)
+          return
         }
-      }
-    }
 
-    // main of scroll
-    const tocScrollFn = btf.throttle(() => {
-      const currentTop = window.scrollY || document.documentElement.scrollTop
-      if (isToc && GLOBAL_CONFIG.percent.toc) {
-        $tocPercentage.textContent = btf.getScrollPercent(currentTop, $article)
-      }
-      findHeadPosition(currentTop)
-    }, 100)
-
-    btf.addEventListenerPjax(window, 'scroll', tocScrollFn, { passive: true })
-  }
-
-  const handleThemeChange = mode => {
-    const globalFn = window.globalFn || {}
-    const themeChange = globalFn.themeChange || {}
-    if (!themeChange) {
-      return
-    }
-
-    Object.keys(themeChange).forEach(key => {
-      const themeChangeFn = themeChange[key]
-      if (['disqus', 'disqusjs'].includes(key)) {
-        setTimeout(() => themeChangeFn(mode), 300)
-      } else {
-        themeChangeFn(mode)
-      }
-    })
-  }
-
-  /**
-   * Rightside
-   */
-  const rightSideFn = {
-    readmode: () => { // read mode
-      const $body = document.body
-      $body.classList.add('read-mode')
-      const newEle = document.createElement('button')
-      newEle.type = 'button'
-      newEle.className = 'fas fa-sign-out-alt exit-readmode'
-      $body.appendChild(newEle)
-
-      const clickFn = () => {
-        $body.classList.remove('read-mode')
-        newEle.remove()
-        newEle.removeEventListener('click', clickFn)
+        window.setTimeout(typeQuote, deleting ? 42 : 92)
       }
 
-      newEle.addEventListener('click', clickFn)
-    },
-    darkmode: () => { // switch between light and dark mode
-      const willChangeMode = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-      if (willChangeMode === 'dark') {
-        activateDarkMode()
-        GLOBAL_CONFIG.Snackbar !== undefined && btf.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night)
-      } else {
-        activateLightMode()
-        GLOBAL_CONFIG.Snackbar !== undefined && btf.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day)
-      }
-      saveToLocal.set('theme', willChangeMode, 2)
-      handleThemeChange(willChangeMode)
-    },
-    'rightside-config': item => { // Show or hide rightside-hide-btn
-      const hideLayout = item.firstElementChild
-      if (hideLayout.classList.contains('show')) {
-        hideLayout.classList.add('status')
-        setTimeout(() => {
-          hideLayout.classList.remove('status')
-        }, 300)
-      }
-
-      hideLayout.classList.toggle('show')
-    },
-    'go-up': () => { // Back to top
-      btf.scrollToDest(0, 500)
-    },
-    'hide-aside-btn': () => { // Hide aside
-      const $htmlDom = document.documentElement.classList
-      const saveStatus = $htmlDom.contains('hide-aside') ? 'show' : 'hide'
-      saveToLocal.set('aside-status', saveStatus, 2)
-      $htmlDom.toggle('hide-aside')
-    },
-    'mobile-toc-button': item => { // Show mobile toc
-      const tocEle = document.getElementById('card-toc')
-      tocEle.style.transition = 'transform 0.3s ease-in-out'
-      tocEle.classList.toggle('open')
-      tocEle.addEventListener('transitionend', () => {
-        tocEle.style.transition = ''
-      }, { once: true })
-    },
-    'chat-btn': () => { // Show chat
-      window.chatBtnFn()
-    },
-    translateLink: () => { // switch between traditional and simplified chinese
-      window.translateFn.translatePage()
+      homeQuote.textContent = ''
+      window.setTimeout(typeQuote, 420)
     }
   }
 
-  document.getElementById('rightside').addEventListener('click', function (e) {
-    const $target = e.target.closest('[id]')
-    if ($target && rightSideFn[$target.id]) {
-      rightSideFn[$target.id](this)
+  document.querySelectorAll('[data-random-cover="true"]').forEach((cover, index) => {
+    const source = String(cover.dataset.coverSource || '').replace(/\/$/, '')
+    const fallback = cover.dataset.coverFallback
+    if (!source) return
+
+    const nonce = `${Date.now()}-${index}-${Math.random().toString(36).slice(2)}`
+    const randomUrl = `${source}/seed/${encodeURIComponent(nonce)}/960/540`
+    const image = new Image()
+
+    const applyCover = url => {
+      if (!url) return
+      cover.style.setProperty('--cover-image', `url("${url}")`)
+      cover.classList.add('tech-cover--image', 'is-cover-ready')
     }
+
+    image.onerror = () => applyCover(fallback)
+    applyCover(randomUrl)
+    image.src = randomUrl
   })
 
-  /**
-   * menu
-   * 側邊欄sub-menu 展開/收縮
-   */
-  const clickFnOfSubMenu = () => {
-    const handleClickOfSubMenu = e => {
-      const target = e.target.closest('.site-page.group')
-      if (!target) return
-      target.classList.toggle('hide')
+  const copyText = async text => {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text)
+      return
     }
-
-    document.querySelector('#sidebar-menus .menus_items').addEventListener('click', handleClickOfSubMenu)
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    textarea.remove()
   }
 
-  /**
-   * 手机端目录点击
-   */
-  const openMobileMenu = () => {
-    const handleClick = () => { sidebarFn.open() }
-    btf.addEventListenerPjax(document.getElementById('toggle-menu'), 'click', handleClick)
-  }
-
-  /**
- * 複製時加上版權信息
- */
-  const addCopyright = () => {
-    const { limitCount, languages } = GLOBAL_CONFIG.copyright
-
-    const handleCopy = (e) => {
-      e.preventDefault()
-      const copyFont = window.getSelection(0).toString()
-      let textFont = copyFont
-      if (copyFont.length > limitCount) {
-        textFont = `${copyFont}\n\n\n${languages.author}\n${languages.link}${window.location.href}\n${languages.source}\n${languages.info}`
-      }
-      if (e.clipboardData) {
-        return e.clipboardData.setData('text', textFont)
-      } else {
-        return window.clipboardData.setData('text', textFont)
-      }
-    }
-
-    document.body.addEventListener('copy', handleCopy)
-  }
-
-  /**
-   * 網頁運行時間
-   */
-  const addRuntime = () => {
-    const $runtimeCount = document.getElementById('runtimeshow')
-    if ($runtimeCount) {
-      const publishDate = $runtimeCount.getAttribute('data-publishDate')
-      $runtimeCount.textContent = `${btf.diffDate(publishDate)} ${GLOBAL_CONFIG.runtime}`
-    }
-  }
-
-  /**
-   * 最後一次更新時間
-   */
-  const addLastPushDate = () => {
-    const $lastPushDateItem = document.getElementById('last-push-date')
-    if ($lastPushDateItem) {
-      const lastPushDate = $lastPushDateItem.getAttribute('data-lastPushDate')
-      $lastPushDateItem.textContent = btf.diffDate(lastPushDate, true)
-    }
-  }
-
-  /**
-   * table overflow
-   */
-  const addTableWrap = () => {
-    const $table = document.querySelectorAll('#article-container table')
-    if (!$table.length) return
-
-    $table.forEach(item => {
-      if (!item.closest('.highlight')) {
-        btf.wrap(item, 'div', { class: 'table-wrap' })
-      }
+  document.querySelectorAll('.copy-link-button').forEach(button => {
+    button.addEventListener('click', async () => {
+      const original = button.textContent
+      await copyText(button.dataset.copyUrl || window.location.href)
+      button.textContent = '已复制'
+      window.setTimeout(() => { button.textContent = original }, 1600)
     })
-  }
+  })
 
-  /**
-   * tag-hide
-   */
-  const clickFnOfTagHide = () => {
-    const hideButtons = document.querySelectorAll('#article-container .hide-button')
-    if (!hideButtons.length) return
-    const handleClick = function (e) {
-      const $this = this
-      $this.classList.add('open')
-      const $fjGallery = $this.nextElementSibling.querySelectorAll('.gallery-container')
-      $fjGallery.length && addJustifiedGallery($fjGallery)
-    }
-
-    hideButtons.forEach(item => {
-      item.addEventListener('click', handleClick, { once: true })
+  const attachCopyButton = (host, source, toolbar = null) => {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'code-copy'
+    button.textContent = '复制'
+    button.setAttribute('aria-label', '复制代码')
+    button.addEventListener('click', async () => {
+      await copyText(source.innerText)
+      button.textContent = '已复制'
+      window.setTimeout(() => { button.textContent = '复制' }, 1400)
     })
+    ;(toolbar || host).appendChild(button)
   }
 
-  const tabsFn = () => {
-    const navTabsElement = document.querySelectorAll('#article-container .tabs')
-    if (!navTabsElement.length) return
+  const getCodeLineCount = (host, source) => {
+    const gutterLines = host.querySelectorAll('.gutter .line').length
+    if (gutterLines) return gutterLines
 
-    const removeAndAddActiveClass = (elements, detect) => {
-      Array.from(elements).forEach(element => {
-        element.classList.remove('active')
-        if (element === detect || element.id === detect) {
-          element.classList.add('active')
-        }
-      })
+    const renderedLines = host.querySelectorAll('.code .line').length
+    if (renderedLines) return renderedLines
+
+    const text = source.textContent.replace(/\r\n?/g, '\n').replace(/\n$/, '')
+    return text ? text.split('\n').length : 0
+  }
+
+  const attachCollapseButton = (host, source, content, toolbar, label) => {
+    const lineCount = getCodeLineCount(host, source)
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'code-toggle'
+    label.textContent = `${label.textContent} · ${lineCount} 行`
+
+    const setCollapsed = collapsed => {
+      host.classList.toggle('is-collapsed', collapsed)
+      content.hidden = collapsed
+      button.textContent = collapsed ? '展开' : '收起'
+      button.setAttribute('aria-expanded', String(!collapsed))
+      button.setAttribute('aria-label', `${collapsed ? '展开' : '收起'}代码，共 ${lineCount} 行`)
+      button.title = `${collapsed ? '展开' : '收起'}代码`
     }
 
-    const addTabNavEventListener = (item, isJustifiedGallery) => {
-      const navClickHandler = function (e) {
-        const target = e.target.closest('button')
-        if (target.classList.contains('active')) return
-        removeAndAddActiveClass(this.children, target)
-        this.classList.remove('no-default')
-        const tabId = target.getAttribute('data-href')
-        const tabContent = this.nextElementSibling
-        removeAndAddActiveClass(tabContent.children, tabId)
-        if (isJustifiedGallery) {
-          btf.removeGlobalFnEvent('igOfTabs', this)
-          const justifiedGalleryItems = tabContent.querySelectorAll(`:scope > #${tabId} .gallery-container`)
-          justifiedGalleryItems.length && addJustifiedGallery(justifiedGalleryItems, this)
-        }
-      }
-      btf.addEventListenerPjax(item.firstElementChild, 'click', navClickHandler)
-    }
-
-    const addTabToTopEventListener = item => {
-      const btnClickHandler = (e) => {
-        const target = e.target.closest('button')
-        if (!target) return
-        btf.scrollToDest(btf.getEleTop(item), 300)
-      }
-      btf.addEventListenerPjax(item.lastElementChild, 'click', btnClickHandler)
-    }
-
-    navTabsElement.forEach(item => {
-      const isJustifiedGallery = !!item.querySelectorAll('.gallery-container')
-      addTabNavEventListener(item, isJustifiedGallery)
-      addTabToTopEventListener(item)
+    button.addEventListener('click', () => {
+      setCollapsed(!host.classList.contains('is-collapsed'))
     })
+    toolbar.appendChild(button)
+    host.dataset.lineCount = String(lineCount)
+    setCollapsed(lineCount > 30)
   }
 
-  const toggleCardCategory = () => {
-    const cardCategory = document.querySelector('#aside-cat-list.expandBtn')
-    if (!cardCategory) return
+  document.querySelectorAll('.post-content figure.highlight, .page-content figure.highlight').forEach(highlight => {
+    const source = highlight.querySelector('.code pre') || highlight.querySelector('pre code') || highlight.querySelector('pre')
+    if (!source) return
+    const content = highlight.querySelector('table') || source
 
-    const handleToggleBtn = (e) => {
-      const target = e.target
-      if (target.nodeName === 'I') {
-        e.preventDefault()
-        target.parentNode.classList.toggle('expand')
-      }
-    }
-    btf.addEventListenerPjax(cardCategory, 'click', handleToggleBtn, true)
+    const language = [...highlight.classList].find(name => name !== 'highlight') || 'code'
+    const toolbar = document.createElement('div')
+    toolbar.className = 'highlight-tools'
+    const label = document.createElement('span')
+    label.className = 'code-lang'
+    label.textContent = language
+    toolbar.appendChild(label)
+    attachCollapseButton(highlight, source, content, toolbar, label)
+    attachCopyButton(highlight, source, toolbar)
+    highlight.prepend(toolbar)
+  })
+
+  document.querySelectorAll('.post-content pre, .page-content pre').forEach(pre => {
+    if (pre.closest('figure.highlight')) return
+    const source = pre.querySelector('code') || pre
+    const shell = document.createElement('figure')
+    shell.className = 'highlight code-standalone'
+    const toolbar = document.createElement('div')
+    toolbar.className = 'highlight-tools'
+    const label = document.createElement('span')
+    label.className = 'code-lang'
+    label.textContent = source.className.replace(/^language-/, '') || 'code'
+    toolbar.appendChild(label)
+    pre.replaceWith(shell)
+    shell.append(toolbar, pre)
+    attachCollapseButton(shell, source, pre, toolbar, label)
+    attachCopyButton(shell, source, toolbar)
+  })
+
+  const toc = document.getElementById('post-toc')
+  const tocOpen = document.getElementById('mobile-toc-open')
+  const tocClose = document.getElementById('mobile-toc-close')
+
+  const closeToc = () => {
+    if (!toc || !tocOpen) return
+    toc.classList.remove('is-open')
+    tocOpen.setAttribute('aria-expanded', 'false')
   }
 
-  const switchComments = () => {
-    const switchBtn = document.getElementById('switch-btn')
-    if (!switchBtn) return
-    let switchDone = false
-    const commentContainer = document.getElementById('post-comment')
-    const handleSwitchBtn = () => {
-      commentContainer.classList.toggle('move')
-      if (!switchDone && typeof loadOtherComment === 'function') {
-        switchDone = true
-        loadOtherComment()
-      }
-    }
-    btf.addEventListenerPjax(switchBtn, 'click', handleSwitchBtn)
-  }
+  tocOpen && tocOpen.addEventListener('click', () => {
+    const isOpen = toc.classList.toggle('is-open')
+    tocOpen.setAttribute('aria-expanded', String(isOpen))
+  })
+  tocClose && tocClose.addEventListener('click', closeToc)
 
-  const addPostOutdateNotice = () => {
-    const { limitDay, messagePrev, messageNext, position } = GLOBAL_CONFIG.noticeOutdate
-    const diffDay = btf.diffDate(GLOBAL_CONFIG_SITE.postUpdate)
-    if (diffDay >= limitDay) {
-      const ele = document.createElement('div')
-      ele.className = 'post-outdate-notice'
-      ele.textContent = `${messagePrev} ${diffDay} ${messageNext}`
-      const $targetEle = document.getElementById('article-container')
-      if (position === 'top') {
-        $targetEle.insertBefore(ele, $targetEle.firstChild)
-      } else {
-        $targetEle.appendChild(ele)
-      }
-    }
-  }
+  if (toc) {
+    const headings = [...document.querySelectorAll('.post-content h2[id], .post-content h3[id], .post-content h4[id]')]
+    const tocLinks = [...toc.querySelectorAll('a')]
+    const linkByHash = new Map(tocLinks.map(link => [decodeURIComponent(link.hash.slice(1)), link]))
 
-  const lazyloadImg = () => {
-    window.lazyLoadInstance = new LazyLoad({
-      elements_selector: 'img',
-      threshold: 0,
-      data_src: 'lazy-src'
-    })
-  }
-
-  const relativeDate = function (selector) {
-    selector.forEach(item => {
-      const timeVal = item.getAttribute('datetime')
-      item.textContent = btf.diffDate(timeVal, true)
-      item.style.display = 'inline'
-    })
-  }
-
-  const unRefreshFn = function () {
-    window.addEventListener('resize', () => {
-      adjustMenu(false)
-      mobileSidebarOpen && btf.isHidden(document.getElementById('toggle-menu')) && sidebarFn.close()
-    })
-
-    document.getElementById('menu-mask').addEventListener('click', e => { sidebarFn.close() })
-
-    clickFnOfSubMenu()
-    GLOBAL_CONFIG.islazyload && lazyloadImg()
-    GLOBAL_CONFIG.copyright !== undefined && addCopyright()
-
-    if (GLOBAL_CONFIG.autoDarkmode) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (saveToLocal.get('theme') !== undefined) return
-        e.matches ? handleThemeChange('dark') : handleThemeChange('light')
-      })
-    }
-  }
-
-  window.refreshFn = function () {
-    initAdjust()
-
-    if (GLOBAL_CONFIG_SITE.isPost) {
-      GLOBAL_CONFIG.noticeOutdate !== undefined && addPostOutdateNotice()
-      GLOBAL_CONFIG.relativeDate.post && relativeDate(document.querySelectorAll('#post-meta time'))
-    } else {
-      GLOBAL_CONFIG.relativeDate.homepage && relativeDate(document.querySelectorAll('#recent-posts time'))
-      GLOBAL_CONFIG.runtime && addRuntime()
-      addLastPushDate()
-      toggleCardCategory()
+    if ('IntersectionObserver' in window && headings.length) {
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+        if (!visible.length) return
+        tocLinks.forEach(link => link.classList.remove('is-active'))
+        const active = linkByHash.get(visible[0].target.id)
+        if (active) active.classList.add('is-active')
+      }, { rootMargin: '-90px 0px -70% 0px' })
+      headings.forEach(heading => observer.observe(heading))
     }
 
-    scrollFnToDo()
-    GLOBAL_CONFIG_SITE.isHome && scrollDownInIndex()
-    addHighlightTool()
-    GLOBAL_CONFIG.isPhotoFigcaption && addPhotoFigcaption()
-    scrollFn()
-
-    btf.removeGlobalFnEvent('justifiedGallery')
-    const galleryContainer = document.querySelectorAll('#article-container .gallery-container')
-    galleryContainer.length && addJustifiedGallery(galleryContainer)
-
-    runLightbox()
-    addTableWrap()
-    clickFnOfTagHide()
-    tabsFn()
-    switchComments()
-    openMobileMenu()
+    tocLinks.forEach(link => link.addEventListener('click', closeToc))
   }
 
-  refreshFn()
-  unRefreshFn()
-})
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeNavigation()
+      closeToc()
+      closeProfile()
+    }
+  })
+})()
