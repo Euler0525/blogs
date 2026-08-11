@@ -39,99 +39,116 @@
 }</script><meta name="generator" content="Hexo 7.0.0"></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2025-09-10T12:16:58.000Z">2025-09-10</time><span>更新于 2026-07-31</span></div><h1>红米 AX6000 路由器刷机流程记录</h1><p class="post-hero__description">记录红米 AX6000 从官方固件解锁 SSH、刷入 U-Boot 与第三方固件，到配置 ShellClash、OpenClash、Python 和校园网自动登录脚本的流程。</p><div class="post-hero__stats"><span>7 分钟阅读</span><span>1.9k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><blockquote>
 <p><strong>Redmi AX6000 参数</strong></p>
 <table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 56%" />
+<col style="width: 11%" />
+<col style="width: 22%" />
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">数值</th>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">数值</th>
+<th style="text-align: center;">参数</th>
+<th style="text-align: center;">数值</th>
+<th style="text-align: center;">参数</th>
+<th style="text-align: center;">数值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">产品型号</td>
-<td style="text-align:center">RB06</td>
-<td style="text-align:center">天线数量</td>
-<td style="text-align:center">4</td>
+<td style="text-align: center;">产品型号</td>
+<td style="text-align: center;">RB06</td>
+<td style="text-align: center;">天线数量</td>
+<td style="text-align: center;">4</td>
 </tr>
 <tr>
-<td style="text-align:center">分类</td>
-<td style="text-align:center">千兆双频 AX6000</td>
-<td style="text-align:center">信号放大器</td>
-<td style="text-align:center">独立八路</td>
+<td style="text-align: center;">分类</td>
+<td style="text-align: center;">千兆双频 AX6000</td>
+<td style="text-align: center;">信号放大器</td>
+<td style="text-align: center;">独立八路</td>
 </tr>
 <tr>
-<td style="text-align:center">电源规格</td>
-<td style="text-align:center">12V@2A</td>
-<td style="text-align:center">网络接口</td>
-<td style="text-align:center">千兆网口 ×4</td>
+<td style="text-align: center;">电源规格</td>
+<td style="text-align: center;">12V@2A</td>
+<td style="text-align: center;">网络接口</td>
+<td style="text-align: center;">千兆网口 ×4</td>
 </tr>
 <tr>
-<td style="text-align:center">处理器</td>
-<td style="text-align:center"><a target="_blank" rel="noopener" href="https://mao.fan/socpk.html">MT7986A</a> 四核 2.0GHz</td>
-<td style="text-align:center">空间流</td>
-<td style="text-align:center">2.4GHz 4×4 5GHz× 4×4</td>
+<td style="text-align: center;">处理器</td>
+<td style="text-align: center;"><a
+target="_blank" rel="noopener" href="https://mao.fan/socpk.html">MT7986A</a> 四核 2.0GHz</td>
+<td style="text-align: center;">空间流</td>
+<td style="text-align: center;">2.4GHz 4×4 5GHz× 4×4</td>
 </tr>
 <tr>
-<td style="text-align:center">内存</td>
-<td style="text-align:center">512MB</td>
-<td style="text-align:center">无线速率</td>
-<td style="text-align:center">1148Mbps 4804Mbps</td>
+<td style="text-align: center;">内存</td>
+<td style="text-align: center;">512MB</td>
+<td style="text-align: center;">无线速率</td>
+<td style="text-align: center;">1148Mbps 4804Mbps</td>
 </tr>
 <tr>
-<td style="text-align:center">闪存</td>
-<td style="text-align:center">128MB</td>
-<td style="text-align:center">最大频宽</td>
-<td style="text-align:center">160MHz</td>
+<td style="text-align: center;">闪存</td>
+<td style="text-align: center;">128MB</td>
+<td style="text-align: center;">最大频宽</td>
+<td style="text-align: center;">160MHz</td>
 </tr>
 <tr>
-<td style="text-align:center">无线协议</td>
-<td style="text-align:center">Wi-Fi 6</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
+<td style="text-align: center;">无线协议</td>
+<td style="text-align: center;">Wi-Fi 6</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
 </tr>
 </tbody>
 </table>
-<p>注：Redmi AX6000 没有 2.5G 网口，考虑之后攒钱换一个接口更多的路由器……</p>
+<p>注：Redmi AX6000 没有 2.5G
+网口，考虑之后攒钱换一个接口更多的路由器……</p>
 <p><strong>电源适配器</strong>：</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">型号</th>
-<th style="text-align:center">输入</th>
-<th style="text-align:center">输出</th>
+<th style="text-align: center;">型号</th>
+<th style="text-align: center;">输入</th>
+<th style="text-align: center;">输出</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">AD-0241200200CN-1</td>
-<td style="text-align:center">100-240V~50/60Hz 0.7A</td>
-<td style="text-align:center">12V@2A</td>
+<td style="text-align: center;">AD-0241200200CN-1</td>
+<td style="text-align: center;">100-240V~50/60Hz 0.7A</td>
+<td style="text-align: center;">12V@2A</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-<h2 id="官方固件解锁-ssh"><a class="anchor" href="#官方固件解锁-ssh">·</a>官方固件解锁 SSH</h2>
+<h2 id="官方固件解锁-ssh">官方固件解锁 SSH</h2>
 <blockquote>
-<p>系统版本: <a target="_blank" rel="noopener" href="https://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rb06/miwifi_rb06_firmware_de54d_1.0.67.bin">1.0.67 稳定版</a></p>
+<p>系统版本: <a
+target="_blank" rel="noopener" href="https://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rb06/miwifi_rb06_firmware_de54d_1.0.67.bin">1.0.67
+稳定版</a></p>
 </blockquote>
-<p>将路由器重置后，后台默认地址是 <code>http://192.168.31.1</code>，进入到后台后，获取 URL 中的 <code>stok</code>（<code>session token</code> 的缩写），然后用浏览器打开下面链接（<code>&#123;token&#125;</code> 替换为路由器管理平台 URL 中的 <code>stok</code>）</p>
+<p>将路由器重置后，后台默认地址是
+<code>http://192.168.31.1</code>，进入到后台后，获取 URL 中的
+<code>stok</code>（<code>session token</code>
+的缩写），然后用浏览器打开下面链接（<code>&#123;token&#125;</code>
+替换为路由器管理平台 URL 中的 <code>stok</code>）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.31.1/cgi-bin/luci/;stok=&#123;token&#125;/api/misystem/set_sys_time?timezone=%20%27%20%3B%20zz%3D%24%28dd%20if%3D%2Fdev%2Fzero%20bs%3D1%20count%3D2%202%3E%2Fdev%2Fnull%29%20%3B%20printf%20%27%A5%5A%25c%25c%27%20%24zz%20%24zz%20%7C%20mtd%20write%20-%20crash%20%3B%20</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>相当于执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zz=$(dd if=/dev/zero bs=1 count=2 2&gt;/dev/null) ; printf &#x27;\xA5\x5A%c%c&#x27; $zz $zz | mtd write - crash ;</span><br></pre></td></tr></table></figure>
 <p>即将 <code>\xA5\x5A\x00\x00</code> 写入 crash 分区。</p>
 </blockquote>
-<p>浏览器返回 <code>&#123;&quot;code&quot;:0&#125;</code> 即为成功。</p>
-<p>然后通过浏览器重启路由器，在地址栏输入下面链接（<code>token</code> 替换为路由器管理平台 URL 中的 <code>stok</code>）</p>
+<p>浏览器返回 <code>&#123;"code":0&#125;</code> 即为成功。</p>
+<p>然后通过浏览器重启路由器，在地址栏输入下面链接（<code>token</code>
+替换为路由器管理平台 URL 中的 <code>stok</code>）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.31.1/cgi-bin/luci/;stok=&#123;token&#125;/api/misystem/set_sys_time?timezone=%20%27%20%3b%20reboot%20%3b%20</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>相当于执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
 </blockquote>
-<p>浏览器返回 <code>&#123;&quot;code&quot;:0&#125;</code> 即为成功。</p>
-<hr>
-<p>等待一段时间后，路由器重启完成，重新登陆路由器后台 <code>192.168.31.1</code>，获取新的 <code>stok</code>，并在浏览器地址栏输入</p>
+<p>浏览器返回 <code>&#123;"code":0&#125;</code> 即为成功。</p>
+<hr />
+<p>等待一段时间后，路由器重启完成，重新登陆路由器后台
+<code>192.168.31.1</code>，获取新的
+<code>stok</code>，并在浏览器地址栏输入</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.31.1/cgi-bin/luci/;stok=&#123;token&#125;/api/misystem/set_sys_time?timezone=%20%27%20%3B%20bdata%20set%20telnet_en%3D1%20%3B%20bdata%20set%20ssh_en%3D1%20%3B%20bdata%20set%20uart_en%3D1%20%3B%20bdata%20commit%20%3B%20</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>相当于执行</p>
@@ -141,59 +158,81 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.31.1/cgi-bin/luci/;stok=&#123;token&#125;/api/misystem/set_sys_time?timezone=%20%27%20%3b%20reboot%20%3b%20</span><br></pre></td></tr></table></figure>
 <p>然后利用 <code>PowerShell</code> 工具，输入下面指令连接路由器</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet <span class="number">192.168</span>.<span class="number">31.1</span></span><br></pre></td></tr></table></figure>
-<p>返回下面字符画 <code>ARE U OK</code> 即为成功，默认用户为 <code>root</code> 用户</p>
+<p>返回下面字符画 <code>ARE U OK</code> 即为成功，默认用户为
+<code>root</code> 用户</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">BusyBox v1.25.1 (2023-01-30 10:31:26 UTC) built-in shell (ash)</span><br><span class="line"></span><br><span class="line"> -----------------------------------------------------</span><br><span class="line">       Welcome to XiaoQiang!</span><br><span class="line"> -----------------------------------------------------</span><br><span class="line">  $$$$$$\  $$$$$$$\  $$$$$$$$\      $$\      $$\        $$$$$$\  $$\   $$\</span><br><span class="line"> $$  __$$\ $$  __$$\ $$  _____|     $$ |     $$ |      $$  __$$\ $$ | $$  |</span><br><span class="line"> $$ /  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ /  $$ |$$ |$$  /</span><br><span class="line"> $$$$$$$$ |$$$$$$$  |$$$$$\         $$ |     $$ |      $$ |  $$ |$$$$$  /</span><br><span class="line"> $$  __$$ |$$  __$$&lt; $$  __|        $$ |     $$ |      $$ |  $$ |$$  $$&lt;</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ |  $$ |$$ |\$$\</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$$$$$$$\       $$$$$$$$$  |       $$$$$$  |$$ | \$$\</span><br><span class="line"> \__|  \__|\__|  \__|\________|      \_________/        \______/ \__|  \__|</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@XiaoQiang:~#</span><br></pre></td></tr></table></figure>
 <p>然后执行下面脚本，固化 SSH</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">echo -e &#x27;password\npassword&#x27; | passwd root</span><br><span class="line">nvram set ssh_en=1</span><br><span class="line">nvram set telnet_en=1</span><br><span class="line">nvram set uart_en=1</span><br><span class="line">nvram set boot_wait=on</span><br><span class="line">nvram commit</span><br><span class="line">sed -i &#x27;s/channel=.*/channel=&quot;debug&quot;/g&#x27; /etc/init.d/dropbear</span><br><span class="line">/etc/init.d/dropbear restart</span><br><span class="line">mkdir /data/auto_ssh</span><br><span class="line">cd /data/auto_ssh</span><br><span class="line">curl -O https://fastly.jsdelivr.net/gh/lemoeo/AX6S@main/auto_ssh.sh</span><br><span class="line">chmod +x auto_ssh.sh</span><br><span class="line">uci set firewall.auto_ssh=include</span><br><span class="line">uci set firewall.auto_ssh.type=&#x27;script&#x27;</span><br><span class="line">uci set firewall.auto_ssh.path=&#x27;/data/auto_ssh/auto_ssh.sh&#x27;</span><br><span class="line">uci set firewall.auto_ssh.enabled=&#x27;1&#x27;</span><br><span class="line">uci commit firewall</span><br><span class="line">uci set system.@system[0].timezone=&#x27;CST-8&#x27;</span><br><span class="line">uci set system.@system[0].webtimezone=&#x27;CST-8&#x27;</span><br><span class="line">uci set system.@system[0].timezoneindex=&#x27;2.84&#x27;</span><br><span class="line">uci commit</span><br><span class="line">mtd erase crash</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
-<p>重启之后就可以用 <a target="_blank" rel="noopener" href="https://mobaxterm.mobatek.net/download.html">SSH 工具</a> 连接路由器了（默认端口 22）。</p>
-<h2 id="刷入固件"><a class="anchor" href="#刷入固件">·</a>刷入固件</h2>
+<p>重启之后就可以用 <a
+target="_blank" rel="noopener" href="https://mobaxterm.mobatek.net/download.html">SSH 工具</a>
+连接路由器了（默认端口 22）。</p>
+<h2 id="刷入固件">刷入固件</h2>
 <blockquote>
-<p><a target="_blank" rel="noopener" href="https://cloud.189.cn/web/share?code=rAZZ32mQNVRv">点击此处</a> 获取.bin 文件（访问码：8fmk）</p>
+<p><a
+target="_blank" rel="noopener" href="https://cloud.189.cn/web/share?code=rAZZ32mQNVRv">点击此处</a>
+获取.bin 文件（访问码：8fmk）</p>
 </blockquote>
 <p>首先将 UBoot 文件上传到 <code>/tmp</code> 目录下，执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mtd erase FIP</span><br><span class="line">mtd write /tmp/Redmi_AX6000_MT7986_UBoot.bin FIP</span><br><span class="line">mtd verify /tmp/Redmi_AX6000_MT7986_UBoot.bin FIP</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">输出 Success 表示刷入 UBoot 固件成功, 然后断电重新 RESET</span></span><br></pre></td></tr></table></figure>
-<p>默认后台的 IP 地址为 <code>192.168.31.1</code>，手动配置电脑的 IP 为 <code>192.168.31.2</code>，然后利用浏览器进入后台，上传 Wrt 固件并安装，等待自动完成即可。</p>
+<p>默认后台的 IP 地址为 <code>192.168.31.1</code>，手动配置电脑的 IP 为
+<code>192.168.31.2</code>，然后利用浏览器进入后台，上传 Wrt
+固件并安装，等待自动完成即可。</p>
 <p>随后将电脑 IP 地址切换为自动分配，进入路由器后台进行个性化配置。</p>
-<h2 id="插件配置"><a class="anchor" href="#插件配置">·</a>插件配置</h2>
-<h3 id="shellclash"><a class="anchor" href="#shellclash">·</a>ShellClash</h3>
+<h2 id="插件配置">插件配置</h2>
+<h3 id="shellclash">ShellClash</h3>
 <p>安装脚本</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -kfsSl https://cdn.jsdelivr.net/gh/juewuy/ShellClash@master/install.sh)&quot; &amp;&amp; source /etc/profile &amp;&gt; /dev/nul</span><br></pre></td></tr></table></figure>
 <p>配置和 Clash 配置方法类似，导入配置文件，设置开机自启即可……</p>
-<h3 id="openclash"><a class="anchor" href="#openclash">·</a>OpenClash</h3>
+<h3 id="openclash">OpenClash</h3>
 <blockquote>
-<p>如果没有内核，需要手动安装，在路由器管理后台的概况界面可以查询 CPU 架构，选择对应的安装包下载，然后执行</p>
+<p>如果没有内核，需要手动安装，在路由器管理后台的概况界面可以查询 CPU
+架构，选择对应的安装包下载，然后执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/openclash/core/</span><br><span class="line">tar -zxvf clash-linux-armv8.tar.gz</span><br><span class="line">chmod +x clash</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://github.com/vernesong/OpenClash/releases/tag/Clash">点击此处</a> 获取 OpenClash 内核安装包</p>
-<hr>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/vernesong/OpenClash/releases/tag/Clash">点击此处</a>
+获取 OpenClash 内核安装包</p>
+<hr />
 <p>如果需要下载 GeoSite 数据库，执行 ↓ 获取</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat</span><br><span class="line">cp geosite.dat /etc/openclash/GeoSite.dat</span><br></pre></td></tr></table></figure>
 </blockquote>
-<p>进入管理后台，[服务] → [OpenClash] → [配置文件订阅]（懂的都懂），添加订阅后启动 OpenClash。</p>
+<p>进入管理后台，[服务] → <a href="#openclash">OpenClash</a> →
+[配置文件订阅]（懂的都懂），添加订阅后启动 OpenClash。</p>
 <blockquote>
-<p>个人在使用 Rule 代理时出现了无法 SSH 连接的问题，解决方案是使用自定义规则，将该端口加入 Direct 模式中</p>
+<p>个人在使用 Rule 代理时出现了无法 SSH
+连接的问题，解决方案是使用自定义规则，将该端口加入 Direct 模式中</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">规则设置 → 勾选自定义规则, 并添加下面内容</span></span><br><span class="line">rules:</span><br><span class="line">- DST-PORT,22,DIRECT</span><br></pre></td></tr></table></figure>
-<p>配置 OpenClash 代理后，如果使用 <code>bitsrun</code> 脚本实现自动登陆校园网，会报错 <code>bitsrun login error: [Errno 11002] getaddrinfo failed</code></p>
+<p>配置 OpenClash 代理后，如果使用 <code>bitsrun</code>
+脚本实现自动登陆校园网，会报错
+<code>bitsrun login error: [Errno 11002] getaddrinfo failed</code></p>
 <p>需要补充下面自定义规则</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rules:</span><br><span class="line">- DST-PORT,22,DIRECT</span><br><span class="line"></span><br><span class="line">- IP-CIDR,10.0.0.55/32,DIRECT,no-resolve</span><br><span class="line">- DOMAIN-SUFFIX,bit.edu.cn,DIRECT</span><br><span class="line"></span><br><span class="line">- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve</span><br><span class="line">- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve</span><br><span class="line">- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve</span><br><span class="line">- IP-CIDR,100.64.0.0/10,DIRECT,no-resolve</span><br></pre></td></tr></table></figure>
 </blockquote>
-<h2 id="软件安装"><a class="anchor" href="#软件安装">·</a>软件安装</h2>
-<h3 id="python"><a class="anchor" href="#python">·</a>Python</h3>
+<h2 id="软件安装">软件安装</h2>
+<h3 id="python">Python</h3>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg list | grep python</span><br><span class="line">opkg install python3</span><br><span class="line">opkg install python3-pip</span><br></pre></td></tr></table></figure>
-<h2 id="脚本"><a class="anchor" href="#脚本">·</a>脚本</h2>
-<h3 id="校园网自动登陆"><a class="anchor" href="#校园网自动登陆">·</a>校园网自动登陆</h3>
+<h2 id="脚本">脚本</h2>
+<h3 id="校园网自动登陆">校园网自动登陆</h3>
 <blockquote>
-<p><a target="_blank" rel="noopener" href="https://github.com/Euler0525/scripts/blob/master/shell/bitsrun.sh">点击此处</a> 获取自动登陆脚本 <code>bitsrun.sh</code></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/Euler0525/scripts/blob/master/shell/bitsrun.sh">点击此处</a>
+获取自动登陆脚本 <code>bitsrun.sh</code></p>
 </blockquote>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Python 3.10.5</span></span><br><span class="line">python -m pip install --user pipx --root-user-action=ignore</span><br><span class="line">python -m pipx ensurepath</span><br><span class="line">source ~/.bashrc</span><br><span class="line">python -m pip install --user bitsrun --root-user-action=ignore</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">~/scripts/bitsrun.sh</span></span><br><span class="line">nohup ~/scripts/bitsrun.sh &gt;&gt; /tmp/bitsrun.log 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">run automatically once the system starts up</span></span><br><span class="line">vim /etc/rc.local</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">###############################################################################</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Put your custom commands here that should be executed once</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">the system init finished. By default this file does nothing.</span></span><br><span class="line"></span><br><span class="line">nohup /root/scripts/bitsrun.sh &gt;&gt; /tmp/bitsrun.log 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">exit 0</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">###############################################################################</span></span></span><br><span class="line"></span><br><span class="line">chmod +x /etc/rc.local</span><br></pre></td></tr></table></figure>
-<p>上方写入 <code>rc.local</code> 的方法可能会失效，路由器重新开机后 Python 无法导入 bitsrun 库，开机自动运行配置修改为下面方法：</p>
+<p>上方写入 <code>rc.local</code> 的方法可能会失效，路由器重新开机后
+Python 无法导入 bitsrun 库，开机自动运行配置修改为下面方法：</p>
 <p>新建 <code>/etc/init.d/bitsrun</code> 文件并写入</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/sh /etc/rc.common</span></span><br><span class="line"></span><br><span class="line">USE_PROCD=1</span><br><span class="line">START=99</span><br><span class="line">STOP=10</span><br><span class="line"></span><br><span class="line">BITS_SCRIPT=&quot;/root/scripts/bitsrun.sh&quot;</span><br><span class="line">LOGFILE=&quot;/tmp/bitsrun.log&quot;</span><br><span class="line">PY_MODULE=&quot;bitsrun.cli&quot;</span><br><span class="line">MAX_WAIT=0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">wait_for_python_import() &#123;</span><br><span class="line">    local elapsed=0</span><br><span class="line">    local python_cmd=&quot;&quot;</span><br><span class="line">    export PYTHONPATH=/root/.local/lib/python3.10/site-packages:$PYTHONPATH</span><br><span class="line"></span><br><span class="line">    if command -v python3 &gt;/dev/null 2&gt;&amp;1; then</span><br><span class="line">        python_cmd=&quot;python3&quot;</span><br><span class="line">    elif command -v python &gt;/dev/null 2&gt;&amp;1; then</span><br><span class="line">        python_cmd=&quot;python&quot;</span><br><span class="line">    else</span><br><span class="line">        echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: python not found&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line">        return 1</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    echo &quot;[$(date &#x27;+%F %T&#x27;)] Python path: $(which $python_cmd)&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line">    echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: waiting for python module import: $&#123;PY_MODULE&#125;&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line"></span><br><span class="line">    while :; do</span><br><span class="line">        if $python_cmd -c &quot;from $&#123;PY_MODULE&#125; import cli&quot; &gt;/dev/null 2&gt;&amp;1; then</span><br><span class="line">            echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: module $&#123;PY_MODULE&#125; is ready&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line">            return 0</span><br><span class="line">        fi</span><br><span class="line"></span><br><span class="line">        echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: module not ready, waiting... ($&#123;elapsed&#125;s)&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line">        sleep 2</span><br><span class="line"></span><br><span class="line">        elapsed=$((elapsed + 2))</span><br><span class="line">        if [ &quot;$MAX_WAIT&quot; -gt 0 ] &amp;&amp; [ &quot;$elapsed&quot; -ge &quot;$MAX_WAIT&quot; ]; then</span><br><span class="line">            echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: timeout waiting for python import&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line">            return 1</span><br><span class="line">        fi</span><br><span class="line">    done</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start_service() &#123;</span><br><span class="line">    wait_for_python_import || return 1</span><br><span class="line"></span><br><span class="line">    echo &quot;[$(date &#x27;+%F %T&#x27;)] bitsrun: starting $&#123;BITS_SCRIPT&#125;&quot; &gt;&gt; &quot;$LOGFILE&quot;</span><br><span class="line"></span><br><span class="line">    procd_open_instance</span><br><span class="line">    procd_set_param command /bin/sh -c &quot;</span><br><span class="line">        export PATH=/root/.local/bin:\$PATH</span><br><span class="line">        export PYTHONPATH=/root/.local/lib/python3.10/site-packages:\$PYTHONPATH</span><br><span class="line">        $&#123;BITS_SCRIPT&#125; &gt;&gt; &#x27;$&#123;LOGFILE&#125;&#x27; 2&gt;&amp;1</span><br><span class="line">    &quot;</span><br><span class="line"></span><br><span class="line">    procd_set_param stdout 1</span><br><span class="line">    procd_set_param stderr 1</span><br><span class="line">    procd_set_param respawn</span><br><span class="line">    procd_close_instance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>然后配置开机运行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /etc/init.d/bitsrun</span><br><span class="line">/etc/init.d/bitsrun enable</span><br><span class="line">/etc/init.d/bitsrun start</span><br></pre></td></tr></table></figure>
-<h2 id="参考资料"><a class="anchor" href="#参考资料">·</a>参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://mao.fan/Router/Redmi/AX6000">猫点饭 – 路由器参数大全、选购指南</a></p>
-<p><a target="_blank" rel="noopener" href="https://page.xiabee.cn/posts/ax6000-openwrt/#/%E8%A7%A3%E9%94%81-SSH">红米 AX6000 路由器刷机</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-8265832-1-1.html">lgs2007m</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-8261104-1-1.html">237176253</a></p>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://mao.fan/Router/Redmi/AX6000">猫点饭 –
+路由器参数大全、选购指南</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://page.xiabee.cn/posts/ax6000-openwrt/#/%E8%A7%A3%E9%94%81-SSH">红米
+AX6000 路由器刷机</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-8265832-1-1.html">lgs2007m</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-8261104-1-1.html">237176253</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/BITNP/bitsrun">BITNP/bitsrun</a></p>
 </article><nav class="post-tags" aria-label="文章标签"><a href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/"># 路由器</a><a href="/tags/OpenWrt/"># OpenWrt</a><a href="/tags/%E7%BA%A2%E7%B1%B3/"># 红米</a></nav><section class="post-copyright"><strong>红米 AX6000 路由器刷机流程记录</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/ba0d09df/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2Fba0d09df%2F&amp;title=%E7%BA%A2%E7%B1%B3%20AX6000%20%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E6%9C%BA%E6%B5%81%E7%A8%8B%E8%AE%B0%E5%BD%95" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/8e775828/"><span>← 较新</span><strong>从复数到四元数</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/93fb702f/"><span>较早 →</span><strong>信号的多普勒展缩建模</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Git Fork 同步上游并保留本地提交</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-08-10T06:46:29.000Z">2026-08-10</time></div><h2 class="post-card__title"><a href="/posts/854464f8/">Git Fork 同步上游并保留本地提交</a></h2><p class="post-card__summary">Git Fork 后如何同步上游仓库，同时保留自己的提交</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Codex 客户端免手机号验证</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-05T03:00:53.000Z">2026-07-05</time></div><h2 class="post-card__title"><a href="/posts/f1aa593e/">Codex 客户端免手机号验证</a></h2><p class="post-card__summary">记录在 Codex 客户端中复用 ChatGPT 登录会话的配置流程，包括会话信息导出、格式转换和本地认证文件处理。</p><div class="post-card__footer"><span>1 分钟阅读</span><a class="post-card__read" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪"><div class="tech-cover tech-cover--code seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">扫频式频谱仪</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-01T08:46:21.000Z">2026-07-01</time></div><h2 class="post-card__title"><a href="/posts/838199f4/">扫频式频谱仪</a></h2><p class="post-card__summary">介绍扫频式频谱仪的显示电平与测量模型，并通过仿真观察扫频过程对信号频谱显示的影响。</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E5%9B%BA%E4%BB%B6%E8%A7%A3%E9%94%81-ssh"><span class="toc-number">1.</span> <span class="toc-text">官方固件解锁 SSH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B7%E5%85%A5%E5%9B%BA%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">刷入固件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">插件配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shellclash"><span class="toc-number">3.1.</span> <span class="toc-text">ShellClash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#openclash"><span class="toc-number">3.2.</span> <span class="toc-text">OpenClash</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-number">4.</span> <span class="toc-text">软件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#python"><span class="toc-number">4.1.</span> <span class="toc-text">Python</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC"><span class="toc-number">5.</span> <span class="toc-text">脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E9%99%86"><span class="toc-number">5.1.</span> <span class="toc-text">校园网自动登陆</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
