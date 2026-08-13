@@ -148,79 +148,116 @@ mjx-container[display="true"] {
 mjx-container[display="true"] + br {
   display: none;
 }
-</style></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2025-09-26T14:43:58.000Z">2025-09-26</time><span>更新于 2026-07-31</span></div><h1>CTF工具安装流程</h1><p class="post-hero__description">整理 CTF 环境中 IDA Pro、Burp Suite 等常用工具的安装入口与配置方法，按 Pwn、Web、Reverse 和 Misc 方向持续补充。</p><div class="post-hero__stats"><span>2 分钟阅读</span><span>612 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="pwn"><a class="anchor" href="#pwn">·</a>Pwn</h2>
-<h3 id="ida-pro"><a class="anchor" href="#ida-pro">·</a><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1IMTKHORAK8rNjjPZBVivmw?pwd=qcas">IDA Pro</a></h3>
+</style></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2025-09-26T14:43:58.000Z">2025-09-26</time><span>更新于 2026-07-31</span></div><h1>CTF工具安装流程</h1><p class="post-hero__description">整理 CTF 环境中 IDA Pro、Burp Suite 等常用工具的安装入口与配置方法，按 Pwn、Web、Reverse 和 Misc 方向持续补充。</p><div class="post-hero__stats"><span>2 分钟阅读</span><span>612 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="pwn">Pwn</h2>
+<h3 id="ida-pro"><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1IMTKHORAK8rNjjPZBVivmw?pwd=qcas">IDA
+Pro</a></h3>
 <blockquote>
-<p>版本号：v9.1 x64，<a target="_blank" rel="noopener" href="https://cloud.189.cn/web/share?code=Zn2MrqJZrYZb">点击此处</a> 获取安装包（访问码：3j1b）</p>
+<p>版本号：v9.1 x64，<a target="_blank" rel="noopener" href="https://cloud.189.cn/web/share?code=Zn2MrqJZrYZb">点击此处</a>
+获取安装包（访问码：3j1b）</p>
 </blockquote>
-<p>运行安装包 <code>ida-pro_91_x64win.exe</code>，按提示完成安装，然后复制 <code>keygen_patch</code> 目录中的文件 <code>keygen.py</code> 和 <code>idapro.hexlic</code> 文件到 IDA Pro 主目录下（自定义修改 <code>keygen.py</code> 中的 <code>name</code>、<code>email</code> 字段），保存修改并运行 <code>keygen.py</code> 脚本。</p>
-<p>运行 <code>keygen.py</code> 后会生成 patch 后的文件 <code>ida.dll.patched</code> 与 <code>ida32.dll.patched</code>。将原先的文件 <code>ida.dll</code> 和 <code>ida32.dll</code> 删除，然后将补丁文件 <code>ida.dll.patched</code> 与 <code>ida32.dll.patched</code> 分别重新命名为 <code>ida.dll</code> 和 <code>ida32.dll</code>。</p>
+<p>运行安装包
+<code>ida-pro_91_x64win.exe</code>，按提示完成安装，然后复制
+<code>keygen_patch</code> 目录中的文件 <code>keygen.py</code> 和
+<code>idapro.hexlic</code> 文件到 IDA Pro 主目录下（自定义修改
+<code>keygen.py</code> 中的 <code>name</code>、<code>email</code>
+字段），保存修改并运行 <code>keygen.py</code> 脚本。</p>
+<p>运行 <code>keygen.py</code> 后会生成 patch 后的文件
+<code>ida.dll.patched</code> 与
+<code>ida32.dll.patched</code>。将原先的文件 <code>ida.dll</code> 和
+<code>ida32.dll</code> 删除，然后将补丁文件 <code>ida.dll.patched</code>
+与 <code>ida32.dll.patched</code> 分别重新命名为 <code>ida.dll</code> 和
+<code>ida32.dll</code>。</p>
 <p>然后运行下面脚本指定 Python 版本</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">idapyswitch <span class="literal">--force-path</span> C:\Software\Anaconda\python3.dll</span><br><span class="line">idapyswitch  <span class="comment"># 再次运行，选择0即可</span></span><br></pre></td></tr></table></figure>
-<p>打开 IDA Pro 软件，[Help] → [License manager…]，勾选第一个即可，到此完成软件的激活，下面是插件的安装。</p>
+<p>打开 IDA Pro 软件，[Help] → [License
+manager...]，勾选第一个即可，到此完成软件的激活，下面是插件的安装。</p>
 <table>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 76%">
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:left">插件</th>
-<th style="text-align:left">功能</th>
+<th style="text-align: left;">插件</th>
+<th style="text-align: left;">功能</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">BinDiff 8</td>
-<td style="text-align:left">文件对比</td>
+<td style="text-align: left;">BinDiff 8</td>
+<td style="text-align: left;">文件对比</td>
 </tr>
 <tr>
-<td style="text-align:left">findcrypt-yara</td>
-<td style="text-align:left">识别常见加密算法</td>
+<td style="text-align: left;">findcrypt-yara</td>
+<td style="text-align: left;">识别常见加密算法</td>
 </tr>
 <tr>
-<td style="text-align:left">keypatch</td>
-<td style="text-align:left">patch 代码指令</td>
+<td style="text-align: left;">keypatch</td>
+<td style="text-align: left;">patch 代码指令</td>
 </tr>
 <tr>
-<td style="text-align:left">Hrtng</td>
-<td style="text-align:left">解密字符串，反混淆，括号高亮等。</td>
+<td style="text-align: left;">Hrtng</td>
+<td style="text-align: left;">解密字符串，反混淆，括号高亮等。</td>
 </tr>
 <tr>
-<td style="text-align:left">classinformer</td>
-<td style="text-align:left">反编译 C++时，可以根据 RTTI 等信息综合恢复类 Class 的相关信息，例如继承信息，类名等。</td>
+<td style="text-align: left;">classinformer</td>
+<td style="text-align: left;">反编译 C++时，可以根据 RTTI
+等信息综合恢复类 Class 的相关信息，例如继承信息，类名等。</td>
 </tr>
 <tr>
-<td style="text-align:left">deREferencing</td>
-<td style="text-align:left">调试时增强显示寄存器和堆栈数据</td>
+<td style="text-align: left;">deREferencing</td>
+<td style="text-align: left;">调试时增强显示寄存器和堆栈数据</td>
 </tr>
 <tr>
-<td style="text-align:left">HexRaysCodeXplorer</td>
-<td style="text-align:left">自动识别结构体，显示 C++虚函数，生成函数结构树等</td>
+<td style="text-align: left;">HexRaysCodeXplorer</td>
+<td style="text-align: left;">自动识别结构体，显示
+C++虚函数，生成函数结构树等</td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li><strong>BinDiff 8</strong>：运行 <code>bindiff8.msi</code>，然后将 <code>bindiff8_ida64.dll</code> 和 <code>binexport12_ida64.dll</code> 复制到目录 <code>C:\Users\Euler0525\AppData\Roaming\Hex-Rays\IDA Pro\plugins</code> 中（原本有残余文件需提前删除）；</li>
-<li><strong>findcrypt-yara</strong>：将 <code>findcrypt3.py</code> 和 <code>findcrypt3.rules</code> 复制到 <code>C:\Software\IDA\plugins</code> 中，执行</li>
+<li><strong>BinDiff 8</strong>：运行 <code>bindiff8.msi</code>，然后将
+<code>bindiff8_ida64.dll</code> 和 <code>binexport12_ida64.dll</code>
+复制到目录
+<code>C:\Users\Euler0525\AppData\Roaming\Hex-Rays\IDA Pro\plugins</code>
+中（原本有残余文件需提前删除）；</li>
+<li><strong>findcrypt-yara</strong>：将 <code>findcrypt3.py</code> 和
+<code>findcrypt3.rules</code> 复制到
+<code>C:\Software\IDA\plugins</code> 中，执行</li>
 </ul>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install yara<span class="literal">-python</span> <span class="literal">-i</span> https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>keypatch</strong>：将 <code>keypatch.py</code> 复制到 <code>C:\Software\IDA\plugins</code> 中，执行</li>
+<li><strong>keypatch</strong>：将 <code>keypatch.py</code> 复制到
+<code>C:\Software\IDA\plugins</code> 中，执行</li>
 </ul>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install keystone<span class="literal">-engine</span>  <span class="literal">-i</span> https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">pip install six <span class="literal">-i</span> https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>Hrtng</strong>：将 <code>hrtng.dll</code> 复制到 <code>C:\Software\IDA\plugins</code> 中；</li>
-<li><strong>classinformer</strong>：将 <code>ClassInformer64.dll</code> 复制到 <code>C:\Software\IDA\plugins</code> 中；</li>
-<li><strong>deREferencing</strong>：将的 <code>dereferencing.py</code> 和文件夹 <code>dereferencing</code> 复制到 <code>C:\Software\IDA\plugins</code> 中；</li>
-<li><strong>HexRaysCodeXplorer</strong>：将 <code>HexRaysCodeXplorer64.dll</code> 复制到 <code>C:\Software\IDA\plugins</code> 中；</li>
+<li><strong>Hrtng</strong>：将 <code>hrtng.dll</code> 复制到
+<code>C:\Software\IDA\plugins</code> 中；</li>
+<li><strong>classinformer</strong>：将 <code>ClassInformer64.dll</code>
+复制到 <code>C:\Software\IDA\plugins</code> 中；</li>
+<li><strong>deREferencing</strong>：将的 <code>dereferencing.py</code>
+和文件夹 <code>dereferencing</code> 复制到
+<code>C:\Software\IDA\plugins</code> 中；</li>
+<li><strong>HexRaysCodeXplorer</strong>：将
+<code>HexRaysCodeXplorer64.dll</code> 复制到
+<code>C:\Software\IDA\plugins</code> 中；</li>
 </ul>
-<h2 id="web"><a class="anchor" href="#web">·</a>Web</h2>
-<h3 id="burpsuite"><a class="anchor" href="#burpsuite">·</a><a target="_blank" rel="noopener" href="https://github.com/Euler0525/Burpsuite-Professional">Burpsuite</a></h3>
+<h2 id="web">Web</h2>
+<h3 id="burpsuite"><a target="_blank" rel="noopener" href="https://github.com/Euler0525/Burpsuite-Professional">Burpsuite</a></h3>
 <blockquote>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:xiv3<span class="built_in">r</span>/Burpsuite<span class="literal">-Professional</span>.git</span><br></pre></td></tr></table></figure>
 </blockquote>
-<p>克隆仓库到本地作为安装路径，进入目录后以管理员身份运行 PowerShell，并执行</p>
+<p>克隆仓库到本地作为安装路径，进入目录后以管理员身份运行
+PowerShell，并执行</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-ExecutionPolicy</span> <span class="literal">-ExecutionPolicy</span> bypass <span class="literal">-Scope</span> <span class="keyword">process</span></span><br><span class="line">./install.ps1</span><br></pre></td></tr></table></figure>
 <p>脚本依次安装 jdk-21，jre1.8，BurpSuite Pro，然后进入注册流程：</p>
-<p>填入 License 后选择 [Manual activation]，将弹出的第二栏中的内容 [Copy Request]，粘贴到 [Activation Request] 一栏中，最后将弹出的 [Activation Response] 粘贴到 [Paste  response] 一栏中，选择下一步完成激活。</p>
-<h2 id="参考资料"><a class="anchor" href="#参考资料">·</a>参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://mrx.hk/posts/f66fa9e6643dec79c46f35361986b601/">IDA Pro</a></p>
+<p>填入 License 后选择 [Manual activation]，将弹出的第二栏中的内容 [Copy
+Request]，粘贴到 [Activation Request] 一栏中，最后将弹出的 [Activation
+Response] 粘贴到 [Paste response] 一栏中，选择下一步完成激活。</p>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://mrx.hk/posts/f66fa9e6643dec79c46f35361986b601/">IDA
+Pro</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/xiv3r/Burpsuite-Professional">BurpSuite</a></p>
-</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/Pwn/"># Pwn</a><a href="/tags/Web/"># Web</a><a href="/tags/Reverse/"># Reverse</a><a href="/tags/Misc/"># Misc</a></nav><section class="post-copyright"><strong>CTF工具安装流程</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/b3b69404/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2Fb3b69404%2F&amp;title=CTF%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/c5322b12/"><span>← 较新</span><strong>延时函数 HAL_Delay 的 1ms 误差</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/8e775828/"><span>较早 →</span><strong>从复数到四元数</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Git Fork 同步上游并保留本地提交</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-08-10T06:46:29.000Z">2026-08-10</time></div><h2 class="post-card__title"><a href="/posts/854464f8/">Git Fork 同步上游并保留本地提交</a></h2><p class="post-card__summary">Git Fork 后如何同步上游仓库，同时保留自己的提交</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Codex 客户端免手机号验证</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-05T03:00:53.000Z">2026-07-05</time></div><h2 class="post-card__title"><a href="/posts/f1aa593e/">Codex 客户端免手机号验证</a></h2><p class="post-card__summary">记录在 Codex 客户端中复用 ChatGPT 登录会话的配置流程，包括会话信息导出、格式转换和本地认证文件处理。</p><div class="post-card__footer"><span>1 分钟阅读</span><a class="post-card__read" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪"><div class="tech-cover tech-cover--code seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">扫频式频谱仪</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-01T08:46:21.000Z">2026-07-01</time></div><h2 class="post-card__title"><a href="/posts/838199f4/">扫频式频谱仪</a></h2><p class="post-card__summary">介绍扫频式频谱仪的显示电平与测量模型，并通过仿真观察扫频过程对信号频谱显示的影响。</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn"><span class="toc-number">1.</span> <span class="toc-text">Pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ida-pro"><span class="toc-number">1.1.</span> <span class="toc-text">IDA Pro</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web"><span class="toc-number">2.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#burpsuite"><span class="toc-number">2.1.</span> <span class="toc-text">Burpsuite</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
+</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/Pwn/"># Pwn</a><a href="/tags/Web/"># Web</a><a href="/tags/Reverse/"># Reverse</a><a href="/tags/Misc/"># Misc</a></nav><section class="post-copyright"><strong>CTF工具安装流程</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/b3b69404/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2Fb3b69404%2F&amp;title=CTF%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/c5322b12/"><span>← 较新</span><strong>延时函数 HAL_Delay 的 1ms 误差</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/8e775828/"><span>较早 →</span><strong>从复数到四元数</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Git Fork 同步上游并保留本地提交</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-08-10T06:46:29.000Z">2026-08-10</time></div><h2 class="post-card__title"><a href="/posts/854464f8/">Git Fork 同步上游并保留本地提交</a></h2><p class="post-card__summary">Git Fork 后如何同步上游仓库，同时保留自己的提交</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Codex 客户端免手机号验证</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-05T03:00:53.000Z">2026-07-05</time></div><h2 class="post-card__title"><a href="/posts/f1aa593e/">Codex 客户端免手机号验证</a></h2><p class="post-card__summary">记录在 Codex 客户端中复用 ChatGPT 登录会话的配置流程，包括会话信息导出、格式转换和本地认证文件处理。</p><div class="post-card__footer"><span>1 分钟阅读</span><a class="post-card__read" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪"><div class="tech-cover tech-cover--code seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">扫频式频谱仪</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-01T08:46:21.000Z">2026-07-01</time></div><h2 class="post-card__title"><a href="/posts/838199f4/">扫频式频谱仪</a></h2><p class="post-card__summary">介绍扫频式频谱仪的显示电平与测量模型，并通过仿真观察扫频过程对信号频谱显示的影响。</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn"><span class="toc-number">1.</span> <span class="toc-text">Pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ida-pro"><span class="toc-number">1.1.</span> <span class="toc-text">IDA
+Pro</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web"><span class="toc-number">2.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#burpsuite"><span class="toc-number">2.1.</span> <span class="toc-text">Burpsuite</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>

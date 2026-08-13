@@ -36,172 +36,247 @@
   MathJax.startup.document.state(0)
   MathJax.texReset()
   MathJax.typesetPromise()
-}</script><meta name="generator" content="Hexo 7.0.0"></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-04-13T08:36:40.000Z">2026-04-13</time><span>更新于 2026-07-31</span></div><h1>JESD204B 学习笔记</h1><p class="post-hero__description">整理 JESD204B 高速串行接口的协议层次、子类特性、时序同步和 Xilinx 方案调试流程，便于排查 ADC/DAC 链路问题。</p><div class="post-hero__stats"><span>5 分钟阅读</span><span>1.5k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="简介"><a class="anchor" href="#简介">·</a>简介</h2>
-<p>JESD204B 是在 FPGA 与 ADC 之间的串行接口，串行数据速率可达 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12.5</mn><mi>G</mi><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">12.5Gbps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span></span></span></span>。相对于 LVDS，JESD204B 可以提供更高的带宽，更小的布局面积，更少的管脚以及更低的功耗。</p>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jeds204b_overview.webp" alt="JESD204B Link Data Flow and Protocol Layer Diagram" width="80%" />
-<center> <small> JESD204B Link Data Flow and Protocol Layer Diagram (Subclass 1) </small> </center>
-<h3 id="子类"><a class="anchor" href="#子类">·</a>子类</h3>
-<p>根据是否以及如何实现时间参考对齐（作为确定性链路延迟的要求），将 JESD204B 分为三个子类</p>
+}</script><meta name="generator" content="Hexo 7.0.0"></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-04-13T08:36:40.000Z">2026-04-13</time><span>更新于 2026-07-31</span></div><h1>JESD204B 学习笔记</h1><p class="post-hero__description">整理 JESD204B 高速串行接口的协议层次、子类特性、时序同步和 Xilinx 方案调试流程，便于排查 ADC/DAC 链路问题。</p><div class="post-hero__stats"><span>4 分钟阅读</span><span>1.4k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="简介">简介</h2>
+<p>JESD204B 是在 FPGA 与 ADC 之间的串行接口，串行数据速率可达 <span
+class="math inline">\(12.5Gbps\)</span>。相对于 LVDS，JESD204B
+可以提供更高的带宽，更小的布局面积，更少的管脚以及更低的功耗。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jeds204b_overview.webp" alt="JESD204B Link Data Flow and Protocol Layer Diagram" width="80%" /></p>
+<center>
+<small> JESD204B Link Data Flow and Protocol Layer Diagram (Subclass 1)
+</small>
+</center>
+<h3 id="子类">子类</h3>
+<p>根据是否以及如何实现时间参考对齐（作为确定性链路延迟的要求），将
+JESD204B 分为三个子类</p>
 <table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 34%" />
+<col style="width: 23%" />
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"></th>
-<th style="text-align:center">Subclass 0</th>
-<th style="text-align:center">Subclass 1</th>
-<th style="text-align:center">Subclass 2</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Subclass 0</th>
+<th style="text-align: center;">Subclass 1</th>
+<th style="text-align: center;">Subclass 2</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">是否支持确定延迟</td>
-<td style="text-align:center">否</td>
-<td style="text-align:center">是</td>
-<td style="text-align:center">是（速度受限）</td>
+<td style="text-align: center;">是否支持确定延迟</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">是（速度受限）</td>
 </tr>
 <tr>
-<td style="text-align:center">如何实现确定延迟</td>
-<td style="text-align:center">N/A</td>
-<td style="text-align:center">SYSREF</td>
-<td style="text-align:center">SYNC~</td>
+<td style="text-align: center;">如何实现确定延迟</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">SYSREF</td>
+<td style="text-align: center;">SYNC~</td>
 </tr>
 <tr>
-<td style="text-align:center">是否向后兼容 204A</td>
-<td style="text-align:center">是</td>
-<td style="text-align:center">否</td>
-<td style="text-align:center">否</td>
+<td style="text-align: center;">是否向后兼容 204A</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
 </tr>
 <tr>
-<td style="text-align:center">时钟和同步信号</td>
-<td style="text-align:center">Device Clock<br>SYNC~</td>
-<td style="text-align:center">Device Clock<br/>SYSREF<br>SYNC~</td>
-<td style="text-align:center">Device Clock<br/>SYNC~</td>
+<td style="text-align: center;">时钟和同步信号</td>
+<td style="text-align: center;">Device Clock<br>SYNC~</td>
+<td style="text-align: center;">Device Clock<br/>SYSREF<br>SYNC~</td>
+<td style="text-align: center;">Device Clock<br/>SYNC~</td>
 </tr>
 <tr>
-<td style="text-align:center">SYNC~是否时序严格</td>
-<td style="text-align:center">否</td>
-<td style="text-align:center">否</td>
-<td style="text-align:center">是</td>
+<td style="text-align: center;">SYNC~是否时序严格</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
 </tr>
 </tbody>
 </table>
-<h3 id="时序"><a class="anchor" href="#时序">·</a>时序</h3>
+<h3 id="时序">时序</h3>
 <ul>
-<li><strong>Frame Clock</strong>：传输层的数据帧与帧时钟对齐，所有发送和接收设备的帧时钟周期必须相同；</li>
-<li><strong>Local Multi-Frame Clock (LMFC)</strong>：多帧由 K 个帧组成，LMFC 与多帧边界对齐，作为低频参考解决多个设备间的帧时钟相位模糊问题，所有发送和接收设备的 LMFC 周期必须相同；</li>
-<li><strong>Device Clock</strong>：设备的帧、采样、LMFC 时钟所源自的系统时钟（来源于外部，例如 AD9528）。</li>
-<li><strong>Sample Clock</strong>：数据转换器的内部转换时钟，由设备时钟通过乘法器或除法器派生，与帧时钟的关系取决于数据打包到帧的方式。</li>
-<li><strong>SYSREF</strong>：在 Subclass 1 实现中用于生成 LMFC 时钟的时序相位参考（外部施加），必须与设备时钟源同步，上升沿转换决定 LMFC 对齐。</li>
-<li><strong>SYNC</strong>：单向信号（从接收器到发送器）低电平有效，常称为 SYNC~或 SYNCb，主要用于设备同步请求和错误报告，在 Subclass 2 设备中对齐 LMFC 相位，可选择将 SYNC 分配给多个设备。</li>
+<li><strong>Frame
+Clock</strong>：传输层的数据帧与帧时钟对齐，所有发送和接收设备的帧时钟周期必须相同；</li>
+<li><strong>Local Multi-Frame Clock (LMFC)</strong>：多帧由 K
+个帧组成，LMFC
+与多帧边界对齐，作为低频参考解决多个设备间的帧时钟相位模糊问题，所有发送和接收设备的
+LMFC 周期必须相同；</li>
+<li><strong>Device Clock</strong>：设备的帧、采样、LMFC
+时钟所源自的系统时钟（来源于外部，例如 AD9528）。</li>
+<li><strong>Sample
+Clock</strong>：数据转换器的内部转换时钟，由设备时钟通过乘法器或除法器派生，与帧时钟的关系取决于数据打包到帧的方式。</li>
+<li><strong>SYSREF</strong>：在 Subclass 1 实现中用于生成 LMFC
+时钟的时序相位参考（外部施加），必须与设备时钟源同步，上升沿转换决定
+LMFC 对齐。</li>
+<li><strong>SYNC</strong>：单向信号（从接收器到发送器）低电平有效，常称为
+SYNC~或 SYNCb，主要用于设备同步请求和错误报告，在 Subclass 2 设备中对齐
+LMFC 相位，可选择将 SYNC 分配给多个设备。</li>
 </ul>
-<h3 id="协议栈"><a class="anchor" href="#协议栈">·</a>协议栈</h3>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_protocol_stack.webp" alt="JESD204B Protocol Stack" width="80%" />
-<center> <small> JESD204B Protocol Stack </small> </center>
-<h4 id="应用层-application-layer"><a class="anchor" href="#应用层-application-layer">·</a>应用层 Application Layer</h4>
+<h3 id="协议栈">协议栈</h3>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_protocol_stack.webp" alt="JESD204B Protocol Stack" width="80%" /></p>
+<center>
+<small> JESD204B Protocol Stack </small>
+</center>
+<h4 id="应用层-application-layer">应用层 Application Layer</h4>
 <p>以 RX 链路为例，应用层接收前端 ADC 采样数据，有序输出到传输层。</p>
-<h4 id="传输层-transport-layer-scrambling"><a class="anchor" href="#传输层-transport-layer-scrambling">·</a>传输层 Transport Layer &amp; Scrambling</h4>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_data_structure.webp" alt="JESD 204B Data Structure" width="80%" />
-<center> <small> JESD204B Transport Layer Data Mapping </small> </center>
-<p>将 ADC 采集数据映射为非扰码的字节，再组成包含多个字节的帧，必要时为样本添加可选控制位，区分设备/链路/通道等的可能组合，相关重要参数包括</p>
+<h4 id="传输层-transport-layer-scrambling">传输层 Transport Layer &amp;
+Scrambling</h4>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_data_structure.webp" alt="JESD 204B Data Structure" width="80%" /></p>
+<center>
+<small> JESD204B Transport Layer Data Mapping </small>
+</center>
+<p>将 ADC
+采集数据映射为非扰码的字节，再组成包含多个字节的帧，必要时为样本添加可选控制位，区分设备/链路/通道等的可能组合，相关重要参数包括</p>
 <ul>
-<li>
-<p>L：每个转换器设备的通道数，图中 4 条 Lane，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">L=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>；</p>
-</li>
-<li>
-<p>M：每个设备的 ADC 转换器数，假设每个通道都是 I/Q 传输，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mn>2</mn><mo>×</mo><mn>4</mn><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">M=2\times4 = 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span>；</p>
-</li>
-<li>
-<p>F：每通道每帧的字节数，8 个 Octet，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">F=8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span>；</p>
-</li>
-<li>
-<p>S：每个转换器每帧时钟周期的样本数</p>
-</li>
-<li>
-<p>CS：每个转换样本的控制位数；</p>
-</li>
-<li>
-<p>CF：每帧中的控制位数</p>
-</li>
+<li><p>L：每个转换器设备的通道数，图中 4 条 Lane，<span
+class="math inline">\(L=4\)</span>；</p></li>
+<li><p>M：每个设备的 ADC 转换器数，假设每个通道都是 I/Q 传输，<span
+class="math inline">\(M=2\times4 = 8\)</span>；</p></li>
+<li><p>F：每通道每帧的字节数，8 个 Octet，<span
+class="math inline">\(F=8\)</span>；</p></li>
+<li><p>S：每个转换器每帧时钟周期的样本数</p></li>
+<li><p>CS：每个转换样本的控制位数；</p></li>
+<li><p>CF：每帧中的控制位数</p></li>
 </ul>
 <blockquote>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mtext> </mtext><mi mathvariant="normal">R</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi></mrow><mo>=</mo><mfrac><mrow><mi>M</mi><mo>×</mo><msup><mi>N</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo>×</mo><msub><mi>f</mi><mi>s</mi></msub></mrow><mi>L</mi></mfrac><mo>×</mo><mfrac><mn>10</mn><mn>8</mn></mfrac></mrow><annotation encoding="application/x-tex">\mathrm{Lane\space Rate} = \dfrac{M\times N&#x27;\times f_s}{L}\times \dfrac{10}{8}
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathrm">L</span><span class="mord mathrm">a</span><span class="mord mathrm">n</span><span class="mord mathrm">e</span><span class="mspace"> </span><span class="mord mathrm">R</span><span class="mord mathrm">a</span><span class="mord mathrm">t</span><span class="mord mathrm">e</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.1148919999999998em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4288919999999998em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">L</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
-<p>其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>N</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo>=</mo><mo stretchy="false">⌈</mo><mo stretchy="false">(</mo><mi>N</mi><mo>+</mo><mi>C</mi><mi>S</mi><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mn>8</mn><mo stretchy="false">⌉</mo><mo>×</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">N&#x27; = \lceil (N + CS) / 8 \rceil \times 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">⌈</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mclose">)</span><span class="mord">/</span><span class="mord">8</span><span class="mclose">⌉</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span> 为 ADC 分辨率。</p>
+<p><span class="math display">\[
+\mathrm{Lane\space Rate} = \dfrac{M\times N&#39;\times f_s}{L}\times
+\dfrac{10}{8}
+\]</span></p>
+<p>其中 <span class="math inline">\(N&#39; = \lceil (N + CS) / 8 \rceil
+\times 8\)</span>，<span class="math inline">\(N\)</span> 为 ADC
+分辨率。</p>
 </blockquote>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_datalink.webp" alt="JESD 204B Transport Layer" width="80%" />
-<center> <small> JESD204B Transport Layer </small> </center>
-<h4 id="链路层-datalink-layer"><a class="anchor" href="#链路层-datalink-layer">·</a>链路层 DataLink Layer</h4>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_sync.webp" alt="JESD 204B DataLink Layer" width="80%" />
-<center> <small> JESD 204B DataLink Layer </small> </center>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_datalink.webp" alt="JESD 204B Transport Layer" width="80%" /></p>
+<center>
+<small> JESD204B Transport Layer </small>
+</center>
+<h4 id="链路层-datalink-layer">链路层 DataLink Layer</h4>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_sync.webp" alt="JESD 204B DataLink Layer" width="80%" /></p>
+<center>
+<small> JESD 204B DataLink Layer </small>
+</center>
 <ul>
 <li><strong>码组同步（Code Group Syncchronization, CGS）</strong></li>
 </ul>
-<p>如上图，RX 端发送 SYNCb 信号给 TX 端，TX 端连续发送 K28.5 实现比特同步，让 RX 端等接受到连续的 4 个 K 码时，认为完成比特同步，但是不同 Lane 的数据到达时间存在相位差；</p>
+<p>如上图，RX 端发送 SYNCb 信号给 TX 端，TX 端连续发送 K28.5
+实现比特同步，让 RX 端等接受到连续的 4 个 K
+码时，认为完成比特同步，但是不同 Lane 的数据到达时间存在相位差；</p>
 <ul>
-<li><strong>通道初始化对齐（Initial Lane Alignment Sequence, ILAS）</strong></li>
+<li><strong>通道初始化对齐（Initial Lane Alignment Sequence,
+ILAS）</strong></li>
 </ul>
-<p>由于硬件上的细微差异(或温度差异)，可能导致每帧传输的时间不一致，需要对每一帧都做不同的延时处理。如上图所示，SYNC 信号拉高，然后发送 ILA 数据，利用 LMFC 本地时钟做边界对齐，利用缓冲区条件，保证每条 Lane 时延确定。</p>
+<p>由于硬件上的细微差异(或温度差异)，可能导致每帧传输的时间不一致，需要对每一帧都做不同的延时处理。如上图所示，SYNC
+信号拉高，然后发送 ILA 数据，利用 LMFC
+本地时钟做边界对齐，利用缓冲区条件，保证每条 Lane 时延确定。</p>
 <ul>
 <li><strong>用户数据</strong>：在持续监控下传输有效数据，并利用弹性缓冲区机制实现通道对齐和确定性延；</li>
 </ul>
-<h4 id="物理层-transport-layer"><a class="anchor" href="#物理层-transport-layer">·</a>物理层 Transport Layer</h4>
+<h4 id="物理层-transport-layer">物理层 Transport Layer</h4>
 <p>定义数据传输的电气和时序特性，为点对点、单向串行接口。</p>
 <table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 29%" />
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">LV-OIF-Sx15</th>
-<th style="text-align:center">LV-OIF-6G-SR</th>
-<th style="text-align:center">LV-OIF-11G-SR</th>
+<th style="text-align: center;">参数</th>
+<th style="text-align: center;">LV-OIF-Sx15</th>
+<th style="text-align: center;">LV-OIF-6G-SR</th>
+<th style="text-align: center;">LV-OIF-11G-SR</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">数据速率</td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>312.5</mn><mi>M</mi><mi>b</mi><mi>p</mi><mi>s</mi><mo>∼</mo><mn>3.125</mn><mi>G</mi><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">312.5Mbps\sim 3.125Gbps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mord">.</span><span class="mord">1</span><span class="mord">2</span><span class="mord">5</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>312.5</mn><mi>M</mi><mi>b</mi><mi>p</mi><mi>s</mi><mo>∼</mo><mn>6.375</mn><mi>G</mi><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">312.5Mbps\sim 6.375Gbps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">6</span><span class="mord">.</span><span class="mord">3</span><span class="mord">7</span><span class="mord">5</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>312.5</mn><mi>M</mi><mi>b</mi><mi>p</mi><mi>s</mi><mo>∼</mo><mn>12.5</mn><mi>G</mi><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">312.5Mbps\sim 12.5Gbps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span></span></span></span></td>
+<td style="text-align: center;">数据速率</td>
+<td style="text-align: center;"><span
+class="math inline">\(312.5Mbps\sim 3.125Gbps\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(312.5Mbps\sim 6.375Gbps\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(312.5Mbps\sim 12.5Gbps\)</span></td>
 </tr>
 <tr>
-<td style="text-align:center">差分电平</td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>500</mn><mi>m</mi><mi>V</mi><mo>∼</mo><mn>1000</mn><mi>m</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">500mV\sim 1000mV</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>400</mn><mi>m</mi><mi>V</mi><mo>∼</mo><mn>750</mn><mi>m</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">400mV\sim 750mV</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">7</span><span class="mord">5</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>360</mn><mi>m</mi><mi>V</mi><mo>∼</mo><mn>770</mn><mi>m</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">360mV\sim 770mV</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">6</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">7</span><span class="mord">7</span><span class="mord">0</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span></span></span></span></td>
+<td style="text-align: center;">差分电平</td>
+<td style="text-align: center;"><span class="math inline">\(500mV\sim
+1000mV\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(400mV\sim
+750mV\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(360mV\sim
+770mV\)</span></td>
 </tr>
 <tr>
-<td style="text-align:center">误码率</td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><mn>1</mn><msup><mn>0</mn><mrow><mo>−</mo><mn>12</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\leq 10^{-12}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719400000000001em;vertical-align:-0.13597em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><mn>1</mn><msup><mn>0</mn><mrow><mo>−</mo><mn>15</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\leq 10^{-15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719400000000001em;vertical-align:-0.13597em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><mn>1</mn><msup><mn>0</mn><mrow><mo>−</mo><mn>15</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\leq 10^{-15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719400000000001em;vertical-align:-0.13597em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td style="text-align: center;">误码率</td>
+<td style="text-align: center;"><span class="math inline">\(\leq
+10^{-12}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\leq
+10^{-15}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\leq
+10^{-15}\)</span></td>
 </tr>
 </tbody>
 </table>
-<h2 id="xilinx-jesd204b-方案"><a class="anchor" href="#xilinx-jesd204b-方案">·</a>Xilinx JESD204B 方案</h2>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_tx_core.webp" alt="JESD204 Transmitter Core" width="80%;" />
-<center> <small> JESD204 Transmitter Core </small> </center>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_rx_core.webp" alt="JESD204 Receiver Core" width="80%;" />
-<center> <small> JESD204 Receiver Core </small> </center>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_adc.webp" alt="JESD204B ADC Example" width="60%;" />
-<center> <small> JESD204B ADC Example </small> </center>
-<p>JESD204B 的串行数据传输线速率范围在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>312.5</mn><mi>M</mi><mi>b</mi><mi>p</mi><mi>s</mi><mo>∼</mo><mn>12.5</mn><mi>G</mi><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">312.5Mbps\sim 12.5Gbps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">2</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mord mathdefault">s</span></span></span></span>，在实际应用中，串行线速率由 ADC 芯片决定。IP 核工作时钟为该线速率的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>40</mn></mrow><annotation encoding="application/x-tex">1/40</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mord">/</span><span class="mord">4</span><span class="mord">0</span></span></span></span>。</p>
+<h2 id="xilinx-jesd204b-方案">Xilinx JESD204B 方案</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_tx_core.webp" alt="JESD204 Transmitter Core" width="80%;" /></p>
+<center>
+<small> JESD204 Transmitter Core </small>
+</center>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_rx_core.webp" alt="JESD204 Receiver Core" width="80%;" /></p>
+<center>
+<small> JESD204 Receiver Core </small>
+</center>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_adc.webp" alt="JESD204B ADC Example" width="60%;" /></p>
+<center>
+<small> JESD204B ADC Example </small>
+</center>
+<p>JESD204B 的串行数据传输线速率范围在 <span
+class="math inline">\(312.5Mbps\sim
+12.5Gbps\)</span>，在实际应用中，串行线速率由 ADC 芯片决定。IP
+核工作时钟为该线速率的 <span class="math inline">\(1/40\)</span>。</p>
 <ul>
-<li><code>core_clk</code>：串行数据传输线速率的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>40</mn></mrow><annotation encoding="application/x-tex">1/40</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mord">/</span><span class="mord">4</span><span class="mord">0</span></span></span></span>；</li>
-<li><code>ref_clk</code>：在 <code>JESD204_PHY</code> 核中的 GT 接口需要稳定的低抖动参考时钟；</li>
+<li><code>core_clk</code>：串行数据传输线速率的 <span
+class="math inline">\(1/40\)</span>；</li>
+<li><code>ref_clk</code>：在 <code>JESD204_PHY</code> 核中的 GT
+接口需要稳定的低抖动参考时钟；</li>
 <li><code>s_axi_clk</code>：AXI4-Lite 接口协议的读写时钟；</li>
 </ul>
-<img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_bd.webp" alt="JESD204B Block Design" width="90%;" />
-<p>如图所示，JESD204B 是单向传输协议，因此 JESD204 IP 核只能作为发送器或接收器，在 Block Design 中需要同时例化 TX 核与 RX 核。共享一个 JESD204_PHY 核。</p>
-<p>配置默认使用前文提到的 Subclass 1，需要 sysref 信号来支持确定性延迟，该信号为单词脉冲或周期性脉冲（如果存在多片 ADC，所有 ADC 的 SYSREF 需要同源，并且等长走线）</p>
-<h2 id="调试步骤与问题排查"><a class="anchor" href="#调试步骤与问题排查">·</a>调试步骤与问题排查</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube/electro/jesd204b_bd.webp" alt="JESD204B Block Design" width="90%;" /></p>
+<p>如图所示，JESD204B 是单向传输协议，因此 JESD204 IP
+核只能作为发送器或接收器，在 Block Design 中需要同时例化 TX 核与 RX
+核。共享一个 JESD204_PHY 核。</p>
+<p>配置默认使用前文提到的 Subclass 1，需要 sysref
+信号来支持确定性延迟，该信号为单词脉冲或周期性脉冲（如果存在多片
+ADC，所有 ADC 的 SYSREF 需要同源，并且等长走线）</p>
+<h2 id="调试步骤与问题排查">调试步骤与问题排查</h2>
 <ul>
-<li>从 CGS 到 ILAS 之间最小的时间间隔是 <code>1 * Frame + 9 * Octest</code>，如果 SYNC 被拉高，但是 TX 侧没有开始发送 ILA 系列，则需要检查 TX 侧有没有收到 SYSREF，只有收到了 SYSREF 才能去使能 LMFC，如果没有发送 ILA，说明 TX 没有 ILA 产生，则此时会持续发送 K28.5。</li>
+<li>从 CGS 到 ILAS 之间最小的时间间隔是
+<code>1 * Frame + 9 * Octest</code>，如果 SYNC 被拉高，但是 TX
+侧没有开始发送 ILA 系列，则需要检查 TX 侧有没有收到 SYSREF，只有收到了
+SYSREF 才能去使能 LMFC，如果没有发送 ILA，说明 TX 没有 ILA
+产生，则此时会持续发送 K28.5。</li>
 <li>如果 SYNC 信号始终拉低，检查 RX/TX 两边 Device Clock 是否正确</li>
 </ul>
-<h2 id="参考资料"><a class="anchor" href="#参考资料">·</a>参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://www.ti.com/lit/ml/slap161/slap161.pdf">JESD204B Overview - Texas Instruments</a></p>
-<p><a target="_blank" rel="noopener" href="https://docs.amd.com/v/u/en-US/wp446-jesd204b">Comprehensive JESD204B Solution Accelerates and Simplifies Development (WP446)</a></p>
-<p><a target="_blank" rel="noopener" href="https://ez.analog.com/cfs-file/__key/telligent-evolution-components-attachments/00-423-01-00-00-19-60-57/pg066_2D00_jesd204.pdf">JESD204 v7.2 LogiCORE IP Product Guide (PG066)</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.ti.com.cn/cn/lit/an/zhca737/zhca737.pdf?ts=1633520840698&amp;ref_url=https%253A%252F%252Fwww.ti.com.cn%252Fsitesearch%252Fcn%252Fdocs%252Funiversalsearch.tsp%253FlangPref%253Dzh-CN%2526searchTerm%253D204B%2526nr%253D150">JESD204B 调试手册</a></p>
-<p><a target="_blank" rel="noopener" href="https://analogdevicesinc.github.io/hdl/library/jesd204/index.html">JESD204 Interface Framework</a></p>
-<h2 id="附录"><a class="anchor" href="#附录">·</a>附录</h2>
-<h3 id="8b-10b-编码"><a class="anchor" href="#8b-10b-编码">·</a>8B/10B 编码</h3>
-</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/%E6%8E%A5%E5%8F%A3/"># 接口</a><a href="/tags/ADC/"># ADC</a><a href="/tags/%E5%BE%B7%E5%B7%9E%E4%BB%AA%E5%99%A8/"># 德州仪器</a></nav><section class="post-copyright"><strong>JESD204B 学习笔记</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/ec19dc81/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2Fec19dc81%2F&amp;title=JESD204B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/e8e8088c/"><span>← 较新</span><strong>Xilinx Vitis 使用 CoreSight DCC 重定向调试输出</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/e94de802/"><span>较早 →</span><strong>CUDA性能优化</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/7e1144e5/" aria-label="阅读lwIP 学习笔记"><div class="tech-cover tech-cover--circuit seed-1 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">lwIP 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-06-29T09:04:03.000Z">2026-06-29</time></div><h2 class="post-card__title"><a href="/posts/7e1144e5/">lwIP 学习笔记</a></h2><p class="post-card__summary">分析 lwIP 的内存管理实现，梳理动态堆内存与固定大小内存池的初始化、分配、释放流程及相关核心函数。</p><div class="post-card__footer"><span>5 分钟阅读</span><a class="post-card__read" href="/posts/7e1144e5/" aria-label="阅读lwIP 学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/8c71bd19/" aria-label="阅读嵌入式 Linux 开发学习笔记"><div class="tech-cover tech-cover--circuit seed-2 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">嵌入式 Linux 开发学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-05-25T06:40:42.000Z">2026-05-25</time></div><h2 class="post-card__title"><a href="/posts/8c71bd19/">嵌入式 Linux 开发学习笔记</a></h2><p class="post-card__summary">记录嵌入式 Linux 的网络、交叉编译与远程调试环境配置，以及内核源码下载、配置、编译、文件系统和驱动开发流程。</p><div class="post-card__footer"><span>6 分钟阅读</span><a class="post-card__read" href="/posts/8c71bd19/" aria-label="阅读嵌入式 Linux 开发学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/7622f45b/" aria-label="阅读Xilinx Embedded Software 学习笔记"><div class="tech-cover tech-cover--circuit seed-5 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Xilinx Embedded Software 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-05-21T12:06:48.000Z">2026-05-21</time></div><h2 class="post-card__title"><a href="/posts/7622f45b/">Xilinx Embedded Software 学习笔记</a></h2><p class="post-card__summary">整理 Xilinx SoC 裸机与 RTOS 软件示例，重点分析内存测试流程、Zynq DRAM 读写测试及眼图测试方法。</p><div class="post-card__footer"><span>7 分钟阅读</span><a class="post-card__read" href="/posts/7622f45b/" aria-label="阅读Xilinx Embedded Software 学习笔记">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text">子类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E5%BA%8F"><span class="toc-number">1.2.</span> <span class="toc-text">时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="toc-number">1.3.</span> <span class="toc-text">协议栈</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-application-layer"><span class="toc-number">1.3.1.</span> <span class="toc-text">应用层 Application Layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-transport-layer-scrambling"><span class="toc-number">1.3.2.</span> <span class="toc-text">传输层 Transport Layer &amp; Scrambling</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82-datalink-layer"><span class="toc-number">1.3.3.</span> <span class="toc-text">链路层 DataLink Layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82-transport-layer"><span class="toc-number">1.3.4.</span> <span class="toc-text">物理层 Transport Layer</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xilinx-jesd204b-%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">Xilinx JESD204B 方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%E6%AD%A5%E9%AA%A4%E4%B8%8E%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="toc-number">3.</span> <span class="toc-text">调试步骤与问题排查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8b-10b-%E7%BC%96%E7%A0%81"><span class="toc-number">5.1.</span> <span class="toc-text">8B&#x2F;10B 编码</span></a></li></ol></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script src="/vendor/fancybox/fancybox.umd.js" defer></script><script src="/js/images.js" defer></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://www.ti.com/lit/ml/slap161/slap161.pdf">JESD204B
+Overview - Texas Instruments</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.amd.com/v/u/en-US/wp446-jesd204b">Comprehensive
+JESD204B Solution Accelerates and Simplifies Development (WP446)</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://ez.analog.com/cfs-file/__key/telligent-evolution-components-attachments/00-423-01-00-00-19-60-57/pg066_2D00_jesd204.pdf">JESD204
+v7.2 LogiCORE IP Product Guide (PG066)</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.ti.com.cn/cn/lit/an/zhca737/zhca737.pdf?ts=1633520840698&amp;ref_url=https%253A%252F%252Fwww.ti.com.cn%252Fsitesearch%252Fcn%252Fdocs%252Funiversalsearch.tsp%253FlangPref%253Dzh-CN%2526searchTerm%253D204B%2526nr%253D150">JESD204B
+调试手册</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://analogdevicesinc.github.io/hdl/library/jesd204/index.html">JESD204
+Interface Framework</a></p>
+<h2 id="附录">附录</h2>
+<h3 id="b10b-编码">8B/10B 编码</h3>
+</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/%E6%8E%A5%E5%8F%A3/"># 接口</a><a href="/tags/ADC/"># ADC</a><a href="/tags/%E5%BE%B7%E5%B7%9E%E4%BB%AA%E5%99%A8/"># 德州仪器</a></nav><section class="post-copyright"><strong>JESD204B 学习笔记</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/ec19dc81/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2Fec19dc81%2F&amp;title=JESD204B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/e8e8088c/"><span>← 较新</span><strong>Xilinx Vitis 使用 CoreSight DCC 重定向调试输出</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/e94de802/"><span>较早 →</span><strong>CUDA性能优化</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/7e1144e5/" aria-label="阅读lwIP 学习笔记"><div class="tech-cover tech-cover--circuit seed-1 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">lwIP 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-06-29T09:04:03.000Z">2026-06-29</time></div><h2 class="post-card__title"><a href="/posts/7e1144e5/">lwIP 学习笔记</a></h2><p class="post-card__summary">分析 lwIP 的内存管理实现，梳理动态堆内存与固定大小内存池的初始化、分配、释放流程及相关核心函数。</p><div class="post-card__footer"><span>5 分钟阅读</span><a class="post-card__read" href="/posts/7e1144e5/" aria-label="阅读lwIP 学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/8c71bd19/" aria-label="阅读嵌入式 Linux 开发学习笔记"><div class="tech-cover tech-cover--circuit seed-2 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">嵌入式 Linux 开发学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-05-25T06:40:42.000Z">2026-05-25</time></div><h2 class="post-card__title"><a href="/posts/8c71bd19/">嵌入式 Linux 开发学习笔记</a></h2><p class="post-card__summary">记录嵌入式 Linux 的网络、交叉编译与远程调试环境配置，以及内核源码下载、配置、编译、文件系统和驱动开发流程。</p><div class="post-card__footer"><span>6 分钟阅读</span><a class="post-card__read" href="/posts/8c71bd19/" aria-label="阅读嵌入式 Linux 开发学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/7622f45b/" aria-label="阅读Xilinx Embedded Software 学习笔记"><div class="tech-cover tech-cover--circuit seed-5 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Xilinx Embedded Software 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><time datetime="2026-05-21T12:06:48.000Z">2026-05-21</time></div><h2 class="post-card__title"><a href="/posts/7622f45b/">Xilinx Embedded Software 学习笔记</a></h2><p class="post-card__summary">整理 Xilinx SoC 裸机与 RTOS 软件示例，重点分析内存测试流程、Zynq DRAM 读写测试及眼图测试方法。</p><div class="post-card__footer"><span>7 分钟阅读</span><a class="post-card__read" href="/posts/7622f45b/" aria-label="阅读Xilinx Embedded Software 学习笔记">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text">子类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E5%BA%8F"><span class="toc-number">1.2.</span> <span class="toc-text">时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="toc-number">1.3.</span> <span class="toc-text">协议栈</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-application-layer"><span class="toc-number">1.3.1.</span> <span class="toc-text">应用层 Application Layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-transport-layer-scrambling"><span class="toc-number">1.3.2.</span> <span class="toc-text">传输层 Transport Layer &amp;
+Scrambling</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82-datalink-layer"><span class="toc-number">1.3.3.</span> <span class="toc-text">链路层 DataLink Layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82-transport-layer"><span class="toc-number">1.3.4.</span> <span class="toc-text">物理层 Transport Layer</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xilinx-jesd204b-%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">Xilinx JESD204B 方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%E6%AD%A5%E9%AA%A4%E4%B8%8E%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="toc-number">3.</span> <span class="toc-text">调试步骤与问题排查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#b10b-%E7%BC%96%E7%A0%81"><span class="toc-number">5.1.</span> <span class="toc-text">8B&#x2F;10B 编码</span></a></li></ol></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script src="/vendor/fancybox/fancybox.umd.js" defer></script><script src="/js/images.js" defer></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>

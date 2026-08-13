@@ -148,73 +148,97 @@ mjx-container[display="true"] {
 mjx-container[display="true"] + br {
   display: none;
 }
-</style></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2024-04-12T14:02:01.000Z">2024-04-12</time><span>更新于 2026-07-31</span></div><h1>TCP 的流量控制与拥塞控制</h1><p class="post-hero__description">梳理 TCP 流量控制与拥塞控制机制，记录滑动窗口、发送端/接收端行为以及拥塞窗口调整的核心逻辑。</p><div class="post-hero__stats"><span>4 分钟阅读</span><span>1.5k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="流量控制-滑动窗口"><a class="anchor" href="#流量控制-滑动窗口">·</a>流量控制（滑动窗口）</h2>
-<p>TCP 通过 <strong><u>滑动窗口机制</u></strong> 防止接收方处理数据的速度跟不上发送方，避免随着时间推移，数据自然溢出接收方的缓冲区。</p>
-<h3 id="发送端"><a class="anchor" href="#发送端">·</a>发送端</h3>
-<p>发送方会建立自己的滑动窗口，按三个标准划分：是否发送、是否收到 ACK、是否在接收方通告处理范围内。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/sendwindow.webp" alt=""></p>
-<ol>
-<li>已经发送并且收到 <code>ACK</code> 的部分，已经成功发送，不需要在缓冲区保留；</li>
+</style></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2024-04-12T14:02:01.000Z">2024-04-12</time><span>更新于 2026-07-31</span></div><h1>TCP 的流量控制与拥塞控制</h1><p class="post-hero__description">梳理 TCP 流量控制与拥塞控制机制，记录滑动窗口、发送端/接收端行为以及拥塞窗口调整的核心逻辑。</p><div class="post-hero__stats"><span>4 分钟阅读</span><span>1.5k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><h2 id="流量控制滑动窗口">流量控制（滑动窗口）</h2>
+<p>TCP 通过 <strong><u>滑动窗口机制</u></strong>
+防止接收方处理数据的速度跟不上发送方，避免随着时间推移，数据自然溢出接收方的缓冲区。</p>
+<h3 id="发送端">发送端</h3>
+<p>发送方会建立自己的滑动窗口，按三个标准划分：是否发送、是否收到
+ACK、是否在接收方通告处理范围内。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/sendwindow.webp"></p>
+<ol type="1">
+<li>已经发送并且收到 <code>ACK</code>
+的部分，已经成功发送，不需要在缓冲区保留；</li>
 <li>已经发送但未收到 <code>ACK</code>；</li>
-<li><strong>可用窗口</strong>：还没有发送，但是还在接收方窗口处理范围内（第二、三部分为整个 <strong>发送窗口</strong>）；</li>
+<li><strong>可用窗口</strong>：还没有发送，但是还在接收方窗口处理范围内（第二、三部分为整个
+<strong>发送窗口</strong>）；</li>
 </ol>
 <blockquote>
 <p><code>可用窗口大小=SND.WND+SND.UNA-SND.NXT</code></p>
 <ul>
-<li>
-<p>SND.WND：发送窗口，32-51</p>
-</li>
-<li>
-<p>SND.UNA：指针，指向已发送未确认的字节，如上图 <code>SND.UNA=32</code></p>
-</li>
-<li>
-<p>SND.NXT：可用窗口的第一个字节，如上图 <code>SND.NXT=46</code></p>
-</li>
+<li><p>SND.WND：发送窗口，32-51</p></li>
+<li><p>SND.UNA：指针，指向已发送未确认的字节，如上图
+<code>SND.UNA=32</code></p></li>
+<li><p>SND.NXT：可用窗口的第一个字节，如上图
+<code>SND.NXT=46</code></p></li>
 </ul>
 </blockquote>
-<ol start="4">
-<li>需要发送，但是超过接收方窗口范围的部分。在没有收到新的 <code>ACK</code> 之前，发送方不会发送这些数据，通过这个限制，发送的数据就不会超过接收方缓冲区；</li>
+<ol start="4" type="1">
+<li>需要发送，但是超过接收方窗口范围的部分。在没有收到新的
+<code>ACK</code>
+之前，发送方不会发送这些数据，通过这个限制，发送的数据就不会超过接收方缓冲区；</li>
 </ol>
 <blockquote>
-<p>如果 <code>ACK</code> 在网络传输中丢包，发送端就不会感知到接收端窗口的变化，发送方一直没有收到 <code>ACK</code>，随着数据不断发送，可用窗口会被占满，发送方认为接收端处于零窗口状态，就不会继续发送数据，接收端也一直在等待发送端发送数据，进入了死锁状态。</p>
+<p>如果 <code>ACK</code>
+在网络传输中丢包，发送端就不会感知到接收端窗口的变化，发送方一直没有收到
+<code>ACK</code>，随着数据不断发送，可用窗口会被占满，发送方认为接收端处于零窗口状态，就不会继续发送数据，接收端也一直在等待发送端发送数据，进入了死锁状态。</p>
 <p>解决办法：引入零窗口计时器，如果发送端陷入零窗口状态，就启动计时器，定时询问接收端窗口是否可用。</p>
 </blockquote>
-<p>随着 <code>ACK</code> 或进程读取数据，窗口会顺次后移。如果接收到 <code>ACK</code>，表示之前的数据都收到了，那么可用窗口就会顺次右移</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/slidewindow.webp" alt=""></p>
-<h3 id="接收端"><a class="anchor" href="#接收端">·</a>接收端</h3>
+<p>随着 <code>ACK</code> 或进程读取数据，窗口会顺次后移。如果接收到
+<code>ACK</code>，表示之前的数据都收到了，那么可用窗口就会顺次右移</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/slidewindow.webp"></p>
+<h3 id="接收端">接收端</h3>
 <p>接收端的窗口分为已经接收并确认的区域、未收到但是可以接收的区域（接收窗口），剩下的是不可接收的区域。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/receivewindow.webp" alt=""></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/receivewindow.webp"></p>
 <p><strong>如果进程读取缓冲区的速度有变化，接受端就会相应调整接收窗口的大小，并告诉发送端，就可以控制发送端的发送速度</strong>。</p>
-<h2 id="拥塞控制"><a class="anchor" href="#拥塞控制">·</a>拥塞控制</h2>
-<p>在实际网络中，由于大量的包传输，可能导致中间某些节点的缓冲区满载，多余的包被丢弃，需要重新发送，最差的情况，网络上的包都是重传的包并且被反复丢弃，整个网络的传输能力降为 0.</p>
-<p>TCP 协议使用 <strong><u>拥塞窗口机制</u></strong> 解决这个问题。当节点发现自己的部分包丢的时候，有理由怀疑网络发生了拥塞，大部分节点会减少自己传输的包，这样网络拥塞环境就会得到缓解。在发送端定义一个窗口 <strong>CWND(congestion window)</strong>，<strong>发送端最大的发送范围</strong> 是拥塞窗口和滑动窗口中较小的一个。</p>
+<h2 id="拥塞控制">拥塞控制</h2>
+<p>在实际网络中，由于大量的包传输，可能导致中间某些节点的缓冲区满载，多余的包被丢弃，需要重新发送，最差的情况，网络上的包都是重传的包并且被反复丢弃，整个网络的传输能力降为
+0.</p>
+<p>TCP 协议使用 <strong><u>拥塞窗口机制</u></strong>
+解决这个问题。当节点发现自己的部分包丢的时候，有理由怀疑网络发生了拥塞，大部分节点会减少自己传输的包，这样网络拥塞环境就会得到缓解。在发送端定义一个窗口
+<strong>CWND(congestion
+window)</strong>，<strong>发送端最大的发送范围</strong>
+是拥塞窗口和滑动窗口中较小的一个。</p>
 <p>拥塞窗口的大小动态地随着网络情况调整，拥塞控制算法主要包括四个部分：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/congestion.webp" alt=""></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Euler0525/tube@master/net/congestion.webp"></p>
 <ul>
 <li>慢启动：在不确定拥塞是否会发生的情况下，会采用倍增的方式逐渐增加窗口的大小；</li>
-<li>拥塞避免：在窗口增加到一定程度时，减缓增加的速度，转为线性扩大窗口的方式（每次收到 ACK 没有丢包的情况下只比上次窗口增大 1）；</li>
+<li>拥塞避免：在窗口增加到一定程度时，减缓增加的速度，转为线性扩大窗口的方式（每次收到
+ACK 没有丢包的情况下只比上次窗口增大 1）；</li>
 <li>拥塞发生：当网络遇到丢包的情况，一方面进行<u>超时重传</u>或<u>快速重传</u>，另一方面缩小窗口的范围；</li>
 <li>快速恢复
 <ul>
-<li>快速重传：如果连续 3 次收到重复的 ACK，说明部分丢包，这时采用快速恢复（拥塞窗口变为原来的一半，ssthresh 设置成当前窗口大小，再执行拥塞避免算法。有时会设置 <code>CWND=ssthresh+3</code>）；
+<li>快速重传：如果连续 3 次收到重复的
+ACK，说明部分丢包，这时采用快速恢复（拥塞窗口变为原来的一半，ssthresh
+设置成当前窗口大小，再执行拥塞避免算法。有时会设置
+<code>CWND=ssthresh+3</code>）；
 <ul>
-<li>超时重传：拥塞比较严重，直接将 ssthresh 设置为原来的一半，窗口重置为 1，再进入慢启动阶段；</li>
-</ul>
-</li>
-</ul>
-</li>
+<li>超时重传：拥塞比较严重，直接将 ssthresh 设置为原来的一半，窗口重置为
+1，再进入慢启动阶段；</li>
+</ul></li>
+</ul></li>
 </ul>
 <blockquote>
 <p>两者区别（参考 AI 生成结果）</p>
-<p>流量控制主要是控制发送方发送数据的速率，以避免接收方来不及处理接收到的数据，造成数据的丢失。流量控制是一种 <strong>端到端</strong> 的控制机制，它确保发送方的发送速率与接收方的处理能力相匹配。在 TCP 协议中，流量控制是通过滑动窗口机制实现的，接收方通过返回的 ACK 中包含的窗口大小来告诉发送方自己的接收能力（基于反馈进行控制）。</p>
-<p>拥塞控制则是防止过多的数据注入到网络中，从而使网络中的路由器或链路不会过载。拥塞控制是一种全局性的控制机制，它关注的是整个网络的运行状态，而不仅仅是两个端点之间的通信。TCP 协议中的拥塞控制是通过慢启动、拥塞避免、快速重传和快速恢复等算法来实现的，这些算法根据网络的拥塞程度来调整数据传输的速率。</p>
-<p>总结：流量控制是为了让发送方的发送速率与接收方的处理能力相匹配，是 <strong>局部性过程</strong> 的而拥塞控制是为了让整个网络的数据传输量处于网络可以处理的范围内，是 <strong>全局性过程</strong>。</p>
-<p>数据链路层的流量控制是 <strong>点对点</strong> 的，数据链路层流量控制的手段是接收方收不下就不回复确认帧。传输层的流量控制手段是接收端通过滑动窗口告诉发送方。</p>
+<p>流量控制主要是控制发送方发送数据的速率，以避免接收方来不及处理接收到的数据，造成数据的丢失。流量控制是一种
+<strong>端到端</strong>
+的控制机制，它确保发送方的发送速率与接收方的处理能力相匹配。在 TCP
+协议中，流量控制是通过滑动窗口机制实现的，接收方通过返回的 ACK
+中包含的窗口大小来告诉发送方自己的接收能力（基于反馈进行控制）。</p>
+<p>拥塞控制则是防止过多的数据注入到网络中，从而使网络中的路由器或链路不会过载。拥塞控制是一种全局性的控制机制，它关注的是整个网络的运行状态，而不仅仅是两个端点之间的通信。TCP
+协议中的拥塞控制是通过慢启动、拥塞避免、快速重传和快速恢复等算法来实现的，这些算法根据网络的拥塞程度来调整数据传输的速率。</p>
+<p>总结：流量控制是为了让发送方的发送速率与接收方的处理能力相匹配，是
+<strong>局部性过程</strong>
+的而拥塞控制是为了让整个网络的数据传输量处于网络可以处理的范围内，是
+<strong>全局性过程</strong>。</p>
+<p>数据链路层的流量控制是 <strong>点对点</strong>
+的，数据链路层流量控制的手段是接收方收不下就不回复确认帧。传输层的流量控制手段是接收端通过滑动窗口告诉发送方。</p>
 </blockquote>
-<h2 id="参考资料"><a class="anchor" href="#参考资料">·</a>参考资料</h2>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/482065">滑动窗口：TCP 是如何进行流量控制和拥塞控制的？</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.tcpipguide.com/free/t_TCPSlidingWindowDataTransferandAcknowledgementMech-5.htm">TCP Sliding Window Data Transfer and Acknowledgement Mechanics</a></li>
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/482065">滑动窗口：TCP
+是如何进行流量控制和拥塞控制的？</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tcpipguide.com/free/t_TCPSlidingWindowDataTransferandAcknowledgementMech-5.htm">TCP
+Sliding Window Data Transfer and Acknowledgement Mechanics</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43212582/article/details/123413278#:~:text=%EF%BC%881%EF%BC%89%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E6%98%AF%E7%82%B9%E5%AF%B9%E7%82%B9%E7%9A%84%EF%BC%8C%E8%80%8C%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E3%80%82%20%EF%BC%882%EF%BC%89%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%9A%84%E6%89%8B%E6%AE%B5%E6%98%AF%E6%8E%A5%E6%94%B6%E6%96%B9%E6%94%B6%E4%B8%8D%E4%B8%8B%E5%B0%B1%E4%B8%8D%E5%9B%9E%E5%A4%8D%E7%A1%AE%E8%AE%A4%E5%B8%A7%E3%80%82%20%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E6%89%8B%E6%AE%B5%E6%98%AF%E6%8E%A5%E6%94%B6%E7%AB%AF%E9%80%9A%E8%BF%87%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%91%8A%E8%AF%89%E5%8F%91%E9%80%81%E6%96%B9%E3%80%82%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E6%96%B9%E6%B3%95%E4%B8%BB%E8%A6%81%E6%98%AF%E5%81%9C%E6%AD%A2%E7%AD%89%E5%BE%85%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%8D%8F%E8%AE%AE%EF%BC%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%8D%8F%E8%AE%AE%E8%BF%98%E5%8C%85%E6%8B%AC%E5%90%8E%E9%80%80N%E5%B8%A7%E5%8D%8F%E8%AE%AEGBN%E5%92%8C%E9%80%89%E6%8B%A9%E9%87%8D%E5%8D%8F%E8%AE%AESR%E3%80%82,%E5%81%9C%E6%AD%A2%E7%AD%89%E5%BE%85%E5%8D%8F%E8%AE%AE%20%E5%B0%B1%E6%98%AF%E6%AF%8F%E5%8F%91%E9%80%81%E5%AE%8C%E4%B8%80%E4%B8%AA%E5%B8%A7%E5%B0%B1%E5%81%9C%E6%AD%A2%E5%8F%91%E9%80%81%EF%BC%8C%E7%AD%89%E5%BE%85%E5%AF%B9%E6%96%B9%E7%9A%84%E7%A1%AE%E8%AE%A4%E5%B8%A7%EF%BC%8C%E5%9C%A8%E6%94%B6%E5%88%B0%E7%A1%AE%E8%AE%A4%E5%B8%A7%E5%90%8E%E5%86%8D%E5%8F%91%E9%80%81%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%B8%A7%E3%80%82%20%E5%90%8E%E9%80%80N%E5%B8%A7%E5%8D%8F%E8%AE%AE%20%E7%9B%B8%E6%AF%94%E4%BA%8E%E5%81%9C%E6%AD%A2%E7%AD%89%E5%BE%85%E5%8D%8F%E8%AE%AE%EF%BC%8C%E5%AE%83%E4%B8%8D%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%85%E5%89%8D%E4%B8%80%E4%B8%AA%E5%B8%A7%E7%9A%84%E7%A1%AE%E8%AE%A4%E5%B8%A7%E4%BE%BF%E5%8F%AF%E5%8F%91%E9%80%81%E5%90%8E%E9%9D%A2%E7%9A%84%E5%B8%A7%EF%BC%8C%E4%B9%8B%E6%89%80%E4%BB%A5%E6%98%AF%E5%8F%AB%E5%90%8E%E9%80%80N%E5%B8%A7%EF%BC%8C%E6%98%AF%E5%BD%93%E6%9C%89%E4%B8%80%E4%B8%AA%E5%B8%A7x%E5%8F%91%E9%80%81%E5%A4%B1%E8%B4%A5%E7%9A%84%E8%AF%9D%EF%BC%8Cx%E4%B9%8B%E5%90%8E%E7%9A%84%E6%89%80%E6%9C%89%E5%B8%A7%E9%83%BD%E9%9C%80%E8%A6%81%E9%87%8D%E4%BC%A0%E3%80%82">传输层&amp;数据链路层流量控制</a></li>
 </ol>
-</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/TCP-IP/"># TCP/IP</a><a href="/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/"># 流量控制</a><a href="/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/"># 拥塞控制</a></nav><section class="post-copyright"><strong>TCP 的流量控制与拥塞控制</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/6e65f3c1/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2F6e65f3c1%2F&amp;title=TCP%20%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/b37d7559/"><span>← 较新</span><strong>信息论基础</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/a7204ce4/"><span>较早 →</span><strong>介质访问协议</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/f5398568/" aria-label="阅读Nginx 学习笔记"><div class="tech-cover tech-cover--system seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Nginx 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2026-02-13T06:51:46.000Z">2026-02-13</time></div><h2 class="post-card__title"><a href="/posts/f5398568/">Nginx 学习笔记</a></h2><p class="post-card__summary">记录 Nginx 部署版与调试版的安装方法、常用命令、静态及代理服务配置，并从事件模型和事件循环入门分析源码架构。</p><div class="post-card__footer"><span>16 分钟阅读</span><a class="post-card__read" href="/posts/f5398568/" aria-label="阅读Nginx 学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/a7204ce4/" aria-label="阅读介质访问协议"><div class="tech-cover tech-cover--system seed-1 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">介质访问协议</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2024-04-08T15:03:58.000Z">2024-04-08</time></div><h2 class="post-card__title"><a href="/posts/a7204ce4/">介质访问协议</a></h2><p class="post-card__summary">梳理网络介质访问控制协议，从 Aloha 到 CSMA、CSMA/CD 和 CSMA/CA，比较不同随机接入机制的冲突处理方式。</p><div class="post-card__footer"><span>5 分钟阅读</span><a class="post-card__read" href="/posts/a7204ce4/" aria-label="阅读介质访问协议">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">流量控制（滑动窗口）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E7%AB%AF"><span class="toc-number">1.1.</span> <span class="toc-text">发送端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E7%AB%AF"><span class="toc-number">1.2.</span> <span class="toc-text">接收端</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">拥塞控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script src="/vendor/fancybox/fancybox.umd.js" defer></script><script src="/js/images.js" defer></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
+</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/TCP-IP/"># TCP/IP</a><a href="/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/"># 流量控制</a><a href="/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/"># 拥塞控制</a></nav><section class="post-copyright"><strong>TCP 的流量控制与拥塞控制</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/6e65f3c1/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2F6e65f3c1%2F&amp;title=TCP%20%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><a class="post-navigation__item" href="/posts/b37d7559/"><span>← 较新</span><strong>信息论基础</strong></a><a class="post-navigation__item post-navigation__item--next" href="/posts/a7204ce4/"><span>较早 →</span><strong>介质访问协议</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/f5398568/" aria-label="阅读Nginx 学习笔记"><div class="tech-cover tech-cover--system seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Nginx 学习笔记</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2026-02-13T06:51:46.000Z">2026-02-13</time></div><h2 class="post-card__title"><a href="/posts/f5398568/">Nginx 学习笔记</a></h2><p class="post-card__summary">记录 Nginx 部署版与调试版的安装方法、常用命令、静态及代理服务配置，并从事件模型和事件循环入门分析源码架构。</p><div class="post-card__footer"><span>16 分钟阅读</span><a class="post-card__read" href="/posts/f5398568/" aria-label="阅读Nginx 学习笔记">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/a7204ce4/" aria-label="阅读介质访问协议"><div class="tech-cover tech-cover--system seed-1 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-source="https://picsum.photos" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">介质访问协议</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a><time datetime="2024-04-08T15:03:58.000Z">2024-04-08</time></div><h2 class="post-card__title"><a href="/posts/a7204ce4/">介质访问协议</a></h2><p class="post-card__summary">梳理网络介质访问控制协议，从 Aloha 到 CSMA、CSMA/CD 和 CSMA/CA，比较不同随机接入机制的冲突处理方式。</p><div class="post-card__footer"><span>5 分钟阅读</span><a class="post-card__read" href="/posts/a7204ce4/" aria-label="阅读介质访问协议">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">流量控制（滑动窗口）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E7%AB%AF"><span class="toc-number">1.1.</span> <span class="toc-text">发送端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E7%AB%AF"><span class="toc-number">1.2.</span> <span class="toc-text">接收端</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">拥塞控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.xml" data-search-limit="12"></script><script src="/vendor/fancybox/fancybox.umd.js" defer></script><script src="/js/images.js" defer></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
