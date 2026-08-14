@@ -214,6 +214,12 @@ nvcc --version
 echo "$CUDA_HOME"
 ```
 
+推荐在使用 `nvcc` 时指定 GPU 架构，参考[CUDA GPU Compute Capability](https://developer.nvidia.com/cuda/gpus).
+
+```shell
+nvcc -arch=sm_89
+```
+
 ## 附录
 
 [Notebookcheck | Benchmarks/Tech | NVIDIA GeForce RTX 4060 Laptop GPU](https://www.notebookcheck.net/NVIDIA-GeForce-RTX-4060-Laptop-GPU-Benchmarks-and-Specs.675692.0.html)
