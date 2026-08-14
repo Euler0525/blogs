@@ -1,0 +1,17 @@
+include cover.pug
+
+mixin seriesCard(series)
+  - const coverPost = { path: series.path, title: series.name, cover: 'auto', categories: [] }
+  article.post-card.series-card
+    a.post-card__visual(href=url_for(series.path) aria-hidden='true' tabindex='-1')
+      +techCover(coverPost, true)
+    .post-card__body
+      .post-card__meta
+        span.series-pill 专栏
+        time(datetime=date_xml(series.updated)) 最后更新 #{date(series.updated, 'YYYY-MM-DD')}
+      h2.post-card__title
+        a(href=url_for(series.path))= series.name
+      p.post-card__summary 从「#{series.posts[0].title}」开始，按专栏顺序阅读。
+      .post-card__footer
+        span 共 #{series.count} 篇文章
+        a.post-card__read(href=url_for(series.path) aria-label=`查看${series.name}专栏`) 查看专栏 →

@@ -538,7 +538,8 @@ html[data-theme="dark"] .theme-icon--dark {
   font-size: .72rem;
 }
 
-.category-pill {
+.category-pill,
+.series-pill {
   display: inline-flex;
   align-items: center;
   min-height: 25px;
@@ -612,6 +613,15 @@ html[data-theme="dark"] .theme-icon--dark {
 .post-list {
   display: grid;
   gap: 18px;
+}
+
+.series-list {
+  display: grid;
+  gap: 18px;
+}
+
+.page-heading + .series-list {
+  margin-top: 28px;
 }
 
 .tech-cover {
@@ -1884,6 +1894,10 @@ mjx-assistive-mml {
   font-size: 1.2rem;
 }
 
+.series-box h2 a:hover {
+  color: var(--accent);
+}
+
 .series-box ol {
   padding-left: 22px;
   margin-bottom: 0;
@@ -1898,6 +1912,83 @@ mjx-assistive-mml {
 .series-box .is-current {
   color: var(--accent);
   font-weight: 700;
+}
+
+.series-box__order {
+  margin-right: 9px;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  font-weight: 500;
+}
+
+.series-post-list {
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  margin: 28px 0 0;
+  list-style: none;
+}
+
+.series-post-item__link {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+
+.series-post-item__link:hover {
+  border-color: unquote("color-mix(in srgb, var(--accent) 34%, var(--line))");
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.series-post-item__order {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.series-post-item__body {
+  min-width: 0;
+}
+
+.series-post-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  flex-wrap: wrap;
+}
+
+.series-post-item__body h2 {
+  margin: 8px 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.series-post-item__body p {
+  margin: 7px 0 0;
+  color: var(--ink-soft);
+  font-size: .85rem;
+  line-height: 1.7;
+}
+
+.series-post-item__read {
+  color: var(--accent);
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .post-copyright strong {
@@ -2526,6 +2617,15 @@ mjx-assistive-mml {
 
   .post-navigation__item--next {
     text-align: left;
+  }
+
+  .series-post-item__link {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .series-post-item__read {
+    justify-self: start;
   }
 
 }

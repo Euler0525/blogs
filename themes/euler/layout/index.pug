@@ -1,6 +1,8 @@
 include _partial/post-card.pug
+include _partial/series-card.pug
 
 - const latestPosts = page.posts ? page.posts.toArray() : []
+- const allSeries = euler_all_series()
 - const homeQuotes = theme.profile.quotes || []
 - const heroImage = theme.home.hero_image ? url_for(theme.home.hero_image) : ''
 - const heroStyle = heroImage ? `--home-hero-image: url("${heroImage}")` : null
@@ -32,6 +34,16 @@ section.home-hero(style=heroStyle)
               strong= topic.name
               span #{category ? category.length : 0} 篇
 
+    if allSeries.length
+      section.home-section(aria-labelledby='series-title')
+        .section-heading
+          div
+            p.eyebrow 专栏
+            h2#series-title 专栏
+          a.section-heading__link(href=url_for('/series/')) 全部专栏 →
+        .series-list
+          each series in allSeries
+            +seriesCard(series)
     section.home-section(aria-labelledby='latest-title')
       .section-heading
         div

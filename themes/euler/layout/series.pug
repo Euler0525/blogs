@@ -1,0 +1,24 @@
+.page-shell
+  .page-main
+    section.series-detail
+      header.page-heading
+        p.eyebrow 专栏
+        h1= page.series
+        p 共 #{page.seriesCount || page.seriesPosts.length} 篇文章，请按顺序阅读
+      ol.series-post-list
+        each post in page.seriesPosts
+          - const category = euler_primary_category(post)
+          li.series-post-item
+            a.series-post-item__link(href=url_for(post.path))
+              span.series-post-item__order 第 #{post.series_order} 篇
+              .series-post-item__body
+                .series-post-item__meta
+                  if category
+                    span.category-pill= category.name
+                  time(datetime=date_xml(post.date))= date(post.date, 'YYYY-MM-DD')
+                h2= post.title
+                if post.description
+                  p= post.description
+              span.series-post-item__read 阅读 →
+  .page-aside
+    include _partial/personal-panel.pug

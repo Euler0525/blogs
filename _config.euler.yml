@@ -14,6 +14,9 @@ menu:
   - name: 标签
     icon: tags
     url: /tags/
+  - name: 专栏
+    icon: book
+    url: /series/
   - name: 归档
     icon: folder-open
     url: /archives/

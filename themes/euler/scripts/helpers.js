@@ -77,14 +77,6 @@ hexo.extend.helper.register('euler_related_posts', post => {
     .map(item => item.post)
 })
 
-hexo.extend.helper.register('euler_series_posts', post => {
-  if (!post || !post.series) return []
-  return hexo.locals.get('posts')
-    .sort('date')
-    .toArray()
-    .filter(candidate => candidate.series === post.series)
-})
-
 hexo.extend.helper.register('euler_monthly_posts', startMonth => {
   const posts = hexo.locals.get('posts').toArray()
   const fallbackMonth = posts.length

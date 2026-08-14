@@ -3,7 +3,7 @@ include _partial/post-card.pug
 - const primaryCategory = euler_primary_category(page)
 - const tags = euler_collection(page.tags)
 - const relatedPosts = euler_related_posts(page)
-- const seriesPosts = euler_series_posts(page)
+- const seriesInfo = euler_series_info(page)
 - const tocHtml = theme.post.toc.enable ? toc(page.content, { list_number: theme.post.toc.number, min_depth: 2, max_depth: 4 }) : ''
 - const postUrl = full_url_for(page.path || '')
 
@@ -12,6 +12,8 @@ article.post-page
     .post-hero__meta
       if primaryCategory
         a.category-pill(href=url_for(primaryCategory.path))= primaryCategory.name
+      if seriesInfo
+        a.series-pill(href=url_for(seriesInfo.path)) #{seriesInfo.name} · 第 #{seriesInfo.order}/#{seriesInfo.count} 篇
       time(datetime=date_xml(page.date))= date(page.date, 'YYYY-MM-DD')
       if page.updated && date(page.updated, 'YYYY-MM-DD') !== date(page.date, 'YYYY-MM-DD')
         span 更新于 #{date(page.updated, 'YYYY-MM-DD')}
@@ -38,13 +40,15 @@ article.post-page
           each tag in tags
             a(href=url_for(tag.path)) # #{tag.name}
 
-      if seriesPosts.length > 1
+      if seriesInfo
         section.series-box
-          p.eyebrow 系列
-          h2= page.series
+          p.eyebrow 专栏文章
+          h2
+            a(href=url_for(seriesInfo.path))= seriesInfo.name
           ol
-            each item in seriesPosts
+            each item in seriesInfo.posts
               li(class=item.path === page.path ? 'is-current' : '')
+                span.series-box__order 第 #{item.series_order} 篇
                 if item.path === page.path
                   span= item.title
                 else

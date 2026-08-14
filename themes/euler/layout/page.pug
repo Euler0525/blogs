@@ -1,3 +1,5 @@
+include _partial/series-card.pug
+
 if page.type === '404'
   section.not-found
     p.not-found__code 404
@@ -8,7 +10,7 @@ else
   .page-shell
     .page-main
       header.page-heading
-        p.eyebrow= page.type === 'categories' ? '分类' : page.type === 'tags' ? '标签' : page.type === 'links' ? '朋友们' : '页面'
+        p.eyebrow= page.type === 'categories' ? '分类' : page.type === 'tags' ? '标签' : page.type === 'series' ? '专栏' : page.type === 'links' ? '朋友们' : '页面'
         h1= page.title
 
       if page.type === 'categories'
@@ -28,6 +30,14 @@ else
             )= tag.name
       else if page.type === 'links'
         article.page-content.links-content!= page.content
+      else if page.type === 'series'
+        - const allSeries = euler_all_series()
+        if allSeries.length
+          .series-list
+            each series in allSeries
+              +seriesCard(series)
+        else
+          p.page-empty 暂无专栏文章
       else
         article.page-content!= page.content
     .page-aside
