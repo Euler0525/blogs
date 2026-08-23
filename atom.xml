@@ -118,9 +118,9 @@
     
     <category term="Attention" scheme="https://blog.euler0525.cn/tags/Attention/"/>
     
-    <category term="Softmax" scheme="https://blog.euler0525.cn/tags/Softmax/"/>
-    
     <category term="Triton" scheme="https://blog.euler0525.cn/tags/Triton/"/>
+    
+    <category term="Softmax" scheme="https://blog.euler0525.cn/tags/Softmax/"/>
     
   </entry>
   
@@ -164,8 +164,6 @@
     <category term="编程" scheme="https://blog.euler0525.cn/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-    <category term="Triton" scheme="https://blog.euler0525.cn/tags/Triton/"/>
-    
     <category term="矩阵乘法" scheme="https://blog.euler0525.cn/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/"/>
     
     <category term="浮点误差" scheme="https://blog.euler0525.cn/tags/%E6%B5%AE%E7%82%B9%E8%AF%AF%E5%B7%AE/"/>
@@ -175,6 +173,8 @@
     <category term="求和条件数" scheme="https://blog.euler0525.cn/tags/%E6%B1%82%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%95%B0/"/>
     
     <category term="GEMM" scheme="https://blog.euler0525.cn/tags/GEMM/"/>
+    
+    <category term="Triton" scheme="https://blog.euler0525.cn/tags/Triton/"/>
     
   </entry>
   
