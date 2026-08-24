@@ -9,16 +9,29 @@
   const input = document.getElementById('search-input')
   const status = document.getElementById('search-status')
   const results = document.getElementById('search-results')
-  const searchPath = script ? script.dataset.searchPath : '/search.xml'
+  const searchPath = script ? script.dataset.searchPath : '/search.json'
   const limit = script ? Number(script.dataset.searchLimit) || 12 : 12
   let entries = null
   let loading = null
+  let indexRequest = null
+  let renderTimer = null
 
   if (!layer || !openButton || !input) return
 
-  const stripHtml = html => {
-    const documentNode = new DOMParser().parseFromString(html || '', 'text/html')
-    return (documentNode.body.textContent || '').replace(/\s+/g, ' ').trim()
+  const fetchIndex = () => {
+    if (indexRequest) return indexRequest
+
+    indexRequest = fetch(searchPath)
+      .then(response => {
+        if (!response.ok) throw new Error(`Search index request failed: ${response.status}`)
+        return response.json()
+      })
+      .catch(error => {
+        indexRequest = null
+        throw error
+      })
+
+    return indexRequest
   }
 
   const loadEntries = () => {
@@ -26,18 +39,21 @@
     if (loading) return loading
 
     status.textContent = '正在载入文章索引…'
-    loading = fetch(searchPath)
-      .then(response => {
-        if (!response.ok) throw new Error(`Search index request failed: ${response.status}`)
-        return response.text()
-      })
-      .then(xmlText => {
-        const xml = new DOMParser().parseFromString(xmlText, 'application/xml')
-        entries = [...xml.querySelectorAll('entry')].map(entry => ({
-          title: entry.querySelector('title')?.textContent?.trim() || '',
-          url: entry.querySelector('url')?.textContent?.trim() || entry.querySelector('link')?.getAttribute('href') || '',
-          content: stripHtml(entry.querySelector('content')?.textContent || '')
-        }))
+    loading = fetchIndex()
+      .then(data => {
+        entries = data.map(entry => {
+          const title = String(entry.title || '').trim()
+          const content = String(entry.content || '').trim()
+          const taxonomy = [...(entry.categories || []), ...(entry.tags || [])].join(' ')
+          return {
+            title,
+            url: String(entry.url || ''),
+            content,
+            titleSearch: title.toLowerCase(),
+            contentSearch: content.toLowerCase(),
+            taxonomySearch: taxonomy.toLowerCase()
+          }
+        })
         status.textContent = `已载入 ${entries.length} 篇文章`
         return entries
       })
@@ -73,9 +89,10 @@
     const terms = normalized.split(/\s+/).filter(Boolean)
     const matches = entries
       .map(entry => {
-        const title = entry.title.toLowerCase()
-        const content = entry.content.toLowerCase()
-        const score = terms.reduce((total, term) => total + (title.includes(term) ? 8 : 0) + (content.includes(term) ? 1 : 0), 0)
+        const score = terms.reduce((total, term) => total
+          + (entry.titleSearch.includes(term) ? 8 : 0)
+          + (entry.taxonomySearch.includes(term) ? 4 : 0)
+          + (entry.contentSearch.includes(term) ? 1 : 0), 0)
         return { entry, score }
       })
       .filter(item => item.score > 0)
@@ -92,7 +109,7 @@
       title.innerHTML = highlight(entry.title, terms)
       const excerpt = document.createElement('p')
       const firstIndex = Math.max(0, Math.min(...terms.map(term => {
-        const index = entry.content.toLowerCase().indexOf(term)
+        const index = entry.contentSearch.indexOf(term)
         return index < 0 ? entry.content.length : index
       })) - 42)
       excerpt.innerHTML = highlight(entry.content.slice(firstIndex, firstIndex + 180), terms)
@@ -106,6 +123,7 @@
     layer.hidden = false
     document.body.style.overflow = 'hidden'
     await loadEntries()
+    if (input.value.trim()) render(input.value)
     input.focus()
   }
 
@@ -118,7 +136,24 @@
   openButton.addEventListener('click', open)
   closeButton && closeButton.addEventListener('click', close)
   backdrop && backdrop.addEventListener('click', close)
-  input.addEventListener('input', () => entries && render(input.value))
+  input.addEventListener('input', () => {
+    window.clearTimeout(renderTimer)
+    renderTimer = window.setTimeout(() => entries && render(input.value), 120)
+  })
+
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+  const shouldPrefetch = !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)
+  const prefetch = () => shouldPrefetch && fetchIndex().catch(() => {})
+  openButton.addEventListener('pointerenter', prefetch, { once: true })
+  openButton.addEventListener('focus', prefetch, { once: true })
+
+  if (shouldPrefetch) {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(prefetch, { timeout: 3000 })
+    } else {
+      window.setTimeout(prefetch, 1800)
+    }
+  }
 
   document.addEventListener('keydown', event => {
     if (event.key === '/' && layer.hidden && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
