@@ -113,10 +113,10 @@ deploy:
 
 # Local search
 search:
-path: search.xml
-field: post
-format: html
-limit: 10000
+  path: search.json
+  field: post
+  format: html
+  limit: 10000
 
 
 # hexo-render-markdown-it

@@ -62,5 +62,5 @@ mermaid:
   cdn: https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs
 
 search:
-  path: /search.xml
+  path: /search.json
   limit: 12
