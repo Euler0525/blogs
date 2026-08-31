@@ -55,7 +55,11 @@ profile:
 
 home:
   hero_image: /img/background.webp
-  random_cover_source: https://picsum.photos
+  random_cover_sources:
+    - "https://loremflickr.com/960/540?lock={seed}"
+    - "https://random.imagecdn.app/960/540?random={seed}"
+    - "https://picsum.photos/seed/{seed}/960/540"
+  random_cover_timeout: 5000
   random_cover_fallback: /img/404.webp
   latest_count: 10
   topics:

@@ -11,7 +11,225 @@ abbrlink: 5db73590
 date: 2026-08-26 13:45:01
 ---
 
-## 起始版本
+## Triton 版本
+
+### Baseline
+
+```python
+import torch
+import triton
+import triton.language as tl
+
+
+@triton.jit
+def max_kernel(input_ptr, max_ptr, N, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < N
+    input_value = tl.load(input_ptr + offsets, mask=mask, other=-float("inf"))
+    tl.atomic_max(max_ptr, tl.max(input_value))
+
+
+@triton.jit
+def sumexp_kernel(input_ptr, max_ptr, output_ptr, N, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < N
+    max_value = tl.load(max_ptr)
+
+    input_value = tl.load(input_ptr + offsets, mask=mask)
+    z = tl.where(mask, tl.exp(input_value - max_value), 0.0)
+    tl.atomic_add(output_ptr, tl.sum(z))
+
+
+@triton.jit
+def softmax_kernel(input_ptr, max_ptr, sumexp_ptr, output_ptr, N, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < N
+
+    max_value = tl.load(max_ptr)
+    sumexp_value = tl.load(sumexp_ptr)
+
+    input_value = tl.load(input_ptr + offsets, mask=mask)
+
+    y = tl.exp(input_value - max_value) / sumexp_value
+    tl.store(output_ptr + offsets, y, mask=mask)
+
+
+# input, output are tensors on the GPU
+def solve(input: torch.Tensor, output: torch.Tensor, N: int):
+    if N == 0:
+        return
+
+    assert input.is_contiguous()
+    assert output.is_contiguous()
+    assert input.device == output.device
+    assert N <= input.numel()
+    assert N <= output.numel()
+
+    BLOCK_SIZE = 1024
+    grid = (triton.cdiv(N, BLOCK_SIZE),)
+
+    max_buf = torch.full((1,), -float("inf"), device=input.device, dtype=torch.float32, )
+    sumexp_buf = torch.zeros((1,), device=input.device, dtype=torch.float32, )
+
+    max_kernel[grid](input, max_buf, N, BLOCK_SIZE=BLOCK_SIZE, num_warps=4, )
+    sumexp_kernel[grid](input, max_buf, sumexp_buf, N, BLOCK_SIZE=BLOCK_SIZE, num_warps=4, )
+    softmax_kernel[grid](input, max_buf, sumexp_buf, output, N,
+                         BLOCK_SIZE=BLOCK_SIZE, num_warps=4, )
+```
+
+Softmax 对长度为 $N$ 的输入向量 $x$ 定义为
+
+$$
+y_i = \frac{e^{x_i}}{\sum_{j = 0}^{N-1} e^{x_j}}.
+$$
+
+直接计算指数容易溢出。利用 Softmax 对整体平移的不变性，对任意常数 $c$ 都有
+
+$$
+\frac{e^{x_i-c}}{\sum_j e^{x_j-c}}
+=
+\frac{e^{x_i}}{\sum_j e^{x_j}},
+$$
+
+因此取全局最大值
+
+$$
+m = \max_j x_j,
+$$
+
+得到数值稳定的形式
+
+$$
+y_i = \frac{e^{x_i-m}}{\sum_{j = 0}^{N-1} e^{x_j-m}}.
+$$
+
+由于 $x_i-m \le 0$，所有指数项都不大于 1，可以显著降低上溢风险。实现中，`max_kernel` 先对每个 Program 的局部数据求最大值，再通过 `tl.atomic_max` 合并为全局最大值 $m$；`sumexp_kernel` 计算各 Program 的局部指数和，并通过 `tl.atomic_add` 得到
+
+$$
+l = \sum_{j = 0}^{N-1} e^{x_j-m};
+$$
+
+最后 `softmax_kernel` 按 $y_i=e^{x_i-m}/l$ 完成归一化。越界元素在最大值规约中使用 $-\infty$，在指数和中贡献 0，因此不会影响最终结果。
+
+这是一个典型的三阶段 Stable Softmax
+
+$$
+\text{max kernel} \rightarrow \text{sumexp kernel} \rightarrow \text{normalize kernel}
+$$
+
+有 3 次读取，另外还需要原子操作 `tl.atmoic_max` 和 `tl.atomic_add` 以及 `max_buf` 和 `sumexp_buf` 的 global memory traffic.
+
+### Online Softmax
+
+```python
+import torch
+import triton
+import triton.language as tl
+
+
+@triton.jit
+def online_softmax_kernel(input_ptr, output_ptr, N, BLOCK_SIZE: tl.constexpr):
+    m = tl.full((1, ), -float("inf"), tl.float32)  # max_value
+    l = tl.zeros((1, ), tl.float32)  # sumexp_value
+    for start in tl.range(0, N, BLOCK_SIZE):
+        offsets = start + tl.arange(0, BLOCK_SIZE)
+        mask = offsets < N
+        input_value = tl.load(input_ptr + offsets, mask=mask, other=-float("inf")).to(tl.float32)
+
+        block_m = tl.max(input_value, axis=-1)
+        m_new = tl.maximum(block_m, m)
+        alpha = tl.exp(m - m_new)
+
+        block_l = tl.sum(tl.exp(input_value - m_new), axis=0)
+        l = l * alpha + block_l
+        m = m_new
+
+    for start in tl.range(0, N, BLOCK_SIZE):
+        offsets = start + tl.arange(0, BLOCK_SIZE)
+        mask = offsets < N
+        input_value = tl.load(input_ptr + offsets, mask=mask, other=-float("inf")).to(tl.float32)
+
+        y = tl.exp(input_value - m) / l
+        tl.store(output_ptr + offsets, y, mask=mask)
+
+
+def solve(input: torch.Tensor, output: torch.Tensor, N: int):
+    if N == 0:
+        return
+
+    assert input.is_contiguous()
+    assert output.is_contiguous()
+    assert input.device == output.device
+    assert N <= input.numel()
+    assert N <= output.numel()
+
+    BLOCK_SIZE = 1024
+    grid = (1, )
+
+    online_softmax_kernel[grid](input, output, N, BLOCK_SIZE=BLOCK_SIZE, num_warps=4, )
+```
+
+Online Softmax 将求最大值和求指数和融合到一次流式扫描中。处理完当前已访问的数据后，维护两个状态
+
+$$
+m = \max_j x_j, \qquad
+l = \sum_j e^{x_j-m}.
+$$
+
+其中 $m$ 是当前最大值，$l$ 是以当前最大值为基准缩放后的指数和。对于新读入的一个 Block，记其最大值为
+
+$$
+m_b = \max_{x_i \in B} x_i,
+$$
+
+新的运行最大值为
+
+$$
+m' = \max(m, m_b).
+$$
+
+当参考最大值由 $m$ 更新为 $m'$ 时，旧数据的指数和需要同步换到新的基准。由
+
+$$
+e^{x_i-m'} = e^{x_i-m} e^{m-m'},
+$$
+
+可得旧状态的贡献变为
+
+$$
+l\, e^{m-m'}.
+$$
+
+当前 Block 在新基准下的贡献为
+
+$$
+l_b = \sum_{x_i \in B} e^{x_i-m'},
+$$
+
+因此 Online Softmax 的核心递推公式为
+
+$$
+\boxed{
+\begin{aligned}
+m' &= \max(m, m_b), \\
+l' &= l\, e^{m-m'} + \sum_{x_i \in B} e^{x_i-m'}.
+\end{aligned}}
+$$
+
+代码中的 `alpha = tl.exp(m - m_new)` 正是基准变化产生的缩放因子。初始状态取 $m=-\infty$、$l=0$，每处理一个 Block 都保持不变量 $l=\sum_j e^{x_j-m}$，最终得到整个输入的全局 $m$ 与 $l$。
+
+该实现仍需要第二次扫描，因为最终每个输出
+
+$$
+y_i = \frac{e^{x_i-m}}{l}
+$$
+
+只有在全局 $m$ 和 $l$ 都确定后才能计算。第一遍将传统 Stable Softmax 中相互独立的 `max` 与 `sumexp` 两次扫描融合为一次 Online Reduction，第二遍负责归一化，因此原始输入由三次读取减少为两次读取。当前版本使用 `grid = (1, )`，由单个 Triton Program 顺序遍历全部 Block，从而使运行状态 $(m,l)$ 始终保存在同一 Program 内并保持一致。
+
+## CUDA 版本
 
 对于长度为 $N$ 的输入向量 $x$，Softmax 的定义为
 

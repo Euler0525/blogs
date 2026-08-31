@@ -299,3 +299,20 @@ NVIDIA 真正持续推进的，不是某一种计算核心，而是不断识别�
 - [Roofline Analysis with NVIDIA Nsight Compute](https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/)：判断 kernel 究竟受计算还是内存带宽限制。
 - [NVIDIA Corporate Timeline](https://www.nvidia.com/en-us/about-nvidia/corporate-timeline/)：从早期 3D 图形、GPU、CUDA 到 RTX 的官方历史。
 
+## 附录
+
+| 时间 |        架构         |                  代表产品                   | 技术变化                                                     |        主要方向         |
+| :--: | :-----------------: | :-----------------------------------------: | ------------------------------------------------------------ | :---------------------: |
+| 2006 |   **Tesla / G80**   |        GeForce 8800 GTX、早期 Tesla         | **统一着色器架构**，GPU 从固定图形流水线走向通用并行处理，为 CUDA/GPGPU 奠定基础 |     图形 → 通用计算     |
+| 2010 |      **Fermi**      |       GTX 480/580、Tesla C2050/M2050        | L1/L2 Cache、ECC、大幅增强 FP64、并发 Kernel，更像“通用并行处理器” |           HPC           |
+| 2012 |     **Kepler**      |      GTX 680、Titan、Tesla K20/K40/K80      | **SMX、性能/瓦大幅提升、Hyper-Q、Dynamic Parallelism、GPU Boost** |       HPC + 游戏        |
+| 2014 |     **Maxwell**     |     GTX 750 Ti、GTX 980、Tesla M40/M60      | **极度强调能效**，重新设计 SMM，提高每瓦性能                 |     游戏、推理、VDI     |
+| 2016 |     **Pascal**      |    GTX 1080、Titan Xp、Tesla P100/P40/P4    | 16nm FinFET、**NVLink、HBM2、FP16、Unified Memory 改进**     |       AI 开始爆发       |
+| 2017 |      **Volta**      |             Tesla V100、Titan V             | **第一代 Tensor Core**，AI 训练发生质变                      |      AI 训练 + HPC      |
+| 2018 |     **Turing**      |      RTX 2080 Ti、Tesla T4、Quadro RTX      | **第一代 RT Core + 第二代 Tensor Core；INT8/INT4**           |     光追 + AI 推理      |
+| 2020 |     **Ampere**      |           RTX 3090、A100/A30/A40            | **第三代 Tensor Core、TF32、BF16、结构化稀疏、MIG；第二代 RT Core** |   AI 训练/推理 + 游戏   |
+| 2022 |     **Hopper**      |              H100、H200、GH200              | **Transformer Engine、FP8、第四代 Tensor Core、TMA、DPX、NVLink 4** |         LLM/HPC         |
+| 2022 |  **Ada Lovelace**   |     RTX 4090、RTX 6000 Ada、L4/L40/L40S     | **第三代 RT Core、第四代 Tensor Core、SER、DLSS 3、AV1**     |     游戏/图形/推理      |
+| 2024 |    **Blackwell**    |        B100/B200、GB200、RTX 50 系列        | **第五代 Tensor Core、FP4/NVFP4、第二代 Transformer Engine、NVLink 5；第四代 RT Core** | 生成式 AI / AI Factory  |
+| 2025 | **Blackwell Ultra** |              B300、GB300 NVL72              | Blackwell 强化版：**288GB HBM3E、更强 NVFP4、Attention/推理优化** |      Reasoning AI       |
+| 2026 |      **Rubin**      | Rubin GPU、Vera Rubin NVL72、DGX Rubin NVL8 | **HBM4、NVLink 6、第三代 Transformer Engine、更强长上下文/Agent 推理** | Agentic AI / AI Factory |
