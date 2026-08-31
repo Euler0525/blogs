@@ -199,13 +199,22 @@
   }
 
   document.querySelectorAll('[data-random-cover="true"]').forEach((cover, index) => {
-    const source = String(cover.dataset.coverSource || '').replace(/\/$/, '')
-    const fallback = cover.dataset.coverFallback
-    if (!source) return
+    let sources = []
+    try {
+      const parsedSources = JSON.parse(cover.dataset.coverSources || '[]')
+      if (Array.isArray(parsedSources)) {
+        sources = parsedSources.map(source => String(source).trim()).filter(Boolean)
+      }
+    } catch (error) {
+      sources = []
+    }
 
-    const nonce = `${Date.now()}-${index}-${Math.random().toString(36).slice(2)}`
-    const randomUrl = `${source}/seed/${encodeURIComponent(nonce)}/960/540`
-    const image = new Image()
+    const fallback = cover.dataset.coverFallback
+    const configuredTimeout = Number(cover.dataset.coverTimeout)
+    const timeout = Number.isFinite(configuredTimeout) && configuredTimeout > 0 ? configuredTimeout : 4000
+    if (!sources.length) return
+
+    const seed = ((Date.now() + index * 997 + Math.floor(Math.random() * 1000000)) % 2147483646) + 1
 
     const applyCover = url => {
       if (!url) return
@@ -213,9 +222,46 @@
       cover.classList.add('tech-cover--image', 'is-cover-ready')
     }
 
-    image.onerror = () => applyCover(fallback)
-    applyCover(randomUrl)
-    image.src = randomUrl
+    const tryFallback = () => {
+      if (!fallback) return
+      const image = new Image()
+      image.onload = () => applyCover(fallback)
+      image.src = fallback
+    }
+
+    let sourceIndex = 0
+    const tryNextSource = () => {
+      if (sourceIndex >= sources.length) {
+        tryFallback()
+        return
+      }
+
+      const source = sources[sourceIndex++]
+      const url = source.replace(/\{seed\}/g, encodeURIComponent(seed))
+      const image = new Image()
+      let settled = false
+
+      const settle = loaded => {
+        if (settled) return
+        settled = true
+        window.clearTimeout(timer)
+        image.onload = null
+        image.onerror = null
+
+        if (loaded) {
+          applyCover(url)
+          return
+        }
+        tryNextSource()
+      }
+
+      const timer = window.setTimeout(() => settle(false), timeout)
+      image.onload = () => settle(true)
+      image.onerror = () => settle(false)
+      image.src = url
+    }
+
+    tryNextSource()
   })
 
   const copyText = async text => {
