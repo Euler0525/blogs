@@ -5,7 +5,7 @@ description: >-
   的实现
 tags:
   - LLM
-  - Tranformer
+  - Transformer
   - RMSNorm
   - Attention
   - Prefill
