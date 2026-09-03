@@ -1,0 +1,531 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="format-detection" content="telephone=no"><title>NVIDIA GPU 多卡服务器故障排查 | 科海拾零</title><meta name="description" content="NVIDIA GPU 训练性能下降、NCCL Hang、GPU 掉卡、NVLink 性能异常、单机或多机通信异常等问题的排故方法。"><meta name="author" content="Euler0525"><meta name="theme-color" content="#f4f2ec"><link rel="canonical" href="https://blog.euler0525.cn/posts/95efd7e1/"><link rel="icon" href="/img/favicon.webp"><link rel="alternate" type="application/atom+xml" title="科海拾零 RSS" href="/atom.xml"><meta property="og:type" content="article"><meta property="og:title" content="NVIDIA GPU 多卡服务器故障排查"><meta property="og:site_name" content="科海拾零"><meta property="og:url" content="https://blog.euler0525.cn/posts/95efd7e1/"><meta property="og:description" content="NVIDIA GPU 训练性能下降、NCCL Hang、GPU 掉卡、NVLink 性能异常、单机或多机通信异常等问题的排故方法。"><meta property="og:image" content="https://blog.euler0525.cn/img/og.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="NVIDIA GPU 多卡服务器故障排查"><meta name="twitter:image" content="https://blog.euler0525.cn/img/og.webp"><script>(() => {
+  const saved = localStorage.getItem('euler-color-mode')
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  document.documentElement.dataset.theme = saved || (systemDark ? 'dark' : 'light')
+})()</script><link rel="stylesheet" href="/css/index.css"><link id="reading-font-stylesheet" rel="stylesheet" href="/css/lxgwwenkai-regular.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="/css/lxgwwenkai-regular.css"></noscript><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = { node: text, delim: '', n: 0 }
+            math.end = { node: text, delim: '', n: 0 }
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><meta name="generator" content="Hexo 7.0.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head><body class="is-post"><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div><header class="site-header"><div class="site-header__inner"><a class="site-logo" href="/" aria-label="返回科海拾零首页">科海拾零</a><nav class="site-nav" id="site-nav" aria-label="主导航"><a class="site-nav__link" href="/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2.7 2.5 11h2.8v10h5.1v-6h3.2v6h5.1V11h2.8L12 2.7Z"></path></svg></span><span>主页</span></a><a class="site-nav__link" href="/categories/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3.5h18v5H3v-5Zm2 7h14v10H5v-10Zm5 2.5v2h4v-2h-4Z"></path></svg></span><span>分类</span></a><a class="site-nav__link" href="/tags/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 4v7.2l9.3 9.3 7.7-7.7-9.3-9.3H3a.5.5 0 0 0-.5.5Zm5 4.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm5.7-5.1h3.3l5 5-1.8 1.8-6.5-6.5v-.3Z"></path></svg></span><span>标签</span></a><a class="site-nav__link" href="/series/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 3h7.5A2.5 2.5 0 0 1 13 5.5V21a3.5 3.5 0 0 0-3-1.5H3V3Zm18 0h-7.5A2.5 2.5 0 0 0 11 5.5V21a3.5 3.5 0 0 1 3-1.5h7V3Z"></path></svg></span><span>专栏</span></a><a class="site-nav__link" href="/archives/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 5h7l2 2h10v3H6.1L3.8 20H2.5V5Zm4.8 7h15.2l-3.1 8H5.5l1.8-8Z"></path></svg></span><span>归档</span></a><a class="site-nav__link" href="/links/"><span class="site-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.2 10.7 20C5.8 15.6 2.5 12.6 2.5 8.9A5.1 5.1 0 0 1 7.7 3.7c1.7 0 3.3.8 4.3 2.1a5.5 5.5 0 0 1 4.3-2.1 5.1 5.1 0 0 1 5.2 5.2c0 3.7-3.3 6.7-8.2 11.1L12 21.2Z"></path></svg></span><span>友链</span></a></nav><div class="site-tools"><button class="icon-button" id="search-open" type="button" aria-label="搜索文章" title="搜索">⌕</button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗模式" title="切换明暗模式"><span class="theme-icon theme-icon--light" aria-hidden="true">☼</span><span class="theme-icon theme-icon--dark" aria-hidden="true">◐</span></button><button class="icon-button profile-toggle" id="profile-toggle" type="button" aria-label="打开个人信息" aria-controls="personal-drawer" aria-expanded="false">◎</button><button class="icon-button site-nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-controls="site-nav" aria-expanded="false">☰</button></div></div></header><main id="main-content"><article class="post-page"><header class="post-hero"><div class="post-hero__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-09-03T01:57:19.000Z">2026-09-03</time></div><h1>NVIDIA GPU 多卡服务器故障排查</h1><p class="post-hero__description">NVIDIA GPU 训练性能下降、NCCL Hang、GPU 掉卡、NVLink 性能异常、单机或多机通信异常等问题的排故方法。</p><div class="post-hero__stats"><span>12 分钟阅读</span><span>3.8k 字</span><span><i id="busuanzi_value_page_pv">—</i> 次阅读</span></div></header><div class="post-layout"><div class="post-main"><button class="mobile-toc-button" id="mobile-toc-open" type="button" aria-controls="post-toc" aria-expanded="false">目录</button><article class="post-content" id="article-content"><p>本文用于指导 NVIDIA GPU 多卡服务器在出现训练性能下降、NCCL Hang、GPU
+掉卡、NVLink 性能异常、单机或多机通信异常等问题时进行系统化排查。</p>
+<p>GPU 多卡服务器的故障通常涉及多个层级，包括 GPU
+硬件、PCIe、NUMA、NVLink、GPU P2P、NCCL、InfiniBand / RDMA、GPU Direct
+RDMA、容器环境以及训练框架。实际排障时，最常见的误区是尚未确认底层状态就直接修改
+NCCL 或训练框架参数。</p>
+<p>专业排障应遵循一个基本原则：<strong>先证明底层正常，再向上排查。</strong></p>
+<p>排障路径如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GPU 状态</span><br><span class="line">  ↓</span><br><span class="line">PCIe / NUMA 拓扑</span><br><span class="line">  ↓</span><br><span class="line">NVLink / GPU P2P</span><br><span class="line">  ↓</span><br><span class="line">NCCL 单机通信</span><br><span class="line">  ↓</span><br><span class="line">IB / RDMA 网络</span><br><span class="line">  ↓</span><br><span class="line">GPU Direct RDMA</span><br><span class="line">  ↓</span><br><span class="line">NCCL 多机通信</span><br><span class="line">  ↓</span><br><span class="line">训练框架与应用性能</span><br></pre></td></tr></table></figure>
+<p>单条命令通常无法直接确定故障位置。有效的方法是通过多层测试建立证据链，逐步缩小问题范围。</p>
+<hr>
+<h2 id="gpu-基础状态与硬件健康检查">GPU 基础状态与硬件健康检查</h2>
+<p>排障的第一步是确认操作系统是否正确识别所有 GPU，以及 GPU
+当前是否存在明显的硬件、驱动或运行状态异常。</p>
+<p>首先执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br><span class="line">nvidia-smi -L</span><br></pre></td></tr></table></figure>
+<p><code>nvidia-smi</code> 适合快速确认 GPU
+数量、利用率、显存占用、温度、功耗和当前运行进程，<code>nvidia-smi -L</code>
+则可快速确认系统识别到的 GPU 数量和设备列表。</p>
+<p>对于多卡训练，需要特别关注不同 GPU 之间的利用率差异。例如在 8
+卡训练任务中，如果只有 GPU0 利用率接近 100%，其余 GPU 长时间保持
+0%，应优先检查
+<code>CUDA_VISIBLE_DEVICES</code>、<code>torchrun</code>、MPI 或 rank
+配置，而不是直接判断为 NVLink 故障。</p>
+<p>需要进一步检查 GPU 健康状态时，可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi -q -d MEMORY,ECC,TEMPERATURE,POWER,PERFORMANCE</span><br></pre></td></tr></table></figure>
+<p>重点关注显存、ECC、温度、功耗以及 Performance State。</p>
+<p>需要持续观察 GPU 状态时，可使用
+<code>nvidia-smi dmon</code>；需要确认具体进程占用情况时，可使用
+<code>nvidia-smi pmon</code>。</p>
+<h3 id="检查-xid-与掉卡错误">检查 Xid 与掉卡错误</h3>
+<p>如果服务器出现 GPU 掉卡、CUDA
+Error、进程异常退出或设备突然不可见，应立即检查内核日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dmesg -T | grep -i -E <span class="string">'NVRM|Xid|SXid'</span></span><br><span class="line">journalctl -k | grep -i -E <span class="string">'NVRM|Xid'</span></span><br></pre></td></tr></table></figure>
+<p>如果日志中出现类似 <code>GPU has fallen off the bus</code> 或明显的
+Xid 错误，问题通常已经进入驱动、PCIe 或硬件层。此时不应继续围绕 PyTorch
+或 NCCL 参数进行大量尝试。</p>
+<p>对于严重故障，可执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nvidia-bug-report.sh</span><br></pre></td></tr></table></figure>
+<p>该工具可收集 NVIDIA 驱动、PCIe、GPU
+和系统日志，为后续分析提供完整信息。</p>
+<hr>
+<h2 id="pcienuma-与-gpu-拓扑检查">PCIe、NUMA 与 GPU 拓扑检查</h2>
+<p>多 GPU 通信性能与物理拓扑高度相关。在确认 GPU
+基础状态正常后，应继续检查 GPU、CPU、NUMA、PCIe Switch
+以及网络设备之间的拓扑关系。</p>
+<p>首先执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi topo -m</span><br></pre></td></tr></table></figure>
+<p>典型输出如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">        GPU0 GPU1 GPU2 GPU3</span><br><span class="line">GPU0     X   NV4  SYS  SYS</span><br><span class="line">GPU1    NV4   X   SYS  SYS</span><br><span class="line">GPU2    SYS  SYS   X   NV4</span><br><span class="line">GPU3    SYS  SYS  NV4   X</span><br></pre></td></tr></table></figure>
+<p>常见拓扑标记含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>标记</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NV#</code></td>
+<td>GPU 之间通过 NVLink 连接</td>
+</tr>
+<tr>
+<td><code>PIX</code></td>
+<td>通信经过一个 PCIe Switch</td>
+</tr>
+<tr>
+<td><code>PXB</code></td>
+<td>通信经过多个 PCIe Switch</td>
+</tr>
+<tr>
+<td><code>PHB</code></td>
+<td>通信经过 PCIe Host Bridge</td>
+</tr>
+<tr>
+<td><code>NODE</code></td>
+<td>设备位于同一个 NUMA Node</td>
+</tr>
+<tr>
+<td><code>SYS</code></td>
+<td>通信需要跨 NUMA 或 CPU Socket</td>
+</tr>
+</tbody>
+</table>
+<p>例如，<code>GPU0 ↔︎ GPU1 = NV4</code> 表示两张 GPU 之间存在
+NVLink；<code>GPU0 ↔︎ GPU2 = SYS</code> 表示两张 GPU
+之间的通信路径需要跨越更远的系统拓扑。</p>
+<p>需要注意，<code>SYS</code> 本身并不代表故障，只表示通信距离更远。</p>
+<p>如果希望忽略 NVLink，只观察 PCIe 路径，可以使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi topo -mp</span><br></pre></td></tr></table></figure>
+<p>NUMA 信息可以通过 <code>numactl -H</code> 查看。如果系统安装了
+hwloc，也可以使用 <code>lstopo</code> 查看 CPU、NUMA、GPU、PCIe Switch
+和网卡之间的关系。</p>
+<p>对于多机 GPU Direct RDMA 环境，这一步尤其重要，因为 GPU 与 IB
+网卡之间的 PCIe 和 NUMA 位置会直接影响后续通信路径判断。</p>
+<h3 id="检查-pcie-是否发生降速">检查 PCIe 是否发生降速</h3>
+<p>GPU 能够被系统正常识别，并不意味着 PCIe
+一定工作在合理的链路状态。</p>
+<p>首先获取 GPU 对应的 PCI 地址：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi --query-gpu=index,pci.bus_id --format=csv</span><br></pre></td></tr></table></figure>
+<p>假设某张 GPU 的 PCI 地址为 <code>31:00.0</code>，继续执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lspci -s 31:00.0 -vv</span><br></pre></td></tr></table></figure>
+<p>重点检查 <code>LnkCap</code> 与 <code>LnkSta</code>。</p>
+<p>正常情况下可能看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LnkCap: Speed 32GT/s, Width x16</span><br><span class="line">LnkSta: Speed 32GT/s, Width x16</span><br></pre></td></tr></table></figure>
+<p>如果出现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LnkCap: Speed 32GT/s, Width x16</span><br><span class="line">LnkSta: Speed 16GT/s, Width x8</span><br></pre></td></tr></table></figure>
+<p>说明硬件支持更高的 PCIe
+速率和宽度，但当前实际链路工作在较低状态。此时应进一步检查 BIOS、PCIe
+Riser、PCIe Switch、主板插槽或 GPU 安装状态。</p>
+<p>需要注意，GPU 空闲时 PCIe
+可能自动降低当前速率以节省功耗，因此不能只根据空闲状态下的一次
+<code>LnkSta</code> 输出直接判断故障，最好结合负载状态进行确认。</p>
+<hr>
+<h2 id="nvlink-与-gpu-p2p-检查">NVLink 与 GPU P2P 检查</h2>
+<p>确认 PCIe 和 NUMA 拓扑后，应继续验证 GPU 之间的实际通信能力。</p>
+<p>首先检查 NVLink 状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi nvlink -s</span><br><span class="line">nvidia-smi nvlink -e</span><br></pre></td></tr></table></figure>
+<p><code>nvidia-smi nvlink -s</code> 主要用于确认各条 NVLink
+当前是否处于 Active 状态，<code>nvidia-smi nvlink -e</code>
+则用于观察链路是否存在错误计数。</p>
+<p>这里必须注意一个重要原则：</p>
+<p><strong>NVLink 显示 Active，并不代表 GPU
+之间的实际通信性能一定正常。</strong></p>
+<p>因此还需要进一步检查 GPU P2P。</p>
+<p>可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi topo -p2p r</span><br><span class="line">nvidia-smi topo -p2p w</span><br><span class="line">nvidia-smi topo -p2p n</span><br></pre></td></tr></table></figure>
+<p>分别检查 P2P Read、P2P Write 以及 NVLink P2P Capability。</p>
+<p>这些命令主要验证拓扑和能力。如果需要判断真实的数据传输性能，应进一步运行
+CUDA Samples 中的 <code>p2pBandwidthLatencyTest</code>，或者使用 NVIDIA
+的 <code>nvbandwidth</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./p2pBandwidthLatencyTest</span><br><span class="line">./nvbandwidth</span><br></pre></td></tr></table></figure>
+<p><code>p2pBandwidthLatencyTest</code> 会实际测量 GPU 之间的 P2P
+连通性、带宽和延迟。</p>
+<p>如果出现以下组合：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi topo -m      NVLink 拓扑正常</span><br><span class="line">nvidia-smi nvlink -s    链路 Active</span><br><span class="line">P2P 实测带宽            明显偏低</span><br></pre></td></tr></table></figure>
+<p>则问题范围已经可以缩小到 NVLink Error、PCIe、ACS/IOMMU、驱动或 GPU
+硬件层，而不应优先怀疑 NCCL 或 PyTorch。</p>
+<hr>
+<h2 id="nccl-单机通信检查">NCCL 单机通信检查</h2>
+<p>只有在 GPU P2P 已经确认正常之后，才应继续进入 NCCL 层。</p>
+<p>最常用的测试工具是 <code>nccl-tests</code>。例如测试单机 8 卡
+AllReduce：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./build/all_reduce_perf \</span><br><span class="line">    -b 8 \</span><br><span class="line">    -e 1G \</span><br><span class="line">    -f 2 \</span><br><span class="line">    -g 8</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>-b</code> 表示起始消息大小；</li>
+<li><code>-e</code> 表示最大消息大小；</li>
+<li><code>-f</code> 表示每次测试消息大小的增长倍数；</li>
+<li><code>-g</code> 表示参与测试的 GPU 数量。</li>
+</ul>
+<p>测试结果中需要重点观察 <code>algbw</code> 和 <code>busbw</code>。</p>
+<p><code>algbw</code> 更接近算法层面的通信带宽，<code>busbw</code>
+更适合比较不同服务器、不同拓扑或不同配置下的底层通信性能。</p>
+<p>如果同型号、同配置服务器中，某台机器的 <code>busbw</code>
+明显低于其他正常节点，应继续检查 NVLink、P2P、PCIe 和 NCCL
+topology，而不是直接将问题归因于训练框架。</p>
+<h3 id="分析-nccl-实际通信路径">分析 NCCL 实际通信路径</h3>
+<p>如果需要确认 NCCL 实际选择了什么通信路径，可以启用调试日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NCCL_DEBUG=INFO</span><br><span class="line"><span class="built_in">export</span> NCCL_DEBUG_SUBSYS=INIT,GRAPH,P2P,NET</span><br></pre></td></tr></table></figure>
+<p>运行测试后重点观察日志中的
+<code>P2P</code>、<code>NET/IB</code>、<code>NET/Socket</code> 和
+<code>GRAPH</code>。</p>
+<p>例如在多节点 InfiniBand 环境中，如果原本预期使用 IB / RDMA，但 NCCL
+日志中主要出现 <code>NET/Socket</code>，说明 NCCL
+没有使用预期的高速网络路径。此时应继续检查网卡、RDMA、网络接口选择以及
+GPU Direct，而不是优先分析 GPU 算力。</p>
+<p>排障时还可以使用“禁用法”进行对照测试。</p>
+<p>禁用 GPU P2P：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NCCL_P2P_DISABLE=1</span><br></pre></td></tr></table></figure>
+<p>如果禁用后 NCCL 性能从较高水平明显下降，说明原来的 GPU P2P
+路径确实发挥了作用；如果禁用前后性能几乎没有变化，则应怀疑 NCCL
+原本就没有正常使用 GPU P2P。</p>
+<p>验证 InfiniBand 时可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NCCL_IB_DISABLE=1</span><br></pre></td></tr></table></figure>
+<p>如果禁用 IB 后性能明显下降，通常说明原来的 IB Transport
+正常发挥作用。</p>
+<p>这些环境变量适合用于临时排障和对照实验，不建议在没有明确原因的情况下长期写入生产环境。</p>
+<hr>
+<h2 id="infiniband-与-rdma-网络检查">InfiniBand 与 RDMA 网络检查</h2>
+<p>如果单机 NCCL 正常，而多机通信异常，应将排障重点转向网络层。</p>
+<p>首先检查 InfiniBand 链路：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ibstat</span><br></pre></td></tr></table></figure>
+<p>正常状态下通常应看到 <code>State: Active</code> 和
+<code>Physical state: LinkUp</code>。</p>
+<p>进一步可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ibv_devices</span><br><span class="line">ibv_devinfo</span><br><span class="line">rdma <span class="built_in">link</span></span><br><span class="line">ibdev2netdev</span><br></pre></td></tr></table></figure>
+<p>其中，<code>ibdev2netdev</code> 可以查看 Mellanox HCA 与 Linux
+网络接口之间的映射关系，例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mlx5_0 port 1 ==&gt; ib0 (Up)</span><br><span class="line">mlx5_1 port 1 ==&gt; ib1 (Up)</span><br></pre></td></tr></table></figure>
+<p>这有助于确认 NCCL 使用的 <code>mlx5_0</code>
+实际对应哪个系统网络接口。</p>
+<h3 id="验证-rdma-实际带宽">验证 RDMA 实际带宽</h3>
+<p>IB 链路显示 Active 并不能证明网络实际性能正常。</p>
+<p>真正验证 RDMA 数据路径时，应使用 <code>ib_write_bw</code>。</p>
+<p>服务端执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ib_write_bw -d mlx5_0</span><br></pre></td></tr></table></figure>
+<p>客户端执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ib_write_bw -d mlx5_0 &lt;服务器IP&gt;</span><br></pre></td></tr></table></figure>
+<p>如果 <code>ib_write_bw</code> 本身就很慢，应优先检查 NIC、IB /
+RoCE、交换机、线缆、路由、PFC/ECN、NUMA 和 PCIe，而不是继续围绕 NCCL
+排查。</p>
+<p>如果 <code>ib_write_bw</code> 正常，但多机 <code>nccl-tests</code>
+很慢，则应重点检查 GPU Direct RDMA、GPU-NIC Affinity、NCCL Transport 和
+ACS/IOMMU。</p>
+<hr>
+<h2 id="gpu-direct-rdma-与-acs-检查">GPU Direct RDMA 与 ACS 检查</h2>
+<p>在 NVIDIA GPU 与 Mellanox 网络环境中，可以检查
+<code>nvidia_peermem</code> 模块：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep nvidia_peermem</span><br></pre></td></tr></table></figure>
+<p>需要时可以加载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe nvidia-peermem</span><br></pre></td></tr></table></figure>
+<p>但不能仅凭是否存在 <code>nvidia_peermem</code> 来判断 GPU Direct RDMA
+是否可用。现代环境也可能使用 DMA-BUF，因此最终仍应结合 NCCL
+日志和实际通信带宽进行判断。</p>
+<p>另一个需要注意的问题是 PCIe ACS。</p>
+<p>可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lspci -vvv | grep ACSCtl</span><br></pre></td></tr></table></figure>
+<p>如果 ACS 配置导致 GPU 到 NIC 的 P2P 流量绕行 CPU Root
+Complex，可能造成明显性能下降，甚至引发通信异常。</p>
+<p>但是，不应仅因为发现 <code>ACSCtl</code> 就直接照搬网上的
+<code>setpci</code> 命令进行修改。虚拟化环境、裸机以及不同服务器平台对
+ACS 的要求并不相同，需要结合具体架构判断。</p>
+<hr>
+<h2 id="容器cuda-与-pytorch-环境检查">容器、CUDA 与 PyTorch
+环境检查</h2>
+<p>如果 NCCL 在容器中初始化失败、出现
+Hang，或者裸机与容器表现明显不同，还需要检查容器运行环境。</p>
+<p>首先检查共享内存：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">df</span> -h /dev/shm</span><br><span class="line"><span class="built_in">ulimit</span> -l</span><br></pre></td></tr></table></figure>
+<p>Docker 默认共享内存可能较小，而多 GPU、多 Rank 的 NCCL
+任务可能需要更多共享内存。因此容器环境中的 NCCL 问题并不一定来自 GPU
+或网络本身。</p>
+<h3 id="cuda-环境">CUDA 环境</h3>
+<p>可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nvcc --version</span><br><span class="line"><span class="built_in">which</span> nvcc</span><br><span class="line"><span class="built_in">readlink</span> -f /usr/local/cuda</span><br></pre></td></tr></table></figure>
+<p>需要特别区分 <code>nvidia-smi</code> 中显示的
+<code>CUDA Version</code> 与 <code>nvcc --version</code>。</p>
+<p><code>nvidia-smi</code> 中的 CUDA Version 更接近当前 NVIDIA Driver
+支持的 CUDA 能力，<code>nvcc --version</code>
+才表示本机当前安装或正在使用的 CUDA Toolkit。</p>
+<h3 id="pytorch-gpu-可见性">PyTorch GPU 可见性</h3>
+<p>可以通过以下代码确认 PyTorch 实际看到的 GPU：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"torch:"</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"torch cuda:"</span>, torch.version.cuda)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"cuda available:"</span>, torch.cuda.is_available())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"gpu count:"</span>, torch.cuda.device_count())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(torch.cuda.device_count()):</span><br><span class="line">    <span class="built_in">print</span>(i, torch.cuda.get_device_name(i))</span><br></pre></td></tr></table></figure>
+<p>如果 <code>nvidia-smi</code> 能看到 8 张 GPU，而
+<code>torch.cuda.device_count()</code> 只能看到 1 张，应优先检查
+<code>CUDA_VISIBLE_DEVICES</code> 和运行环境，而不是继续排查
+NVLink。</p>
+<hr>
+<h2 id="dcgm-与应用性能分析">DCGM 与应用性能分析</h2>
+<p>对于 ECC、Xid、P2P Error、随机掉卡等问题，可以进一步使用 NVIDIA DCGM
+进行硬件诊断。</p>
+<p>快速诊断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dcgmi diag -r 1</span><br></pre></td></tr></table></figure>
+<p>更深入诊断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dcgmi diag -r 3</span><br></pre></td></tr></table></figure>
+<p>如果重点怀疑 PCIe：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dcgmi diag --run pcie</span><br></pre></td></tr></table></figure>
+<p>DCGM 更适合验证 GPU Hardware、Memory、PCIe、P2P 和 Compute
+层面的健康状态。</p>
+<p>如果 GPU、P2P、NCCL
+和网络均正常，但训练性能仍然明显偏低，应进入应用性能分析阶段。</p>
+<p>可以使用 Nsight Systems：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nsys profile \</span><br><span class="line">    -t cuda,nvtx,osrt \</span><br><span class="line">    -o train_report \</span><br><span class="line">    python train.py</span><br></pre></td></tr></table></figure>
+<p>Nsight Systems 适合分析整个程序的时间线，可以观察 CPU、CUDA
+Kernel、Memcpy、NCCL 和 GPU Idle。</p>
+<p>如果发现 GPU 长时间处于 Idle，问题可能来自
+DataLoader、CPU、存储或数据预处理，而不是 GPU 本身。</p>
+<p>如果需要进一步分析某个 CUDA Kernel 为什么执行缓慢，则可以使用 Nsight
+Compute，即 <code>ncu</code>。</p>
+<p>两者的定位可以简单理解为：</p>
+<ul>
+<li><code>nsys</code> 用于分析整个程序“哪里慢”；</li>
+<li><code>ncu</code> 用于分析单个 CUDA Kernel“为什么慢”。</li>
+</ul>
+<hr>
+<h2 id="现场信息采集命令">现场信息采集命令</h2>
+<p>第一次接手异常 GPU
+节点时，建议先统一收集基础信息，再进行主动性能测试。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GPU</span></span><br><span class="line">nvidia-smi</span><br><span class="line">nvidia-smi -L</span><br><span class="line">nvidia-smi -q -d MEMORY,ECC,TEMPERATURE,POWER,PERFORMANCE</span><br><span class="line"></span><br><span class="line"><span class="comment"># Topology</span></span><br><span class="line">nvidia-smi topo -m</span><br><span class="line">nvidia-smi topo -mp</span><br><span class="line">nvidia-smi topo -p2p r</span><br><span class="line">nvidia-smi topo -p2p w</span><br><span class="line">nvidia-smi topo -p2p n</span><br><span class="line"></span><br><span class="line"><span class="comment"># NVLink</span></span><br><span class="line">nvidia-smi nvlink -s</span><br><span class="line">nvidia-smi nvlink -e</span><br><span class="line"></span><br><span class="line"><span class="comment"># PCIe / NUMA</span></span><br><span class="line">lspci | grep -i NVIDIA</span><br><span class="line">lspci -tv</span><br><span class="line">numactl -H</span><br><span class="line"></span><br><span class="line"><span class="comment"># Kernel Error</span></span><br><span class="line">dmesg -T | grep -i -E <span class="string">'NVRM|Xid|SXid'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CUDA</span></span><br><span class="line">nvcc --version</span><br><span class="line"><span class="built_in">which</span> nvcc</span><br><span class="line"></span><br><span class="line"><span class="comment"># RDMA / IB</span></span><br><span class="line">ibstat</span><br><span class="line">ibv_devinfo</span><br><span class="line">rdma <span class="built_in">link</span></span><br><span class="line">ibdev2netdev</span><br><span class="line"></span><br><span class="line"><span class="comment"># GPUDirect</span></span><br><span class="line">lsmod | grep nvidia_peermem</span><br><span class="line"></span><br><span class="line"><span class="comment"># Container</span></span><br><span class="line"><span class="built_in">df</span> -h /dev/shm</span><br><span class="line"><span class="built_in">ulimit</span> -l</span><br></pre></td></tr></table></figure>
+<p>完成静态信息检查后，再进行实际数据路径测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GPU ↔ GPU</span></span><br><span class="line">./p2pBandwidthLatencyTest</span><br><span class="line">./nvbandwidth</span><br><span class="line"></span><br><span class="line"><span class="comment"># GPU Hardware / PCIe</span></span><br><span class="line">dcgmi diag -r 1</span><br><span class="line">dcgmi diag --run pcie</span><br><span class="line"></span><br><span class="line"><span class="comment"># NCCL</span></span><br><span class="line">./all_reduce_perf -b 8 -e 1G -f 2 -g 8</span><br><span class="line"></span><br><span class="line"><span class="comment"># RDMA</span></span><br><span class="line">ib_write_bw</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="故障快速定位">故障快速定位</h2>
+<p>实际排障时，应根据多项测试结果进行组合判断，而不是依赖某一条命令。</p>
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th>测试现象</th>
+<th>重点排查方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nvidia-smi</code> 无法识别全部 GPU，或出现 Xid / 掉卡</td>
+<td>驱动、PCIe、GPU 硬件</td>
+</tr>
+<tr>
+<td>GPU 拓扑正常、NVLink Active，但 P2P 实测带宽明显偏低</td>
+<td>NVLink Error、PCIe、ACS/IOMMU、驱动、GPU 硬件</td>
+</tr>
+<tr>
+<td>P2P 实测正常，但单机 <code>nccl-tests</code> 明显偏慢</td>
+<td>NCCL topology、环境变量、SHM、CPU Affinity、容器环境</td>
+</tr>
+<tr>
+<td>单机 NCCL 正常，多机 NCCL 很慢，同时 <code>ib_write_bw</code>
+也很慢</td>
+<td>IB / RoCE、NIC、交换机、线缆、路由、PFC/ECN、NUMA、PCIe</td>
+</tr>
+<tr>
+<td><code>ib_write_bw</code> 正常、单机 NCCL 正常，但多机 NCCL
+仍然很慢</td>
+<td>GPU Direct RDMA、GPU-NIC Affinity、NCCL NET
+Transport、ACS/IOMMU、NCCL 网络接口选择</td>
+</tr>
+<tr>
+<td>GPU、P2P、NCCL 和网络均正常，但训练仍然很慢</td>
+<td>DataLoader、CPU、存储、数据预处理或 CUDA Kernel</td>
+</tr>
+<tr>
+<td><code>nvidia-smi</code> 可见全部 GPU，但 PyTorch 只能看到部分
+GPU</td>
+<td><code>CUDA_VISIBLE_DEVICES</code> 或运行环境</td>
+</tr>
+</tbody>
+</table>
+<p>其中有几个判断尤其重要。</p>
+<p>如果 <code>nvidia-smi topo -m</code> 正常、NVLink 为 Active、P2P
+实测带宽正常，同时 <code>nccl-tests</code> 的 <code>busbw</code>
+也正常，那么从 GPU、NVLink、CUDA P2P 到 NCCL
+的单机通信链路基本可以认为健康。</p>
+<p>如果 NVLink 拓扑正常且链路 Active，但 P2P
+实测带宽明显偏低，问题应继续向 NVLink、PCIe、ACS/IOMMU、驱动和 GPU
+硬件层收敛，而不是继续调整 NCCL。</p>
+<p>如果单机 NCCL 正常、多机 NCCL 很慢，则先用 <code>ib_write_bw</code>
+将基础 RDMA 网络与 NCCL / GPU Direct 问题分开。<code>ib_write_bw</code>
+异常时优先处理网络；<code>ib_write_bw</code> 正常而多机 NCCL
+异常时，再重点检查 GPU Direct RDMA、GPU-NIC Affinity 和 NCCL
+网络路径。</p>
+<hr>
+<h2 id="排障原则总结">排障原则总结</h2>
+<p>GPU
+多卡服务器排障最重要的不是记住多少命令，而是建立清晰的分层验证思路。</p>
+<p>推荐始终按照以下顺序判断：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GPU 是否健康</span><br><span class="line">  ↓</span><br><span class="line">PCIe / NUMA 是否合理</span><br><span class="line">  ↓</span><br><span class="line">NVLink / P2P 是否正常</span><br><span class="line">  ↓</span><br><span class="line">NCCL 单机是否正常</span><br><span class="line">  ↓</span><br><span class="line">IB / RDMA 是否正常</span><br><span class="line">  ↓</span><br><span class="line">GPU Direct RDMA 是否正常</span><br><span class="line">  ↓</span><br><span class="line">NCCL 多机是否正常</span><br><span class="line">  ↓</span><br><span class="line">最后检查训练框架与应用</span><br></pre></td></tr></table></figure>
+<p>实际工作中，最值得重点掌握的三个主动测试工具是
+<code>p2pBandwidthLatencyTest</code>、<code>nccl-tests</code> 和
+<code>ib_write_bw</code>。</p>
+<p>它们分别验证三个关键通信层级：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>验证对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p2pBandwidthLatencyTest</code></td>
+<td>GPU ↔︎ GPU</td>
+</tr>
+<tr>
+<td><code>nccl-tests</code></td>
+<td>NCCL Collective</td>
+</tr>
+<tr>
+<td><code>ib_write_bw</code></td>
+<td>NIC ↔︎ NIC / RDMA</td>
+</tr>
+</tbody>
+</table>
+<p>通过这三类主动测试，可以将“多卡训练为什么慢”这一模糊问题逐步拆解为
+GPU、PCIe / NVLink、NCCL 或网络中的具体层级问题。</p>
+</article><nav class="post-tags" aria-label="文章标签"><a href="/tags/NVIDIA/"># NVIDIA</a><a href="/tags/GPU/"># GPU</a></nav><section class="post-copyright"><strong>NVIDIA GPU 多卡服务器故障排查</strong><p>本文由 Euler0525 创作，采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。</p></section><div class="post-actions"><button class="copy-link-button" type="button" data-copy-url="https://blog.euler0525.cn/posts/95efd7e1/">复制链接</button><a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fblog.euler0525.cn%2Fposts%2F95efd7e1%2F&amp;title=NVIDIA%20GPU%20%E5%A4%9A%E5%8D%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5" target="_blank" rel="noopener">分享到微博</a></div><nav class="post-navigation" aria-label="相邻文章"><span></span><a class="post-navigation__item post-navigation__item--next" href="/posts/a67cd48f/"><span>较早 →</span><strong>多头注意力机制</strong></a></nav><section class="related-section"><div class="section-heading"><div><p class="eyebrow">延伸</p><h2>相关文章</h2></div></div><div class="related-grid"><article class="post-card"><a class="post-card__visual" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-sources="[&quot;https://loremflickr.com/960/540?lock={seed}&quot;,&quot;https://random.imagecdn.app/960/540?random={seed}&quot;,&quot;https://picsum.photos/seed/{seed}/960/540&quot;]" data-cover-timeout="5000" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Git Fork 同步上游并保留本地提交</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-08-10T06:46:29.000Z">2026-08-10</time></div><h2 class="post-card__title"><a href="/posts/854464f8/">Git Fork 同步上游并保留本地提交</a></h2><p class="post-card__summary">Git Fork 后如何同步上游仓库，同时保留自己的提交</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/854464f8/" aria-label="阅读Git Fork 同步上游并保留本地提交">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证"><div class="tech-cover tech-cover--code seed-0 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-sources="[&quot;https://loremflickr.com/960/540?lock={seed}&quot;,&quot;https://random.imagecdn.app/960/540?random={seed}&quot;,&quot;https://picsum.photos/seed/{seed}/960/540&quot;]" data-cover-timeout="5000" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">Codex 客户端免手机号验证</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-05T03:00:53.000Z">2026-07-05</time></div><h2 class="post-card__title"><a href="/posts/f1aa593e/">Codex 客户端免手机号验证</a></h2><p class="post-card__summary">记录在 Codex 客户端中复用 ChatGPT 登录会话的配置流程，包括会话信息导出、格式转换和本地认证文件处理。</p><div class="post-card__footer"><span>1 分钟阅读</span><a class="post-card__read" href="/posts/f1aa593e/" aria-label="阅读Codex 客户端免手机号验证">阅读 →</a></div></div></article><article class="post-card"><a class="post-card__visual" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪"><div class="tech-cover tech-cover--code seed-3 tech-cover--compact tech-cover--random" data-random-cover="true" data-cover-sources="[&quot;https://loremflickr.com/960/540?lock={seed}&quot;,&quot;https://random.imagecdn.app/960/540?random={seed}&quot;,&quot;https://picsum.photos/seed/{seed}/960/540&quot;]" data-cover-timeout="5000" data-cover-fallback="/img/404.webp"><div class="tech-cover__grid" aria-hidden="true"></div><div class="tech-cover__trace" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><span class="post-card__visual-title">扫频式频谱仪</span></a><div class="post-card__body"><div class="post-card__meta"><a class="category-pill" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><time datetime="2026-07-01T08:46:21.000Z">2026-07-01</time></div><h2 class="post-card__title"><a href="/posts/838199f4/">扫频式频谱仪</a></h2><p class="post-card__summary">介绍扫频式频谱仪的显示电平与测量模型，并通过仿真观察扫频过程对信号频谱显示的影响。</p><div class="post-card__footer"><span>4 分钟阅读</span><a class="post-card__read" href="/posts/838199f4/" aria-label="阅读扫频式频谱仪">阅读 →</a></div></div></article></div></section><section class="comments-section"><div class="section-heading"><div><p class="eyebrow">讨论</p><h2>评论</h2></div></div><script src="https://giscus.app/client.js" data-repo="Euler0525/blogs" data-repo-id="R_kgDOK3YGNA" data-category="Announcements" data-category-id="DIC_kwDOK3YGNM4C1D14" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="async"></script></section></div><aside class="post-toc" id="post-toc"><div class="post-toc__inner"><p class="eyebrow">目录</p><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gpu-%E5%9F%BA%E7%A1%80%E7%8A%B6%E6%80%81%E4%B8%8E%E7%A1%AC%E4%BB%B6%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5"><span class="toc-number">1.</span> <span class="toc-text">GPU 基础状态与硬件健康检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5-xid-%E4%B8%8E%E6%8E%89%E5%8D%A1%E9%94%99%E8%AF%AF"><span class="toc-number">1.1.</span> <span class="toc-text">检查 Xid 与掉卡错误</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pcienuma-%E4%B8%8E-gpu-%E6%8B%93%E6%89%91%E6%A3%80%E6%9F%A5"><span class="toc-number">2.</span> <span class="toc-text">PCIe、NUMA 与 GPU 拓扑检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5-pcie-%E6%98%AF%E5%90%A6%E5%8F%91%E7%94%9F%E9%99%8D%E9%80%9F"><span class="toc-number">2.1.</span> <span class="toc-text">检查 PCIe 是否发生降速</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nvlink-%E4%B8%8E-gpu-p2p-%E6%A3%80%E6%9F%A5"><span class="toc-number">3.</span> <span class="toc-text">NVLink 与 GPU P2P 检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nccl-%E5%8D%95%E6%9C%BA%E9%80%9A%E4%BF%A1%E6%A3%80%E6%9F%A5"><span class="toc-number">4.</span> <span class="toc-text">NCCL 单机通信检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90-nccl-%E5%AE%9E%E9%99%85%E9%80%9A%E4%BF%A1%E8%B7%AF%E5%BE%84"><span class="toc-number">4.1.</span> <span class="toc-text">分析 NCCL 实际通信路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#infiniband-%E4%B8%8E-rdma-%E7%BD%91%E7%BB%9C%E6%A3%80%E6%9F%A5"><span class="toc-number">5.</span> <span class="toc-text">InfiniBand 与 RDMA 网络检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81-rdma-%E5%AE%9E%E9%99%85%E5%B8%A6%E5%AE%BD"><span class="toc-number">5.1.</span> <span class="toc-text">验证 RDMA 实际带宽</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gpu-direct-rdma-%E4%B8%8E-acs-%E6%A3%80%E6%9F%A5"><span class="toc-number">6.</span> <span class="toc-text">GPU Direct RDMA 与 ACS 检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8cuda-%E4%B8%8E-pytorch-%E7%8E%AF%E5%A2%83%E6%A3%80%E6%9F%A5"><span class="toc-number">7.</span> <span class="toc-text">容器、CUDA 与 PyTorch
+环境检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cuda-%E7%8E%AF%E5%A2%83"><span class="toc-number">7.1.</span> <span class="toc-text">CUDA 环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pytorch-gpu-%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">7.2.</span> <span class="toc-text">PyTorch GPU 可见性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dcgm-%E4%B8%8E%E5%BA%94%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">8.</span> <span class="toc-text">DCGM 与应用性能分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%B0%E5%9C%BA%E4%BF%A1%E6%81%AF%E9%87%87%E9%9B%86%E5%91%BD%E4%BB%A4"><span class="toc-number">9.</span> <span class="toc-text">现场信息采集命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E5%BF%AB%E9%80%9F%E5%AE%9A%E4%BD%8D"><span class="toc-number">10.</span> <span class="toc-text">故障快速定位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E9%9A%9C%E5%8E%9F%E5%88%99%E6%80%BB%E7%BB%93"><span class="toc-number">11.</span> <span class="toc-text">排障原则总结</span></a></li></ol><button class="mobile-toc-close" id="mobile-toc-close" type="button">关闭目录</button></div></aside></div></article></main><button class="profile-backdrop" id="profile-backdrop" type="button" aria-label="关闭个人信息"></button><div class="search-layer" id="search-layer" hidden><button class="search-layer__backdrop" id="search-close-backdrop" type="button" aria-label="关闭搜索"></button><section class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title"><header class="search-dialog__header"><div><p class="eyebrow">全站检索</p><h2 id="search-title">搜索文章</h2></div><button class="icon-button" id="search-close" type="button" aria-label="关闭搜索">×</button></header><label class="search-input-wrap"><span class="sr-only">搜索关键词</span><input id="search-input" type="search" autocomplete="off" placeholder=""><kbd>/</kbd></label><p class="search-status" id="search-status">输入关键词开始搜索</p><ol class="search-results" id="search-results"></ol></section></div><button class="icon-button back-to-top" id="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button><script src="/js/main.js" defer></script><script src="/js/search.js" defer data-search-path="/search.json" data-search-limit="12"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
