@@ -8,7 +8,9 @@ tags:
   - GLaM
   - Scaling
   - 负载均衡
-categories: 人工智能
+categories: [人工智能, 大模型技术]
+series: 论文精选
+series_order: 2
 mathjax: true
 abbrlink: 27d8c7a2
 date: 2026-09-08 15:02:42
@@ -429,4 +431,3 @@ MoE 的本质不是“让模型变稀疏”这么简单，而是重新分配容�
 [arXiv | Computer Science > Machine Learning | Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://arxiv.org/abs/2101.03961)
 
 [arXiv | Computer Science > Computation and Language | GLaM: Efficient Scaling of Language Models with Mixture-of-Experts](https://arxiv.org/abs/2112.06905)
-

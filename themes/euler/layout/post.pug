@@ -1,6 +1,6 @@
 include _partial/post-card.pug
 
-- const primaryCategory = euler_primary_category(page)
+- const categoryChain = euler_category_chain(page)
 - const tags = euler_collection(page.tags)
 - const relatedPosts = euler_related_posts(page)
 - const seriesInfo = euler_series_info(page)
@@ -10,8 +10,12 @@ include _partial/post-card.pug
 article.post-page
   header.post-hero
     .post-hero__meta
-      if primaryCategory
-        a.category-pill(href=url_for(primaryCategory.path))= primaryCategory.name
+      if categoryChain.length
+        nav.category-breadcrumb(aria-label='文章分类')
+          each category, index in categoryChain
+            if index
+              span.category-breadcrumb__separator(aria-hidden='true') ›
+            a(href=url_for(category.path))= category.name
       if seriesInfo
         a.series-pill(href=url_for(seriesInfo.path)) #{seriesInfo.name} · 第 #{seriesInfo.order}/#{seriesInfo.count} 篇
       time(datetime=date_xml(page.date))= date(page.date, 'YYYY-MM-DD')

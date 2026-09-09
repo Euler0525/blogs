@@ -539,6 +539,7 @@ html[data-theme="dark"] .theme-icon--dark {
 }
 
 .category-pill,
+.category-breadcrumb,
 .series-pill {
   display: inline-flex;
   align-items: center;
@@ -551,6 +552,25 @@ html[data-theme="dark"] .theme-icon--dark {
   font-family: var(--font-sans);
   font-size: .72rem;
   font-weight: 700;
+}
+
+.category-breadcrumb {
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.category-breadcrumb a {
+  color: inherit;
+}
+
+.category-breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.category-breadcrumb__separator {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-weight: 400;
 }
 
 .post-card__title {
@@ -1018,6 +1038,10 @@ html[data-theme="dark"] .personal-social__github {
 .page-heading {
   padding: 8px 0 34px;
   border-bottom: 1px solid var(--line);
+}
+
+.page-heading > .category-breadcrumb {
+  margin: 2px 0 10px;
 }
 
 .page-heading > p:last-child {

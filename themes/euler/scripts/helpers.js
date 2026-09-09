@@ -8,6 +8,30 @@ const collectionItems = collection => {
   return []
 }
 
+const normalizedCategoryPath = category => String((category && category.path) || '').replace(/^\/+|\/+$/g, '')
+
+const categoryDepth = category => normalizedCategoryPath(category).split('/').filter(Boolean).length
+
+const deepestCategory = categories => categories.reduce((deepest, category) => (
+  !deepest || categoryDepth(category) > categoryDepth(deepest) ? category : deepest
+), null)
+
+const categoryChain = (categories, current = deepestCategory(categories)) => {
+  if (!current) return []
+
+  const currentPath = normalizedCategoryPath(current)
+  if (!currentPath) return [current]
+
+  return categories
+    .filter(category => {
+      const categoryPath = normalizedCategoryPath(category)
+      return categoryPath && (currentPath === categoryPath || currentPath.startsWith(`${categoryPath}/`))
+    })
+    .sort((left, right) => categoryDepth(left) - categoryDepth(right))
+}
+
+const postCategoryChain = post => categoryChain(collectionItems(post && post.categories))
+
 const categoryNames = post => collectionItems(post && post.categories).map(item => item.name)
 
 const toneRules = [
@@ -37,8 +61,21 @@ const stableSeed = value => {
 hexo.extend.helper.register('euler_collection', collectionItems)
 
 hexo.extend.helper.register('euler_primary_category', post => {
-  const items = collectionItems(post && post.categories)
-  return items.length ? items[0] : null
+  const items = postCategoryChain(post)
+  return items.length ? items[items.length - 1] : null
+})
+
+hexo.extend.helper.register('euler_category_chain', postCategoryChain)
+
+hexo.extend.helper.register('euler_category_page_chain', page => {
+  const categories = collectionItems(hexo.locals.get('categories'))
+  const pagePath = normalizedCategoryPath({ path: page && (page.path || page.base) })
+  const candidates = categories.filter(category => {
+    const categoryPath = normalizedCategoryPath(category)
+    return categoryPath && (pagePath === categoryPath || pagePath.startsWith(`${categoryPath}/`))
+  })
+  const current = deepestCategory(candidates) || categories.find(category => category.name === (page && page.category))
+  return categoryChain(categories, current)
 })
 
 hexo.extend.helper.register('euler_tone', post => postTone(post))
