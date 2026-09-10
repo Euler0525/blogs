@@ -11,10 +11,113 @@
   const results = document.getElementById('search-results')
   const searchPath = script ? script.dataset.searchPath : '/search.json'
   const limit = script ? Number(script.dataset.searchLimit) || 12 : 12
+  const searchParam = 'search'
+  const searchHitId = 'search-hit'
   let entries = null
   let loading = null
   let indexRequest = null
   let renderTimer = null
+
+  const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  const getSearchTerms = value => {
+    const seen = new Set()
+    return value.trim().split(/\s+/).filter(term => {
+      const key = term.toLowerCase()
+      if (!key || seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }
+
+  const highlightArticleSearchTerms = () => {
+    const article = document.getElementById('article-content')
+    const query = new URLSearchParams(window.location.search).get(searchParam)
+    if (!article || !query) return
+
+    const terms = getSearchTerms(query).sort((left, right) => right.length - left.length)
+    if (!terms.length) return
+
+    const roots = [
+      document.querySelector('.post-hero .category-breadcrumb'),
+      document.querySelector('.post-hero h1'),
+      document.querySelector('.post-hero__description'),
+      article,
+      document.querySelector('.post-tags')
+    ].filter(Boolean)
+    const excludedSelector = [
+      'script',
+      'style',
+      'noscript',
+      'textarea',
+      'svg',
+      'canvas',
+      'mjx-container',
+      '.MathJax',
+      '.katex',
+      '.mermaid',
+      '.highlight-tools',
+      'mark.search-hit'
+    ].join(', ')
+    const pattern = new RegExp(terms.map(escapeRegExp).join('|'), 'gi')
+    const textNodes = []
+
+    roots.forEach(root => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: node => {
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT
+          if (node.parentElement?.closest(excludedSelector)) return NodeFilter.FILTER_REJECT
+          return NodeFilter.FILTER_ACCEPT
+        }
+      })
+      while (walker.nextNode()) textNodes.push(walker.currentNode)
+    })
+
+    let firstHit = null
+    textNodes.forEach(node => {
+      const text = node.nodeValue
+      const fragment = document.createDocumentFragment()
+      let lastIndex = 0
+      let match = null
+      let matched = false
+
+      pattern.lastIndex = 0
+      while ((match = pattern.exec(text)) !== null) {
+        matched = true
+        if (match.index > lastIndex) {
+          fragment.append(document.createTextNode(text.slice(lastIndex, match.index)))
+        }
+
+        const mark = document.createElement('mark')
+        mark.className = 'search-hit'
+        mark.textContent = match[0]
+        if (!firstHit) {
+          mark.id = searchHitId
+          mark.classList.add('search-hit--first')
+          firstHit = mark
+        }
+        fragment.append(mark)
+        lastIndex = match.index + match[0].length
+      }
+
+      if (!matched) return
+      if (lastIndex < text.length) fragment.append(document.createTextNode(text.slice(lastIndex)))
+      node.replaceWith(fragment)
+    })
+
+    const target = firstHit || document.querySelector('.post-hero h1')
+    if (!target) return
+
+    const collapsedCode = firstHit?.closest('.highlight.is-collapsed')
+    collapsedCode?.querySelector('.code-toggle[aria-expanded="false"]')?.click()
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ block: 'center', inline: 'nearest' })
+      })
+    })
+  }
+
+  highlightArticleSearchTerms()
 
   if (!layer || !openButton || !input) return
 
@@ -66,8 +169,6 @@
     return loading
   }
 
-  const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
   const highlight = (value, terms) => {
     const escaped = value
       .replace(/&/g, '&amp;')
@@ -86,7 +187,7 @@
       return
     }
 
-    const terms = normalized.split(/\s+/).filter(Boolean)
+    const terms = getSearchTerms(normalized)
     const matches = entries
       .map(entry => {
         const score = terms.reduce((total, term) => total
@@ -104,7 +205,10 @@
       const item = document.createElement('li')
       item.className = 'search-result'
       const link = document.createElement('a')
-      link.href = entry.url
+      const targetUrl = new URL(entry.url, window.location.href)
+      targetUrl.searchParams.set(searchParam, query.trim())
+      targetUrl.hash = searchHitId
+      link.href = targetUrl.toString()
       const title = document.createElement('strong')
       title.innerHTML = highlight(entry.title, terms)
       const excerpt = document.createElement('p')
