@@ -1581,22 +1581,17 @@ pre:hover .code-copy,
   border: 0;
   background: var(--line-strong);
 }
-mjx-container {
+.post-content .katex,
+.page-content .katex {
+  overflow-wrap: normal;
+}
+.post-content .katex-display,
+.page-content .katex-display {
   max-width: 100%;
+  margin: 1em 0;
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 4px;
-}
-mjx-container[display] {
-  display: block !important;
-  min-width: auto !important;
-}
-mjx-container:not([display]) {
-  display: inline-grid !important;
-}
-mjx-assistive-mml {
-  right: 0;
-  bottom: 0;
+  padding: 0.15em 0 0.3em;
 }
 .post-content .mermaid {
   padding: 20px;
