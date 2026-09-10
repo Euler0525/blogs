@@ -13,13 +13,13 @@ date: 2025-11-22 13:31:28
 设 AD 满量程输入范围为 $[-A_p, A_p]$，其中 $A_p$ 是峰值电压，ADC 每次采样输出的二进制位数为 $n$，有效量化等级数为 $L = 2^n$ 则量化步长为
 
 $$
-\Delta = \dfrac{2A_p}{2^n}\\
+\Delta = \dfrac{2A_p}{2^n}
 $$
 
 量化误差假设为均匀分布在 $[-\dfrac{\Delta}{2}, \dfrac{\Delta}{2}]$ 之间，均值为零，则方差（量化噪声的功率）为
 
 $$
-\sigma^2 = \dfrac{\Delta^2}{12}\\
+\sigma^2 = \dfrac{\Delta^2}{12}
 $$
 
 *附：均匀分布 $x\sim U(a, b)$ 的方差为 $\sigma^2=\dfrac{(b-a)^2}{12}$.*
