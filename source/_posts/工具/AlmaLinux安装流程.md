@@ -42,6 +42,83 @@ sudo dnf install epel-release
 sudo dnf install ntfs-3g
 ```
 
+Windows 通过 WSL2 访问另一块硬盘上的 AlmaLinux 文件
+
+- 在 Windows 中识别并连接 AlmaLinux 硬盘
+
+```powershell
+Get-CimInstance Win32_DiskDrive | Select-Object DeviceID, Model, Size
+wsl --mount \\.\PHYSICALDRIVE1 --bare
+```
+
+- 在 WSL 中确认磁盘布局
+
+```shell
+lsblk -o NAME,TYPE,SIZE,FSTYPE,MOUNTPOINTS
+sudo blkid
+# sde                disk 931.5G
+# ├─sde1             part   512M vfat
+# ├─sde2             part     1G xfs
+# └─sde3             part   930G LVM2_member
+```
+
+- 安装 lvm2
+
+```shell
+sudo apt update
+sudo apt install lvm2
+
+sudo pvs
+sudo vgs
+sudo lvs -a -o lv_path,lv_size,lv_attr
+# PV         VG        Fmt  Attr PSize    PFree
+# /dev/sde3  almalinux lvm2 a--  < 930.01g 8.00m
+# VG        #PV #LV #SN Attr   VSize    VFree
+# almalinux   1   2   0 wz--n- < 930.01g 8.00m
+# Path                LSize   Attr
+# /dev/almalinux/root 898.00g -wi-ao----
+# /dev/almalinux/swap  32.00g -wi-a-----
+```
+
+- 激活
+
+```shell
+sudo vgchange -ay almalinux
+lsblk -f
+# sde
+# ├─sde1             vfat        FAT32
+# ├─sde2             xfs
+# └─sde3             LVM2_member LVM2 001
+#   ├─almalinux-root xfs
+#   └─almalinux-swap swap        1
+sudo lvs -a -o lv_path,lv_size,lv_attr
+```
+
+- 只读挂载根分区
+
+```shell
+sudo mkdir -p /mnt/almalinux
+sudo mount -t xfs -o ro,norecovery /dev/almalinux/root /mnt/almalinux
+
+findmnt /mnt/almalinux
+# TARGET         SOURCE                     FSTYPE OPTIONS
+# /mnt/almalinux /dev/mapper/almalinux-root xfs    ro, relatime, norecovery, inode64, logbufs = 8, logbsize = 32k, sunit = 64, swidth = 512, noquota
+```
+
+- 使用完毕后安全卸载
+
+```shell
+sudo umount /mnt/almalinux
+sudo vgchange -an almalinux
+```
+
+Windows 中断开物理硬盘
+
+
+```powershell
+wsl --unmount \\.\PHYSICALDRIVE1
+```
+
 ## 软件
 
 ### 换源
@@ -54,6 +131,103 @@ sudo sed -e 's|^mirrorlist=|#mirrorlist =|g' -e 's|^# baseurl = https://repo.alm
 sudo dnf clean all
 sudo dnf makecache
 sudo dnf upgrade -y
+```
+
+### 触摸板手势
+
+```shell
+cat /etc/almalinux-release  # AlmaLinux release 9.8 (Olive Jaguar)
+echo $XDG_CURRENT_DESKTOP   # GNOME
+echo $XDG_SESSION_TYPE      # x11
+gnome-shell --version       # GNOME Shell 40.10
+
+sudo dnf install -y epel-release dnf-plugins-core
+sudo dnf config-manager --set-enabled crb
+sudo dnf copr enable joseexposito/touchegg
+```
+
+[点击此处](https://github.com/JoseExposito/touchegg/releases/) 获取 `touchegg` 安装包 `rhel8_touchegg-<version>.x86_64.rpm`
+
+```shell
+sudo dnf install ./rhel8_touchegg-<version>.x86_64.rpm
+```
+
+配置文件（与 Windows 手势一致）如下
+
+```xml
+<! -- cat ~/.config/touchegg/touchegg.conf -->
+
+<touchégg>
+  <settings>
+    <property name="animation_delay">150</property>
+    <property name="action_execute_threshold">20</property>
+  </settings>
+
+  <application name="All">
+
+    <gesture type="SWIPE" fingers="3" direction="LEFT">
+      <action type="SEND_KEYS">
+        <repeat>false</repeat>
+        <modifiers>Alt_L</modifiers>
+        <keys>Escape</keys>
+        <on>begin</on>
+      </action>
+    </gesture>
+
+    <gesture type="SWIPE" fingers="3" direction="RIGHT">
+      <action type="SEND_KEYS">
+        <repeat>false</repeat>
+        <modifiers>Alt_L+Shift_L</modifiers>
+        <keys>Escape</keys>
+        <on>begin</on>
+      </action>
+    </gesture>
+
+    <gesture type="SWIPE" fingers="4" direction="LEFT">
+      <action type="SEND_KEYS">
+        <repeat>false</repeat>
+        <modifiers>Control_L+Alt_L</modifiers>
+        <keys>Right</keys>
+        <on>begin</on>
+      </action>
+    </gesture>
+
+    <gesture type="SWIPE" fingers="4" direction="RIGHT">
+      <action type="SEND_KEYS">
+        <repeat>false</repeat>
+        <modifiers>Control_L+Alt_L</modifiers>
+        <keys>Left</keys>
+        <on>begin</on>
+      </action>
+    </gesture>
+
+  </application>
+</touchégg>
+```
+
+下面配置开机启动
+
+```shell
+sudo systemctl enable --now touchegg
+sudo systemctl start --now touchegg
+systemctl status touchegg
+
+mkdir -p ~/.config/autostart
+cat > ~/.config/autostart/touchegg.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Touchégg
+Comment=Touchpad gesture service
+Exec=touchegg
+Terminal=false
+Hidden=false
+X-GNOME-Autostart-enabled=true
+EOF
+
+pgrep -af touchegg
+# 同时存在以下两个进程
+# /usr/bin/touchegg --daemon
+# touchegg
 ```
 
 ### 输入法
@@ -214,11 +388,22 @@ nvcc --version
 echo "$CUDA_HOME"
 ```
 
-推荐在使用 `nvcc` 时指定 GPU 架构，参考[CUDA GPU Compute Capability](https://developer.nvidia.com/cuda/gpus).
+推荐在使用 `nvcc` 时指定 GPU 架构，参考 [CUDA GPU Compute Capability](https://developer.nvidia.com/cuda/gpus).
 
 ```shell
 nvcc -arch=sm_89
 ```
+
+### 其它工具
+
+- `fsearch`：全局搜索文件
+
+```shell
+sudo dnf copr enable cboxdoerfer/fsearch
+sudo dnf install -y fsearch
+```
+
+
 
 ## 附录
 
