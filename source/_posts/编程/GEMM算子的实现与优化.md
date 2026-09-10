@@ -70,39 +70,36 @@ $$
 
 __global__ void matrix_multiplication_kernel(const float *A, const float *B,
                                              float *C, int M, int N, int K) {
-    int col = blockDim.x * blockIdx.x + threadIdx.x;
     int row = blockDim.y * blockIdx.y + threadIdx.y;
+    int col = blockDim.x * blockIdx.x + threadIdx.x;
 
     __shared__ float As[TILE_SIZE][TILE_SIZE];
     __shared__ float Bs[TILE_SIZE][TILE_SIZE];
-    float sum = 0.0f;
 
-    // A(N, 1), B(K, 1), C(K, 1)
+    float acc = 0.0f;
     for (int tile = 0; tile < (N + TILE_SIZE - 1) / TILE_SIZE; ++tile) {
-        // A tile
-        int Acol = threadIdx.x + tile * TILE_SIZE;
+        int Acol = tile * TILE_SIZE + threadIdx.x;
         if (row < M && Acol < N) {
             As[threadIdx.y][threadIdx.x] = A[row * N + Acol];
         } else {
             As[threadIdx.y][threadIdx.x] = 0.0f;
         }
-        // B tile
-        int Brow = threadIdx.y + tile * TILE_SIZE;
+        int Brow = tile * TILE_SIZE + threadIdx.y;
         if (Brow < N && col < K) {
             Bs[threadIdx.y][threadIdx.x] = B[Brow * K + col];
         } else {
             Bs[threadIdx.y][threadIdx.x] = 0.0f;
         }
+
         __syncthreads();
 
         for (int n = 0; n < TILE_SIZE; ++n) {
-            sum += As[threadIdx.y][n] * Bs[n][threadIdx.x];
+            acc += As[threadIdx.y][n] * Bs[n][threadIdx.x];
         }
         __syncthreads();
     }
-
     if (row < M && col < K) {
-        C[row * K + col] = sum;
+        C[row * K + col] = acc;
     }
 }
 
