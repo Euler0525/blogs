@@ -4,6 +4,7 @@
 - const socialImage = full_url_for(explicitCover || theme.og_image)
 - const documentTitle = page.title && !is_home() ? `${page.title} | ${config.title}` : config.title
 - const renderedContent = String(page.content || '')
+- const useCodeFont = renderedContent.includes('<code') || renderedContent.includes('<pre')
 - const useFancybox = theme.images && theme.images.fancybox && theme.images.fancybox.enable && renderedContent.includes('<img')
 - const useMathJax = theme.mathjax && theme.mathjax.enable && (theme.mathjax.per_page ? (is_post() || is_page()) : page.mathjax)
 
@@ -35,13 +36,21 @@ html(lang=config.language || 'zh-CN' data-theme='light')
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
         document.documentElement.dataset.theme = saved || (systemDark ? 'dark' : 'light')
       })()
+    if useCodeFont
+      link(
+        rel='preload'
+        href=url_for('/fonts/MapleMono-NF-Regular.woff2')
+        as='font'
+        type='font/woff2'
+        crossorigin='anonymous'
+      )
     link(rel='stylesheet' href=url_for('/css/index.css'))
     if is_post()
-      link#reading-font-stylesheet(
-        rel='stylesheet'
+      link(
+        rel='preload'
         href=url_for('/css/lxgwwenkai-regular.css')
-        media='print'
-        onload="this.media='all'"
+        as='style'
+        onload="this.onload=null;this.rel='stylesheet'"
       )
       noscript
         link(rel='stylesheet' href=url_for('/css/lxgwwenkai-regular.css'))

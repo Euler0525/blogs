@@ -3,7 +3,7 @@
   src: url("/fonts/MapleMono-NF-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
 }
 
 :root {
@@ -31,10 +31,10 @@
   --font-sans: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
   --font-reading-fallback: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
-  --font-reading: var(--font-reading-fallback);
+  --font-reading: "LXGW WenKai", var(--font-reading-fallback);
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --font-code-fallback: "SFMono-Regular", Consolas, "Microsoft YaHei", monospace;
-  --font-code: var(--font-code-fallback);
+  --font-code: "Maple Mono NF", var(--font-code-fallback);
   --code-bg: #f6f8fa;
   --code-tools-bg: #e9edf0;
   --code-color: #667781;
@@ -49,14 +49,6 @@
   --code-aqua: #278f98;
   --code-blue: #4e72ad;
   --code-purple: #7040df;
-}
-
-html.font-reading-ready {
-  --font-reading: "LXGW WenKai", var(--font-reading-fallback);
-}
-
-html.font-code-ready {
-  --font-code: "Maple Mono NF", var(--font-code-fallback);
 }
 
 html[data-theme="dark"] {
@@ -2287,6 +2279,22 @@ mjx-assistive-mml {
   padding: 0 2px;
   color: var(--ink);
   background: unquote("color-mix(in srgb, var(--accent) 22%, transparent)");
+}
+
+.search-hit {
+  padding: 0 .12em;
+  border-radius: .2em;
+  color: inherit;
+  background: unquote("color-mix(in srgb, var(--accent) 28%, var(--surface-solid))");
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  scroll-margin-top: 96px;
+}
+
+.search-hit--first {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  background: unquote("color-mix(in srgb, var(--accent) 42%, var(--surface-solid))");
 }
 
 .back-to-top {
