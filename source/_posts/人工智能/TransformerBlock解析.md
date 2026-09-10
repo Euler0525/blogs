@@ -26,7 +26,7 @@ TransformerBlock 是 Decoder-only 大语言模型的核心计算单元。Embeddi
 
 一个完整的 Causal Language Model 可以拆成
 
-```mermaid
+{% mermaid %}
 graph LR
     Tokens("Token IDs [B, S]") --> Embedding("Token Embedding [B, S, H]")
     Embedding --> Block0("TransformerBlock 0")
@@ -36,7 +36,7 @@ graph LR
     BlockN --> Norm("Final RMSNorm")
     Norm --> Head("LM Head")
     Head --> Logits("Logits [B, S, V]")
-```
+{% endmermaid %}
 
 这里 $B$ 表示 batch size，$S$ 表示 sequence length，$H$ 表示 hidden size，$L$ 表示层数，$V$ 表示词表大小。对于当前 Qwen2.5-0.5B，关键配置如下。
 
@@ -66,7 +66,7 @@ $$
 
 第一条路径负责 token 之间的信息交换，第二条路径负责每个 token 内部的非线性特征变换。Attention 和 MLP 都不直接替换输入，而是通过残差连接把增量写回主干。
 
-```mermaid
+{% mermaid %}
 flowchart LR
     X["x"] --> Norm1["RMSNorm"]
     Norm1 --> Attention["Causal Self-Attention"]
@@ -78,7 +78,7 @@ flowchart LR
     U --> Add2["+"]
     MLP --> Add2
     Add2 --> Y["y"]
-```
+{% endmermaid %}
 
 对应代码位于 [`layers.py`](https://github.com/Euler0525/ai-infra-learning/blob/develop/mini_llm/model/layers.py)。第一次残差保存 Block 原始输入，第二次残差保存 Attention 输出与原输入相加后的结果。
 

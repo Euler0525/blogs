@@ -30,10 +30,10 @@ FlashAttention 并没有把 dense attention 从 $O(N^2d)$ 变成线性复杂度�
 
 因此，理解 FlashAttention 系列最重要的视角不是“减少了多少 FLOPs”，而是：
 
-```mermaid
+{% mermaid %}
 graph LR
 A(Standard Attention) --> B(IO-aware Attention) --> C(GPU-efficient IO-aware Attention)
-```
+{% endmermaid %}
 
 ## Attention 的性能瓶颈
 
